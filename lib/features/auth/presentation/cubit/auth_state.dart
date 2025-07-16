@@ -13,11 +13,12 @@ class AuthLoading extends AuthState {}
 
 class AuthAuthenticated extends AuthState {
   final AuthResponseDto authResponse;
+  final UserDto? user;
 
-  const AuthAuthenticated({required this.authResponse});
+  const AuthAuthenticated({required this.authResponse, this.user});
 
   @override
-  List<Object> get props => [authResponse];
+  List<Object> get props => [authResponse, user!];
 }
 
 class AuthUnauthenticated extends AuthState {}

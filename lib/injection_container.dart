@@ -13,6 +13,9 @@ import 'package:help_me/features/auth/domain/usecases/get_token_usecase.dart';
 import 'package:help_me/features/auth/domain/usecases/clear_token_usecase.dart';
 import 'package:help_me/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:help_me/features/auth/domain/usecases/get_user_name_usecase.dart';
+import 'package:help_me/features/auth/domain/usecases/get_user_avatar_usecase.dart';
+import 'package:help_me/features/auth/domain/usecases/clear_user_data_usecase.dart';
 
 final sl = GetIt.instance;
 
@@ -23,6 +26,9 @@ Future<void> init() async {
       loginUseCase: sl(),
       getTokenUseCase: sl(),
       clearTokenUseCase: sl(),
+      getUserNameUseCase: sl(),
+      getUserAvatarUseCase: sl(),
+      clearUserDataUseCase: sl(),
     ),
   );
 
@@ -30,6 +36,9 @@ Future<void> init() async {
   sl.registerLazySingleton(() => LoginUseCase(sl()));
   sl.registerLazySingleton(() => GetTokenUseCase(sl()));
   sl.registerLazySingleton(() => ClearTokenUseCase(sl()));
+  sl.registerLazySingleton(() => GetUserNameUseCase(sl()));
+  sl.registerLazySingleton(() => GetUserAvatarUseCase(sl()));
+  sl.registerLazySingleton(() => ClearUserDataUseCase(sl()));
 
   // Repository
   sl.registerLazySingleton<AuthRepository>(

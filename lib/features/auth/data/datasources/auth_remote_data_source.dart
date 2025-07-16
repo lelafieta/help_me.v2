@@ -18,6 +18,8 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         '/auth/login',
         data: loginRequest.toJson(),
       );
+
+      print(response.data);
       return AuthResponseDto.fromJson(response.data);
     } on DioException catch (e) {
       throw ServerException.fromDioException(e);
