@@ -6,6 +6,7 @@ import 'package:help_me/config/themes.dart';
 import 'package:help_me/config/theme_cubit/theme_cubit.dart';
 import 'package:help_me/injection_container.dart' as di;
 import 'package:help_me/config/app_router.dart';
+import 'package:help_me/features/auth/presentation/cubit/user_cubit.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,18 +21,21 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => ThemeCubit(),
-      child: BlocBuilder<ThemeCubit, ThemeState>(
-        builder: (context, state) {
-          return MaterialApp(
-            title: 'Help-me',
-            theme: lightTheme,
-            darkTheme: darkTheme,
-            themeMode: state.themeMode,
-            onGenerateRoute: AppRouter.onGenerateRoute,
-            initialRoute: AppRouter.splashRoute,
-          );
-        },
+      create: (context) => di.sl<UserCubit>()..loadUser(),
+      child: BlocProvider(
+        create: (context) => ThemeCubit(),
+        child: BlocBuilder<ThemeCubit, ThemeState>(
+          builder: (context, state) {
+            return MaterialApp(
+              title: 'Help-me',
+              theme: lightTheme,
+              darkTheme: darkTheme,
+              themeMode: state.themeMode,
+              onGenerateRoute: AppRouter.onGenerateRoute,
+              initialRoute: AppRouter.splashRoute,
+            );
+          },
+        ),
       ),
     );
   }

@@ -16,6 +16,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:help_me/features/auth/domain/usecases/get_user_name_usecase.dart';
 import 'package:help_me/features/auth/domain/usecases/get_user_avatar_usecase.dart';
 import 'package:help_me/features/auth/domain/usecases/clear_user_data_usecase.dart';
+import 'package:help_me/features/auth/presentation/cubit/user_cubit.dart';
 
 final sl = GetIt.instance;
 
@@ -29,6 +30,11 @@ Future<void> init() async {
       getUserNameUseCase: sl(),
       getUserAvatarUseCase: sl(),
       clearUserDataUseCase: sl(),
+    ),
+  );
+  sl.registerFactory(
+    () => UserCubit(
+      authLocalDataSource: sl(),
     ),
   );
 

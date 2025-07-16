@@ -27,12 +27,18 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
 
   @override
   Future<void> cacheUserFirstName(String? firstName) async {
-    await secureStorage.write(key: 'user_first_name', value: firstName ?? '');
+    await secureStorage.write(
+      key: 'user_first_name',
+      value: firstName ?? 'Lela',
+    );
   }
 
   @override
   Future<void> cacheUserLastName(String? lastName) async {
-    await secureStorage.write(key: 'user_last_name', value: lastName ?? '');
+    await secureStorage.write(
+      key: 'user_last_name',
+      value: lastName ?? 'Fieta',
+    );
   }
 
   @override
