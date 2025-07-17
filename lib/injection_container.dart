@@ -17,6 +17,15 @@ import 'package:help_me/features/auth/domain/usecases/get_user_name_usecase.dart
 import 'package:help_me/features/auth/domain/usecases/get_user_avatar_usecase.dart';
 import 'package:help_me/features/auth/domain/usecases/clear_user_data_usecase.dart';
 import 'package:help_me/features/auth/presentation/cubit/user_cubit.dart';
+import 'package:help_me/features/category/data/datasources/category_remote_data_source.dart';
+import 'package:help_me/features/category/data/datasources/category_remote_data_source_impl.dart';
+import 'package:help_me/features/category/data/repositories/category_repository_impl.dart';
+import 'package:help_me/features/category/domain/repositories/category_repository.dart';
+import 'package:help_me/features/category/domain/usecases/get_categories_usecase.dart';
+import 'package:help_me/features/category/presentation/cubit/category_cubit.dart';
+import 'package:help_me/features/profile/presentation/cubit/profile_cubit.dart';
+import 'package:help_me/features/profile/presentation/cubit/count_donation_cubit/count_donation_cubit.dart';
+import 'package:help_me/features/solidary/presentation/cubit/solidary_cubit.dart';
 
 final sl = GetIt.instance;
 
@@ -32,11 +41,17 @@ Future<void> init() async {
       clearUserDataUseCase: sl(),
     ),
   );
-  sl.registerFactory(
-    () => UserCubit(
-      authLocalDataSource: sl(),
-    ),
-  );
+  sl.registerFactory(() => UserCubit(authLocalDataSource: sl()));
+
+  // Features - Category
+  sl.registerFactory(() => CategoryCubit(getCategoriesUseCase: sl()));
+
+  // Features - Profile
+  sl.registerFactory(() => ProfileCubit());
+  sl.registerFactory(() => CountDonationCubit());
+
+  // Features - Solidary
+  sl.registerFactory(() => SolidaryCubit());
 
   // Use cases
   sl.registerLazySingleton(() => LoginUseCase(sl()));
@@ -45,6 +60,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => GetUserNameUseCase(sl()));
   sl.registerLazySingleton(() => GetUserAvatarUseCase(sl()));
   sl.registerLazySingleton(() => ClearUserDataUseCase(sl()));
+  sl.registerLazySingleton(() => GetCategoriesUseCase(sl()));
 
   // Repository
   sl.registerLazySingleton<AuthRepository>(
@@ -54,6 +70,9 @@ Future<void> init() async {
       networkInfo: sl(),
     ),
   );
+  sl.registerLazySingleton<CategoryRepository>(
+    () => CategoryRepositoryImpl(remoteDataSource: sl(), networkInfo: sl()),
+  );
 
   // Data sources
   sl.registerLazySingleton<AuthRemoteDataSource>(
@@ -61,6 +80,9 @@ Future<void> init() async {
   );
   sl.registerLazySingleton<AuthLocalDataSource>(
     () => AuthLocalDataSourceImpl(secureStorage: sl()),
+  );
+  sl.registerLazySingleton<CategoryRemoteDataSource>(
+    () => CategoryRemoteDataSourceImpl(dio: sl()),
   );
 
   // Core

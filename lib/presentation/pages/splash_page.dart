@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
-import 'package:help_me/config/app_router.dart';
+import 'package:help_me/config/router/app_router.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -11,7 +11,8 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> {
-  final FlutterSecureStorage _secureStorage = GetIt.instance<FlutterSecureStorage>();
+  final FlutterSecureStorage _secureStorage =
+      GetIt.instance<FlutterSecureStorage>();
 
   @override
   void initState() {
@@ -25,7 +26,8 @@ class _SplashPageState extends State<SplashPage> {
 
     if (mounted) {
       if (token != null) {
-        Navigator.of(context).pushReplacementNamed(AppRouter.homeRoute);
+        print("object");
+        Navigator.of(context).pushReplacementNamed(AppRouter.helpMeRoute);
       } else {
         Navigator.of(context).pushReplacementNamed(AppRouter.loginRoute);
       }

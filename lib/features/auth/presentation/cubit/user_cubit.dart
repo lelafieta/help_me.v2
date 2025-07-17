@@ -13,8 +13,15 @@ class UserCubit extends Cubit<UserState> {
     emit(UserLoading());
     try {
       final firstName = await authLocalDataSource.getUserFirstName();
+      final lastName = await authLocalDataSource.getUserLastName();
       final avatarUrl = await authLocalDataSource.getUserAvatar();
-      emit(UserLoaded(firstName: firstName, avatarUrl: avatarUrl));
+      emit(
+        UserLoaded(
+          firstName: firstName,
+          avatarUrl: avatarUrl,
+          lastName: lastName,
+        ),
+      );
     } catch (e) {
       emit(UserError(message: e.toString()));
     }

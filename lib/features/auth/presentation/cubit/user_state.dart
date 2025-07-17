@@ -13,9 +13,10 @@ class UserLoading extends UserState {}
 
 class UserLoaded extends UserState {
   final String? firstName;
+  final String? lastName;
   final String? avatarUrl;
 
-  const UserLoaded({this.firstName, this.avatarUrl});
+  const UserLoaded({this.firstName, this.avatarUrl, this.lastName});
 }
 
 class UserError extends UserState {
