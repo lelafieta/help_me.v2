@@ -1,4 +1,4 @@
-import 'package:help_me/features/category/domain/entities/category.dart';
+import 'package:help_me/features/categories/domain/entities/category.dart';
 
 class CategoryModel extends Category {
   const CategoryModel({

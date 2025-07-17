@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:help_me/features/category/presentation/cubit/category_cubit.dart';
+import 'package:help_me/features/categories/presentation/cubit/category_cubit.dart';
 
 class CategoryPage extends StatefulWidget {
   const CategoryPage({super.key});

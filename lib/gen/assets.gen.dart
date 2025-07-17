@@ -369,6 +369,10 @@ class $AssetsSvgGen {
   /// File path: assets/svg/campaign.svg
   SvgGenImage get campaign => const SvgGenImage('assets/svg/campaign.svg');
 
+  /// File path: assets/svg/category-alt.svg
+  SvgGenImage get categoryAlt =>
+      const SvgGenImage('assets/svg/category-alt.svg');
+
   /// File path: assets/svg/chat-filled.svg
   SvgGenImage get chatFilled => const SvgGenImage('assets/svg/chat-filled.svg');
 
@@ -389,6 +393,9 @@ class $AssetsSvgGen {
   /// File path: assets/svg/explorer.svg
   SvgGenImage get explorer => const SvgGenImage('assets/svg/explorer.svg');
 
+  /// File path: assets/svg/group.svg
+  SvgGenImage get group => const SvgGenImage('assets/svg/group.svg');
+
   /// File path: assets/svg/heart.svg
   SvgGenImage get heart => const SvgGenImage('assets/svg/heart.svg');
 
@@ -400,6 +407,9 @@ class $AssetsSvgGen {
 
   /// File path: assets/svg/medicine.svg
   SvgGenImage get medicine => const SvgGenImage('assets/svg/medicine.svg');
+
+  /// File path: assets/svg/menu.svg
+  SvgGenImage get menu => const SvgGenImage('assets/svg/menu.svg');
 
   /// File path: assets/svg/notification-bell-outline.svg
   SvgGenImage get notificationBellOutline =>
@@ -416,16 +426,19 @@ class $AssetsSvgGen {
     animal,
     campaignFilled,
     campaign,
+    categoryAlt,
     chatFilled,
     chat,
     clappingHands,
     education,
     explorerFilled,
     explorer,
+    group,
     heart,
     homeFilled,
     home,
     medicine,
+    menu,
     notificationBellOutline,
     old,
     search,

@@ -13,6 +13,8 @@ import 'package:help_me/features/profile/presentation/cubit/profile_cubit.dart';
 import 'package:help_me/features/profile/presentation/cubit/count_donation_cubit/count_donation_cubit.dart';
 import 'package:help_me/features/solidary/presentation/cubit/solidary_cubit.dart';
 
+import 'features/categories/presentation/cubit/category_cubit.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
@@ -50,6 +52,9 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => di.sl<AuthCubit>()),
         BlocProvider(create: (context) => di.sl<ProfileCubit>()),
         BlocProvider(create: (context) => di.sl<CountDonationCubit>()),
+        BlocProvider(
+          create: (context) => di.sl<CategoryCubit>()..getCategories(),
+        ),
         BlocProvider(create: (context) => di.sl<SolidaryCubit>()),
       ],
       child: BlocBuilder<ThemeCubit, ThemeState>(
