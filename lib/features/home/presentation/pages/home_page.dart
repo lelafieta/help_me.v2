@@ -1,14 +1,12 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:help_me/features/categories/presentation/cubit/category_cubit.dart';
-
-import '../../../../core/resources/icons/app_icons.dart';
 import '../../../../gen/assets.gen.dart';
 import '../../../auth/presentation/cubit/user_cubit.dart';
-
-import 'package:flutter/material.dart';
-
+import '../../../campaigns/presentation/widgets/campaign_widget.dart';
+import '../../../categories/presentation/cubit/category_cubit.dart';
+import '../cubit/urgent_campaign/urgent_campaign_cubit.dart';
 import '../widgets/category_skeleton.dart';
 
 class Category {
@@ -58,6 +56,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   void initState() {
+    context.read<UrgentCampaignCubit>().fetchUrgentCampaigns();
     super.initState();
   }
 
@@ -274,6 +273,66 @@ class _HomePageState extends State<HomePage> {
                 }
 
                 return SizedBox.shrink();
+              },
+            ),
+          ),
+          SizedBox(height: 20),
+          Container(
+            padding: const EdgeInsets.only(left: 16, right: 16),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "Necessidades Urgentes",
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                TextButton(
+                  onPressed: () {
+                    // Get.toNamed(AppRoutes.campaignUrgentsRoute);
+                  },
+                  child: Text("Ver mais"),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16),
+            child: BlocBuilder<UrgentCampaignCubit, UrgentCampaignState>(
+              builder: (context, state) {
+                print(state);
+                if (state is UrgentCampaignLoaded) {
+                  return CarouselSlider.builder(
+                    itemCount: state.campaigns.length,
+                    itemBuilder:
+                        (
+                          BuildContext context,
+                          int itemIndex,
+                          int pageViewIndex,
+                        ) {
+                          final camapaign = state.campaigns[itemIndex];
+                          return CampaignWidget(campaign: camapaign);
+                        },
+                    options: CarouselOptions(
+                      height: 400,
+                      aspectRatio: 16 / 9,
+                      viewportFraction: 0.95,
+                      initialPage: 0,
+                      enableInfiniteScroll: false,
+                      animateToClosest: false,
+                      reverse: false,
+                      autoPlay: false,
+                      autoPlayInterval: const Duration(seconds: 3),
+                      autoPlayAnimationDuration: const Duration(
+                        milliseconds: 800,
+                      ),
+                      autoPlayCurve: Curves.fastOutSlowIn,
+                      enlargeCenterPage: false,
+                      enlargeFactor: 0.3,
+                      scrollDirection: Axis.horizontal,
+                    ),
+                  );
+                }
+                return SizedBox();
               },
             ),
           ),

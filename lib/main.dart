@@ -5,6 +5,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:help_me/config/themes/themes.dart';
 import 'package:help_me/config/themes/theme_cubit/theme_cubit.dart';
+import 'package:help_me/features/home/presentation/cubit/urgent_campaign/urgent_campaign_cubit.dart';
 import 'package:help_me/injection_container.dart' as di;
 import 'package:help_me/config/router/app_router.dart';
 import 'package:help_me/features/auth/presentation/cubit/user_cubit.dart';
@@ -12,6 +13,7 @@ import 'package:help_me/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:help_me/features/profile/presentation/cubit/profile_cubit.dart';
 import 'package:help_me/features/profile/presentation/cubit/count_donation_cubit/count_donation_cubit.dart';
 import 'package:help_me/features/solidary/presentation/cubit/solidary_cubit.dart';
+import 'package:help_me/features/campaigns/presentation/cubit/campaign_cubit.dart';
 
 import 'features/categories/presentation/cubit/category_cubit.dart';
 
@@ -56,6 +58,8 @@ class MyApp extends StatelessWidget {
           create: (context) => di.sl<CategoryCubit>()..getCategories(),
         ),
         BlocProvider(create: (context) => di.sl<SolidaryCubit>()),
+        BlocProvider(create: (context) => di.sl<CampaignCubit>()),
+        BlocProvider(create: (context) => di.sl<UrgentCampaignCubit>()),
       ],
       child: BlocBuilder<ThemeCubit, ThemeState>(
         builder: (context, state) {
