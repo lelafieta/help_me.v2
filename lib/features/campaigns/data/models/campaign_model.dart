@@ -2,29 +2,29 @@ import '../../domain/entities/campaign_entity.dart';
 
 class CampaignModel extends CampaignEntity {
   const CampaignModel({
-    required super.id,
-    required super.title,
-    required super.description,
-    required super.imageCoverUrl,
-    required super.mediaUrls,
-    required super.documentUrls,
-    required super.status,
-    required super.userId,
-    required super.categoryId,
-    required super.startDate,
-    required super.endDate,
-    required super.location,
-    required super.phoneNumber,
-    required super.fundraisingGoal,
-    required super.currency,
+    super.id,
+    super.title,
+    super.description,
+    super.imageCoverUrl,
+    super.mediaUrls,
+    super.documentUrls,
+    super.status,
+    super.userId,
+    super.categoryId,
+    super.startDate,
+    super.endDate,
+    super.location,
+    super.phoneNumber,
+    super.fundraisingGoal,
     super.fundsRaised,
     super.beneficiaryName,
     super.campaignType,
+    super.currency,
     super.birth,
     super.urgencyScore,
-    required super.createdAt,
-    required super.updatedAt,
-    required super.isActivate,
+    super.createdAt,
+    super.updatedAt,
+    super.isActivate,
   });
 
   factory CampaignModel.fromJson(Map<String, dynamic> json) {
@@ -38,12 +38,14 @@ class CampaignModel extends CampaignEntity {
       status: json['status'],
       userId: json['userId'],
       categoryId: json['categoryId'],
-      startDate: DateTime.parse(json['startDate']),
-      endDate: DateTime.parse(json['endDate']),
+      startDate: json['startDate'] != null
+          ? DateTime.parse(json['startDate'])
+          : null,
+      endDate: json['endDate'] != null ? DateTime.parse(json['endDate']) : null,
       location: json['location'],
       phoneNumber: json['phoneNumber'],
       fundraisingGoal: (json['fundraisingGoal'] as num).toDouble(),
-      fundsRaised: json['fundsRaised'] != null && json['fundsRaised'] is num
+      fundsRaised: json['fundsRaised'] != null
           ? (json['fundsRaised'] as num).toDouble()
           : null,
       beneficiaryName: json['beneficiaryName'],
@@ -57,8 +59,7 @@ class CampaignModel extends CampaignEntity {
       updatedAt: json['updatedAt'] != null
           ? DateTime.parse(json['updatedAt'])
           : DateTime.now(),
-
-      isActivate: json['isActivate'],
+      isActivate: json['isActivate'] ?? true,
     );
   }
 
@@ -84,6 +85,9 @@ class CampaignModel extends CampaignEntity {
       'currency': currency,
       'birth': birth?.toIso8601String(),
       'urgencyScore': urgencyScore,
+      'createdAt': createdAt?.toIso8601String(),
+      'updatedAt': updatedAt?.toIso8601String(),
+      'isActivate': isActivate,
     };
   }
 }

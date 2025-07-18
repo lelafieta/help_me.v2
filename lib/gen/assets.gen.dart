@@ -421,6 +421,13 @@ class $AssetsSvgGen {
   /// File path: assets/svg/search.svg
   SvgGenImage get search => const SvgGenImage('assets/svg/search.svg');
 
+  /// File path: assets/svg/share.svg
+  SvgGenImage get share => const SvgGenImage('assets/svg/share.svg');
+
+  /// File path: assets/svg/verified-check-fill.svg
+  SvgGenImage get verifiedCheckFill =>
+      const SvgGenImage('assets/svg/verified-check-fill.svg');
+
   /// List of all assets
   List<SvgGenImage> get values => [
     animal,
@@ -442,6 +449,8 @@ class $AssetsSvgGen {
     notificationBellOutline,
     old,
     search,
+    share,
+    verifiedCheckFill,
   ];
 }
 

@@ -2,6 +2,8 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
+import 'package:help_me/features/campaigns/presentation/pages/campaign_details.dart';
 import '../../../../gen/assets.gen.dart';
 import '../../../auth/presentation/cubit/user_cubit.dart';
 import '../../../campaigns/presentation/widgets/campaign_widget.dart';
@@ -295,47 +297,40 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
           ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            child: BlocBuilder<UrgentCampaignCubit, UrgentCampaignState>(
-              builder: (context, state) {
-                print(state);
-                if (state is UrgentCampaignLoaded) {
-                  return CarouselSlider.builder(
-                    itemCount: state.campaigns.length,
-                    itemBuilder:
-                        (
-                          BuildContext context,
-                          int itemIndex,
-                          int pageViewIndex,
-                        ) {
-                          final camapaign = state.campaigns[itemIndex];
-                          return CampaignWidget(campaign: camapaign);
-                        },
-                    options: CarouselOptions(
-                      height: 400,
-                      aspectRatio: 16 / 9,
-                      viewportFraction: 0.95,
-                      initialPage: 0,
-                      enableInfiniteScroll: false,
-                      animateToClosest: false,
-                      reverse: false,
-                      autoPlay: false,
-                      autoPlayInterval: const Duration(seconds: 3),
-                      autoPlayAnimationDuration: const Duration(
-                        milliseconds: 800,
-                      ),
-                      autoPlayCurve: Curves.fastOutSlowIn,
-                      enlargeCenterPage: false,
-                      enlargeFactor: 0.3,
-                      scrollDirection: Axis.horizontal,
-                    ),
-                  );
-                }
-                return SizedBox();
-              },
-            ),
+          BlocBuilder<UrgentCampaignCubit, UrgentCampaignState>(
+            builder: (context, state) {
+              if (state is UrgentCampaignLoaded) {
+                return CarouselSlider.builder(
+                  itemCount: state.campaigns.length,
+                  itemBuilder:
+                      (BuildContext context, int itemIndex, int pageViewIndex) {
+                        final camapaign = state.campaigns[itemIndex];
+                        return Align(
+                          alignment: Alignment.centerLeft,
+                          child: CampaignWidget(campaign: camapaign),
+                        );
+                      },
+                  options: CarouselOptions(
+                    height: 360,
+                    aspectRatio: 16 / 9,
+                    viewportFraction: 0.8,
+                    initialPage: 0,
+                    enableInfiniteScroll: false,
+                    reverse: false,
+                    autoPlay: false,
+                    autoPlayInterval: Duration(seconds: 3),
+                    autoPlayAnimationDuration: Duration(milliseconds: 800),
+                    autoPlayCurve: Curves.fastOutSlowIn,
+                    enlargeCenterPage: true,
+                    enlargeFactor: 0,
+                    scrollDirection: Axis.horizontal,
+                  ),
+                );
+              }
+              return SizedBox();
+            },
           ),
+          SizedBox(height: 100),
         ],
       ),
     );
