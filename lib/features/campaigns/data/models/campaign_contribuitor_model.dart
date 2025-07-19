@@ -16,13 +16,13 @@ class CampaignContributorModel extends CampaignContributorEntity {
   factory CampaignContributorModel.fromJson(Map<String, dynamic> json) {
     return CampaignContributorModel(
       id: json['id'],
-      campaignId: json['campaign_id'],
-      userId: json['user_id'],
-      money: json['money'],
-      isAnonymous: json['is_anonymous'],
+      campaignId: json['campaignId'],
+      userId: json['userId'],
+      money: (num.parse(json['money'])),
+      isAnonymous: json['isAnonymous'],
       user: UserModel.fromJson(json['user']),
-      updatedAt: DateTime.parse(json['updated_at']),
-      createdAt: DateTime.parse(json['created_at']),
+      updatedAt: DateTime.parse(json['updatedAt']),
+      createdAt: DateTime.parse(json['createdAt']),
     );
   }
 }

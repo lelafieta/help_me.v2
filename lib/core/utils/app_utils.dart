@@ -6,8 +6,8 @@ class AppUtils {
     return "AOA ${NumberFormat.compact(locale: 'pt_AO').format(value)}";
   }
 
-  static String formatFullCurrency(num value) {
-    return NumberFormat.currency(locale: 'pt_AO', symbol: "AOA").format(value);
+  static String formatNumber(num value) {
+    return NumberFormat.compact(locale: 'pt').format(value);
   }
 
   static int daysBetweenToday(DateTime date) {

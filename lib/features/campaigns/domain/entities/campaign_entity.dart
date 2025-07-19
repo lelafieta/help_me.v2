@@ -35,7 +35,7 @@ class CampaignEntity extends Equatable {
   final int? urgencyScore;
   final CategoryEntity category;
   final UserEntity user;
-  final List<CampaignContributorEntity>? campaignContributor;
+  final List<CampaignContributorEntity>? campaignContributors;
   final List<CampaignDocumentEntity>? campaignDocuments;
   final List<CampaignMidiaEntity>? campaignMidias;
   final List<CampaignUpdateEntity>? campaignUpdates;
@@ -68,7 +68,7 @@ class CampaignEntity extends Equatable {
     required this.fundsRaised,
     this.numberOfContributions,
     this.urgencyScore,
-    this.campaignContributor,
+    this.campaignContributors,
     required this.category,
     this.campaignDocuments,
     this.campaignComments,
@@ -104,7 +104,7 @@ class CampaignEntity extends Equatable {
     fundsRaised,
     numberOfContributions,
     urgencyScore,
-    campaignContributor,
+    campaignContributors,
     category,
     campaignDocuments,
     campaignComments,

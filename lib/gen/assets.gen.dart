@@ -387,6 +387,9 @@ class $AssetsSvgGen {
   SvgGenImage get clappingHands =>
       const SvgGenImage('assets/svg/clapping-hands.svg');
 
+  /// File path: assets/svg/clock.svg
+  SvgGenImage get clock => const SvgGenImage('assets/svg/clock.svg');
+
   /// File path: assets/svg/education.svg
   SvgGenImage get education => const SvgGenImage('assets/svg/education.svg');
 
@@ -445,6 +448,7 @@ class $AssetsSvgGen {
     chatFilled,
     chat,
     clappingHands,
+    clock,
     education,
     explorerFilled,
     explorer,

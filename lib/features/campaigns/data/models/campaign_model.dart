@@ -35,7 +35,7 @@ class CampaignModel extends CampaignEntity {
     required super.isActivate,
     required final UserModel user,
     required final CategoryModel category,
-    final List<CampaignContributorModel>? campaignContributor,
+    final List<CampaignContributorModel>? campaignContributors,
     final List<CampaignDocumentModel>? campaignDocuments,
     final List<CampaignMidiaModel>? campaignMidias,
     final List<CampaignUpdateModel>? campaignUpdates,
@@ -44,7 +44,7 @@ class CampaignModel extends CampaignEntity {
   }) : super(
          user: user,
          category: category,
-         campaignContributor: campaignContributor,
+         campaignContributors: campaignContributors,
          campaignDocuments: campaignDocuments,
          campaignMidias: campaignMidias,
          campaignUpdates: campaignUpdates,
@@ -88,9 +88,11 @@ class CampaignModel extends CampaignEntity {
           : DateTime.now(),
       isActivate: json['isActivate'] as bool,
 
-      campaignContributor: (json['campaignContributor'] as List?)
-          ?.map((e) => CampaignContributorModel.fromJson(e))
-          .toList(),
+      campaignContributors: (json['campaignContributors'] == null)
+          ? null
+          : (json['campaignContributors'] as List?)
+                ?.map((e) => CampaignContributorModel.fromJson(e))
+                .toList(),
       campaignUpdates: (json['campaignUpdates'] as List?)
           ?.map((e) => CampaignUpdateModel.fromJson(e))
           .toList(),

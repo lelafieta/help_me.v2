@@ -297,38 +297,122 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
           ),
-          BlocBuilder<UrgentCampaignCubit, UrgentCampaignState>(
-            builder: (context, state) {
-              if (state is UrgentCampaignLoaded) {
-                return CarouselSlider.builder(
-                  itemCount: state.campaigns.length,
-                  itemBuilder:
-                      (BuildContext context, int itemIndex, int pageViewIndex) {
-                        final camapaign = state.campaigns[itemIndex];
-                        return Align(
-                          alignment: Alignment.centerLeft,
-                          child: CampaignWidget(campaign: camapaign),
-                        );
-                      },
-                  options: CarouselOptions(
-                    height: 360,
-                    aspectRatio: 16 / 9,
-                    viewportFraction: 0.8,
-                    initialPage: 0,
-                    enableInfiniteScroll: false,
-                    reverse: false,
-                    autoPlay: false,
-                    autoPlayInterval: Duration(seconds: 3),
-                    autoPlayAnimationDuration: Duration(milliseconds: 800),
-                    autoPlayCurve: Curves.fastOutSlowIn,
-                    enlargeCenterPage: true,
-                    enlargeFactor: 0,
-                    scrollDirection: Axis.horizontal,
-                  ),
-                );
-              }
-              return SizedBox();
-            },
+
+          // Container(
+          //   width: double.infinity,
+          //   height: 300,
+          //   color: Colors.red,
+          //   child: ListView.separated(
+          //     scrollDirection: Axis.horizontal,
+          //     itemBuilder: (context, index) {
+          //       return Text("data");
+          //     },
+          //     separatorBuilder: (_, index) {
+          //       return SizedBox(width: 20);
+          //     },
+          //     itemCount: 10,
+          //   ),
+          // ),
+          SizedBox(
+            height: 350,
+            child: BlocBuilder<UrgentCampaignCubit, UrgentCampaignState>(
+              builder: (context, state) {
+                if (state is UrgentCampaignLoading) {
+                  return Center(child: CircularProgressIndicator());
+                } else if (state is UrgentCampaignError) {
+                  return Center(child: Text('Erro: ${state.message}'));
+                } else if (state is UrgentCampaignLoaded) {
+                  final campaings = state.campaigns;
+
+                  return PageView.builder(
+                    itemCount: campaings.length,
+                    controller: PageController(viewportFraction: 0.9),
+                    itemBuilder: (context, index) {
+                      final campaign = campaings[index];
+                      return AnimatedBuilder(
+                        animation: PageController(viewportFraction: 0.8),
+                        builder: (context, child) {
+                          return Transform.scale(
+                            scale: 1.0,
+                            child: InkWell(
+                              //
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        CampaignDetailsPage(campaign: campaign),
+                                  ),
+                                );
+                              },
+                              child: CampaignWidget(campaign: campaign),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  );
+
+                  // return ListView.separated(
+                  //   scrollDirection: Axis.horizontal,
+                  //   padding: EdgeInsets.all(16),
+                  //   itemBuilder: (context, index) {
+                  //     final campaign = campaings[index];
+
+                  //     return InkWell(
+                  // onTap: () {
+                  //   print("object");
+                  //   // Navigator.push(
+                  //   //   context,
+                  //   //   MaterialPageRoute(
+                  //   //     builder: (context) =>
+                  //   //         CampaignDetailsPage(campaign: campaign),
+                  //   //   ),
+                  //   // );
+                  // },
+                  //       child: CampaignWidget(campaign: campaign),
+                  //     );
+                  //   },
+                  //   separatorBuilder: (context, index) {
+                  //     return SizedBox(width: 16);
+                  //   },
+                  //   itemCount: campaings.length,
+                  // );
+
+                  // return CarouselSlider.builder(
+                  //   itemCount: state.campaigns.length,
+                  //   itemBuilder:
+                  //       (
+                  //         BuildContext context,
+                  //         int itemIndex,
+                  //         int pageViewIndex,
+                  //       ) {
+                  //         final camapaign = state.campaigns[itemIndex];
+                  //         return Align(
+                  //           alignment: Alignment.centerLeft,
+                  //           child: CampaignWidget(campaign: camapaign),
+                  //         );
+                  //       },
+                  //   options: CarouselOptions(
+                  //     height: 360,
+                  //     aspectRatio: 16 / 9,
+                  //     viewportFraction: 0.8,
+                  //     initialPage: 0,
+                  //     enableInfiniteScroll: false,
+                  //     reverse: false,
+                  //     autoPlay: false,
+                  //     autoPlayInterval: Duration(seconds: 3),
+                  //     autoPlayAnimationDuration: Duration(milliseconds: 800),
+                  //     autoPlayCurve: Curves.fastOutSlowIn,
+                  //     enlargeCenterPage: true,
+                  //     enlargeFactor: 0,
+                  //     scrollDirection: Axis.horizontal,
+                  //   ),
+                  // );
+                }
+                return Text("Nenhuma campanha encontrada $state");
+              },
+            ),
           ),
           SizedBox(height: 100),
         ],

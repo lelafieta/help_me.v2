@@ -181,7 +181,7 @@ class _CampaignDetailsPageState extends State<CampaignDetailsPage>
                                       ),
                                       TextSpan(
                                         text: AppUtils.formatCurrency(
-                                          widget.campaign.fundraisingGoal!,
+                                          widget.campaign.fundsRaised!,
                                         ),
                                         style: TextStyle(
                                           color: AppColors.primaryColor,
@@ -203,7 +203,7 @@ class _CampaignDetailsPageState extends State<CampaignDetailsPage>
                                       ),
                                       TextSpan(
                                         text: AppUtils.formatCurrency(
-                                          widget.campaign.fundsRaised!,
+                                          widget.campaign.fundraisingGoal!,
                                         ),
                                         style: TextStyle(
                                           color: Colors.black,
