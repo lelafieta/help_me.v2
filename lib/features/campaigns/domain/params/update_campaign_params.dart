@@ -1,4 +1,5 @@
-class CreateCampaignDto {
+class UpdateCampaignParams {
+  final String? id;
   final String? title;
   final String? description;
   final double? fundraisingGoal;
@@ -21,7 +22,8 @@ class CreateCampaignDto {
   final List<String>? mediaUrls;
   final List<String>? documentUrls;
 
-  CreateCampaignDto({
+  UpdateCampaignParams({
+    this.id,
     this.title,
     this.description,
     this.fundraisingGoal,

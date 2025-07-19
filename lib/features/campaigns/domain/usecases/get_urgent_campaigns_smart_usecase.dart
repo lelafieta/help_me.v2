@@ -7,7 +7,7 @@ import 'package:help_me/features/campaigns/domain/repositories/i_campaign_reposi
 
 class GetUrgentCampaignsSmartUseCase
     extends UseCase<List<CampaignEntity>, GetUrgentCampaignsSmartParams> {
-  final CampaignRepository repository;
+  final ICampaignRepository repository;
 
   GetUrgentCampaignsSmartUseCase(this.repository);
 

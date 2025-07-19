@@ -1,4 +1,3 @@
-
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:help_me/core/error/failures.dart';
@@ -6,13 +5,16 @@ import 'package:help_me/core/usecases/usecase.dart';
 import 'package:help_me/features/campaigns/domain/entities/campaign_entity.dart';
 import 'package:help_me/features/campaigns/domain/repositories/i_campaign_repository.dart';
 
-class GetCampaignsByUserIdUseCase extends UseCase<List<CampaignEntity>, GetCampaignsByUserIdParams> {
-  final CampaignRepository repository;
+class GetCampaignsByUserIdUseCase
+    extends UseCase<List<CampaignEntity>, GetCampaignsByUserIdParams> {
+  final ICampaignRepository repository;
 
   GetCampaignsByUserIdUseCase(this.repository);
 
   @override
-  Future<Either<Failure, List<CampaignEntity>>> call(GetCampaignsByUserIdParams params) async {
+  Future<Either<Failure, List<CampaignEntity>>> call(
+    GetCampaignsByUserIdParams params,
+  ) async {
     return await repository.getCampaignsByUserId(params.userId);
   }
 }

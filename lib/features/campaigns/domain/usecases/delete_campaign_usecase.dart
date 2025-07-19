@@ -1,17 +1,17 @@
-
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
-import 'package:help_me/core/error/failures.dart';
-import 'package:help_me/core/usecases/usecase.dart';
-import 'package:help_me/features/campaigns/domain/repositories/i_campaign_repository.dart';
+
+import '../../../../core/error/failures.dart';
+import '../../../../core/usecases/usecase.dart';
+import '../repositories/i_campaign_repository.dart';
 
 class DeleteCampaignUseCase extends UseCase<void, DeleteCampaignParams> {
-  final CampaignRepository repository;
+  final ICampaignRepository repository;
 
-  DeleteCampaignUseCase(this.repository);
+  DeleteCampaignUseCase({required this.repository});
 
   @override
-  Future<Either<Failure, void>> call(DeleteCampaignParams params) async {
+  Future<Either<Failure, Unit>> call(DeleteCampaignParams params) async {
     return await repository.deleteCampaign(params.id);
   }
 }

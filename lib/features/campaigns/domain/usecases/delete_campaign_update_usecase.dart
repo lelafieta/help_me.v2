@@ -1,10 +1,9 @@
 import 'package:dartz/dartz.dart';
-
-import '../../../../core/errors/failures.dart';
-import '../../../../core/usecases/base_usecase.dart';
+import '../../../../core/error/failures.dart';
+import '../../../../core/usecases/usecase.dart';
 import '../repositories/i_update_repository.dart';
 
-class DeleteCampaignUpdateUseCase extends BaseUseCase<Unit, String> {
+class DeleteCampaignUpdateUseCase extends UseCase<Unit, String> {
   final IUpdateRepository repository;
 
   DeleteCampaignUpdateUseCase({required this.repository});

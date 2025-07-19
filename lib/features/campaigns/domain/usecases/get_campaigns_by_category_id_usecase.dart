@@ -1,18 +1,21 @@
-
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
-import 'package:help_me/core/error/failures.dart';
-import 'package:help_me/core/usecases/usecase.dart';
-import 'package:help_me/features/campaigns/domain/entities/campaign_entity.dart';
-import 'package:help_me/features/campaigns/domain/repositories/i_campaign_repository.dart';
 
-class GetCampaignsByCategoryIdUseCase extends UseCase<List<CampaignEntity>, GetCampaignsByCategoryIdParams> {
-  final CampaignRepository repository;
+import '../../../../core/error/failures.dart';
+import '../../../../core/usecases/usecase.dart';
+import '../entities/campaign_entity.dart';
+import '../repositories/i_campaign_repository.dart';
+
+class GetCampaignsByCategoryIdUseCase
+    extends UseCase<List<CampaignEntity>, GetCampaignsByCategoryIdParams> {
+  final ICampaignRepository repository;
 
   GetCampaignsByCategoryIdUseCase(this.repository);
 
   @override
-  Future<Either<Failure, List<CampaignEntity>>> call(GetCampaignsByCategoryIdParams params) async {
+  Future<Either<Failure, List<CampaignEntity>>> call(
+    GetCampaignsByCategoryIdParams params,
+  ) async {
     return await repository.getCampaignsByCategoryId(params.categoryId);
   }
 }

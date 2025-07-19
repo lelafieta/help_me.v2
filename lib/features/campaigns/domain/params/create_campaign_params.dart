@@ -1,4 +1,4 @@
-class CreateCampaignDto {
+class CreateCampaignParams {
   final String? title;
   final String? description;
   final double? fundraisingGoal;
@@ -21,7 +21,7 @@ class CreateCampaignDto {
   final List<String>? mediaUrls;
   final List<String>? documentUrls;
 
-  CreateCampaignDto({
+  CreateCampaignParams({
     this.title,
     this.description,
     this.fundraisingGoal,
