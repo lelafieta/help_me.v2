@@ -12,8 +12,8 @@ class AuthInitial extends AuthState {}
 class AuthLoading extends AuthState {}
 
 class AuthAuthenticated extends AuthState {
-  final AuthResponseDto authResponse;
-  final UserDto? user;
+  final AuthResponseEntity authResponse;
+  final UserEntity? user;
 
   const AuthAuthenticated({required this.authResponse, this.user});
 

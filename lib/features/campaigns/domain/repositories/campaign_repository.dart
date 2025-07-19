@@ -3,8 +3,8 @@ import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:help_me/core/error/failures.dart';
 import 'package:help_me/features/campaigns/domain/entities/campaign_entity.dart';
-import 'package:help_me/features/campaigns/data/models/create_campaign_dto.dart';
-import 'package:help_me/features/campaigns/data/models/update_campaign_dto.dart';
+import 'package:help_me/features/campaigns/data/dto/create_campaign_dto.dart';
+import 'package:help_me/features/campaigns/data/dto/update_campaign_dto.dart';
 
 abstract class CampaignRepository {
   Future<Either<Failure, CampaignEntity>> createCampaign(

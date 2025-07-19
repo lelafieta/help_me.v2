@@ -3,7 +3,7 @@ import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:help_me/core/error/failures.dart';
 import 'package:help_me/core/usecases/usecase.dart';
-import 'package:help_me/features/campaigns/data/models/update_campaign_dto.dart';
+import 'package:help_me/features/campaigns/data/dto/update_campaign_dto.dart';
 import 'package:help_me/features/campaigns/domain/entities/campaign_entity.dart';
 import 'package:help_me/features/campaigns/domain/repositories/campaign_repository.dart';
 

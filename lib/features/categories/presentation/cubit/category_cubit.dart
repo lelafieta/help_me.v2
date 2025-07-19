@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:help_me/core/usecases/usecase.dart';
-import 'package:help_me/features/categories/domain/entities/category.dart';
+import 'package:help_me/features/categories/domain/entities/category_entity.dart';
 import 'package:help_me/features/categories/domain/usecases/get_categories_usecase.dart';
 
 part 'category_state.dart';

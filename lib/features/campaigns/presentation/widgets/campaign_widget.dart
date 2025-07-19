@@ -1,15 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animation_progress_bar/flutter_animation_progress_bar.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
-import 'package:help_me/gen/assets.gen.dart';
 
 import '../../../../config/themes/app_colors.dart';
 import '../../../../core/utils/app_utils.dart';
 import '../../domain/entities/campaign_entity.dart';
-import '../pages/campaign_details.dart';
+import '../pages/campaign_details_page.dart';
 
 class CampaignWidget extends StatelessWidget {
   final CampaignEntity campaign;

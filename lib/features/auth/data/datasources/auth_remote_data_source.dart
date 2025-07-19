@@ -1,9 +1,10 @@
 import 'package:dio/dio.dart';
-import 'package:help_me/core/error/exceptions.dart';
-import 'package:help_me/features/auth/data/models/auth_dto.dart';
+
+import '../dto/login_dto.dart';
+import '../models/auth_response_model.dart';
 
 abstract class AuthRemoteDataSource {
-  Future<AuthResponseDto> login(LoginRequestDto loginRequest);
+  Future<AuthResponseModel> login(LoginRequestDto loginRequest);
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
@@ -12,15 +13,8 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   AuthRemoteDataSourceImpl({required this.dio});
 
   @override
-  Future<AuthResponseDto> login(LoginRequestDto loginRequest) async {
-    try {
-      final response = await dio.post(
-        '/auth/login',
-        data: loginRequest.toJson(),
-      );
-      return AuthResponseDto.fromJson(response.data);
-    } on DioException catch (e) {
-      throw ServerException.fromDioException(e);
-    }
+  Future<AuthResponseModel> login(LoginRequestDto loginRequest) async {
+    final response = await dio.post('/auth/login', data: loginRequest.toJson());
+    return AuthResponseModel.fromJson(response.data);
   }
 }

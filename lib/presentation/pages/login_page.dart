@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
-import 'package:help_me/config/router/app_router.dart';
-import 'package:help_me/features/auth/presentation/cubit/auth_cubit.dart';
+
+import '../../config/router/app_router.dart';
+import '../../features/auth/domain/params/login_request_params.dart';
+import '../../features/auth/presentation/cubit/auth_cubit.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -33,9 +35,9 @@ class _LoginPageState extends State<LoginPage> {
             if (state is AuthAuthenticated) {
               Navigator.of(context).pushReplacementNamed(AppRouter.homeRoute);
             } else if (state is AuthError) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(state.message)),
-              );
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text(state.message)));
             }
           },
           builder: (context, state) {
@@ -67,9 +69,11 @@ class _LoginPageState extends State<LoginPage> {
                       : ElevatedButton(
                           onPressed: () {
                             context.read<AuthCubit>().login(
-                                  _emailController.text,
-                                  _passwordController.text,
-                                );
+                              LoginRequestParams(
+                                email: _emailController.text,
+                                password: _passwordController.text,
+                              ),
+                            );
                           },
                           child: const Text('Login'),
                         ),

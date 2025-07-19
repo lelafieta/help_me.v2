@@ -1,26 +1,19 @@
 import 'package:dartz/dartz.dart';
-import 'package:equatable/equatable.dart';
-import 'package:help_me/core/error/failures.dart';
-import 'package:help_me/core/usecases/usecase.dart';
-import 'package:help_me/features/auth/data/models/auth_dto.dart';
-import 'package:help_me/features/auth/domain/repositories/auth_repository.dart';
+import '../../../../core/error/failures.dart';
+import '../../../../core/usecases/usecase.dart';
+import '../entities/auth_response_entity.dart';
+import '../params/login_request_params.dart';
+import '../repositories/auth_repository.dart';
 
-class LoginUseCase implements UseCase<AuthResponseDto, LoginParams> {
+class LoginUseCase implements UseCase<AuthResponseEntity, LoginRequestParams> {
   final AuthRepository repository;
 
   LoginUseCase(this.repository);
 
   @override
-  Future<Either<Failure, AuthResponseDto>> call(LoginParams params) async {
-    return await repository.login(params.loginRequest);
+  Future<Either<Failure, AuthResponseEntity>> call(
+    LoginRequestParams params,
+  ) async {
+    return await repository.login(params);
   }
-}
-
-class LoginParams extends Equatable {
-  final LoginRequestDto loginRequest;
-
-  const LoginParams({required this.loginRequest});
-
-  @override
-  List<Object> get props => [loginRequest];
 }

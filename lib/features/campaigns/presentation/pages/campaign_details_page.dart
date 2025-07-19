@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animation_progress_bar/flutter_animation_progress_bar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:help_me/gen/assets.gen.dart';
 import 'package:sliver_snap/sliver_snap.dart';
 
 import '../../../../config/themes/app_colors.dart';
 import '../../../../core/utils/app_utils.dart';
+import '../../../../gen/assets.gen.dart';
 import '../../domain/entities/campaign_entity.dart';
 
 class CampaignDetailsPage extends StatefulWidget {
@@ -50,8 +50,10 @@ class _CampaignDetailsPageState extends State<CampaignDetailsPage>
       children: [
         SliverSnap(
           onCollapseStateChanged: (isCollapsed, scrollingOffset, maxExtent) {},
-          collapsedBackgroundColor: Colors.black,
+          collapsedBackgroundColor: AppColors.primaryColor,
           expandedBackgroundColor: Colors.transparent,
+          automaticallyImplyLeading: false,
+          collapsedBarHeight: 70,
           backdropWidget: Image.network(
             "https://picsum.photos/800/1200",
             fit: BoxFit.cover,
@@ -82,24 +84,7 @@ class _CampaignDetailsPageState extends State<CampaignDetailsPage>
           expandedContentHeight: 200,
           expandedContent: SizedBox.shrink(),
 
-          // Container(
-          //   color: Colors.red,
-          //   child: FanCarouselImageSlider.sliderType2(
-          //     imagesLink: sampleImages,
-          //     isAssets: false,
-          //     autoPlay: false,
-          //     sliderHeight: 300,
-          //     currentItemShadow: const [],
-          //     sliderDuration: const Duration(milliseconds: 200),
-          //     imageRadius: 0,
-          //     slideViewportFraction: 1.2,
-          //   ),
-          // ),
-          collapsedContent: const Icon(
-            Icons.car_crash,
-            color: Colors.green,
-            size: 45,
-          ),
+          collapsedContent: SizedBox.shrink(),
           body: Material(
             color: Theme.of(context).scaffoldBackgroundColor,
             elevation: 7,
@@ -114,6 +99,18 @@ class _CampaignDetailsPageState extends State<CampaignDetailsPage>
                     style: Theme.of(context).textTheme.titleLarge!.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
+                  ),
+                  SizedBox(height: 10),
+                  Row(
+                    children: [
+                      SvgPicture.asset(
+                        Assets.svg.location1.path,
+                        width: 20,
+                        color: Colors.grey.shade900,
+                      ),
+                      SizedBox(width: 5),
+                      Text(widget.campaign.location!),
+                    ],
                   ),
                   SizedBox(height: 20),
                   Row(
@@ -130,7 +127,7 @@ class _CampaignDetailsPageState extends State<CampaignDetailsPage>
                           borderRadius: BorderRadius.circular(5),
                         ),
                         child: Text(
-                          "Médico",
+                          widget.campaign.category.name,
                           style: TextStyle(
                             color: AppColors.primaryColor,
                             fontWeight: FontWeight.w600,
@@ -144,7 +141,9 @@ class _CampaignDetailsPageState extends State<CampaignDetailsPage>
                           children: [
                             TextSpan(text: "Criado em ", style: TextStyle()),
                             TextSpan(
-                              text: "18 Julho 2025",
+                              text: AppUtils.formatDate(
+                                data: widget.campaign.createdAt!,
+                              ),
                               style: TextStyle(color: Colors.black),
                             ),
                           ],
@@ -181,7 +180,9 @@ class _CampaignDetailsPageState extends State<CampaignDetailsPage>
                                         style: TextStyle(),
                                       ),
                                       TextSpan(
-                                        text: "1mil",
+                                        text: AppUtils.formatCurrency(
+                                          widget.campaign.fundsRaised!,
+                                        ),
                                         style: TextStyle(
                                           color: AppColors.primaryColor,
                                         ),
@@ -435,7 +436,58 @@ class _CampaignDetailsPageState extends State<CampaignDetailsPage>
             ),
           ),
         ),
-
+        Positioned(
+          top: 0,
+          left: 0,
+          right: 0,
+          child: SafeArea(
+            child: Container(
+              height: 70,
+              // color: Colors.red,
+              padding: EdgeInsets.all(16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    width: 40,
+                    height: 40,
+                    padding: EdgeInsets.all(5),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: SvgPicture.asset(Assets.svg.arrowLeftLg.path),
+                  ),
+                  Row(
+                    children: [
+                      // Container(
+                      //   width: 40,
+                      //   height: 40,
+                      //   padding: EdgeInsets.all(5),
+                      //   decoration: BoxDecoration(
+                      //     color: Colors.white,
+                      //     borderRadius: BorderRadius.circular(10),
+                      //   ),
+                      //   child: SvgPicture.asset(Assets.svg.arrowLeftLg.path),
+                      // ),
+                      // SizedBox(width: 10),
+                      Container(
+                        width: 40,
+                        height: 40,
+                        padding: EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: SvgPicture.asset(Assets.svg.heart.path),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
         Positioned(
           left: 0,
           right: 0,

@@ -1,8 +1,8 @@
 
 import 'package:dio/dio.dart';
 import 'package:help_me/features/campaigns/data/models/campaign_model.dart';
-import 'package:help_me/features/campaigns/data/models/create_campaign_dto.dart';
-import 'package:help_me/features/campaigns/data/models/update_campaign_dto.dart';
+import 'package:help_me/features/campaigns/data/dto/create_campaign_dto.dart';
+import 'package:help_me/features/campaigns/data/dto/update_campaign_dto.dart';
 
 abstract class CampaignRemoteDataSource {
   Future<CampaignModel> createCampaign(

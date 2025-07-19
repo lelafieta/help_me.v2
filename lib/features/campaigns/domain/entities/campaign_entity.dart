@@ -1,5 +1,12 @@
 import 'package:equatable/equatable.dart';
 
+import '../../../categories/domain/entities/category_entity.dart';
+import 'campaign_comment_entity.dart';
+import 'campaign_contributor_entity.dart';
+import 'campaign_document_entity.dart';
+import 'campaign_midia_entity.dart';
+import 'campaign_update_entity.dart';
+
 class CampaignEntity extends Equatable {
   final int? id;
   final String? title;
@@ -16,7 +23,7 @@ class CampaignEntity extends Equatable {
   final DateTime? updatedAt;
   final DateTime? startDate;
   final DateTime? endDate;
-  final bool? isActivate;
+  final bool isActivate;
   final String? beneficiaryName;
   final String? campaignType;
   final String? currency;
@@ -25,6 +32,12 @@ class CampaignEntity extends Equatable {
   final double? fundsRaised;
   final int? numberOfContributions;
   final int? urgencyScore;
+  final CategoryEntity category;
+  final List<CampaignContributorEntity>? campaignContributor;
+  final List<CampaignDocumentEntity>? campaignDocuments;
+  final List<CampaignMidiaEntity>? campaignMidias;
+  final List<CampaignUpdateEntity>? campaignUpdates;
+  final List<CampaignCommentEntity>? campaignComments;
 
   const CampaignEntity({
     this.id,
@@ -42,42 +55,54 @@ class CampaignEntity extends Equatable {
     this.updatedAt,
     this.startDate,
     this.endDate,
-    this.isActivate,
+    required this.isActivate,
     this.beneficiaryName,
     this.campaignType,
     this.currency,
     this.birth,
-    this.fundraisingGoal,
-    this.fundsRaised,
+    required this.fundraisingGoal,
+    required this.fundsRaised,
     this.numberOfContributions,
     this.urgencyScore,
+    this.campaignContributor,
+    required this.category,
+    this.campaignDocuments,
+    this.campaignComments,
+    this.campaignMidias,
+    this.campaignUpdates,
   });
 
   @override
   List<Object?> get props => [
-    id ?? 0,
-    title ?? '',
-    description ?? '',
-    imageCoverUrl ?? '',
-    mediaUrls ?? [],
-    documentUrls ?? [],
-    status ?? '',
-    userId ?? 0,
-    categoryId ?? 0,
-    location ?? '',
-    phoneNumber ?? '',
+    id,
+    title,
+    description,
+    imageCoverUrl,
+    mediaUrls,
+    documentUrls,
+    status,
+    userId,
+    categoryId,
+    location,
+    phoneNumber,
     createdAt,
     updatedAt,
     startDate,
     endDate,
-    isActivate ?? false,
-    beneficiaryName ?? '',
-    campaignType ?? '',
-    currency ?? '',
+    isActivate,
+    beneficiaryName,
+    campaignType,
+    currency,
     birth,
-    fundraisingGoal ?? 0.0,
-    fundsRaised ?? 0.0,
-    numberOfContributions ?? 0,
-    urgencyScore ?? 0,
+    fundraisingGoal,
+    fundsRaised,
+    numberOfContributions,
+    urgencyScore,
+    campaignContributor,
+    category,
+    campaignDocuments,
+    campaignComments,
+    campaignMidias,
+    campaignUpdates,
   ];
 }

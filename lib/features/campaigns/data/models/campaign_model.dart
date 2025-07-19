@@ -1,4 +1,10 @@
+import '../../../categories/data/models/category_model.dart';
 import '../../domain/entities/campaign_entity.dart';
+import 'campaign_comment_model.dart';
+import 'campaign_contribuitor_model.dart';
+import 'campaign_document_model.dart';
+import 'campaign_midia_model.dart';
+import 'campaign_update_model.dart';
 
 class CampaignModel extends CampaignEntity {
   const CampaignModel({
@@ -15,7 +21,7 @@ class CampaignModel extends CampaignEntity {
     super.endDate,
     super.location,
     super.phoneNumber,
-    super.fundraisingGoal,
+    required super.fundraisingGoal,
     super.fundsRaised,
     super.beneficiaryName,
     super.campaignType,
@@ -24,10 +30,17 @@ class CampaignModel extends CampaignEntity {
     super.urgencyScore,
     super.createdAt,
     super.updatedAt,
-    super.isActivate,
+    required super.isActivate,
+    required super.category,
+    super.campaignDocuments,
+    super.campaignComments,
+    super.campaignMidias,
+    super.campaignUpdates,
+    super.campaignContributor,
   });
 
   factory CampaignModel.fromJson(Map<String, dynamic> json) {
+    print(json["campaignContributor"]);
     return CampaignModel(
       id: json['id'],
       title: json['title'],
@@ -45,7 +58,7 @@ class CampaignModel extends CampaignEntity {
       location: json['location'],
       phoneNumber: json['phoneNumber'],
       fundraisingGoal: (json['fundraisingGoal'] as num).toDouble(),
-      fundsRaised: json['fundsRaised'] != null
+      fundsRaised: (json['fundsRaised'] != null)
           ? (json['fundsRaised'] as num).toDouble()
           : null,
       beneficiaryName: json['beneficiaryName'],
@@ -59,35 +72,34 @@ class CampaignModel extends CampaignEntity {
       updatedAt: json['updatedAt'] != null
           ? DateTime.parse(json['updatedAt'])
           : DateTime.now(),
-      isActivate: json['isActivate'] ?? true,
-    );
-  }
+      isActivate: json['isActivate'] as bool,
+      category: CategoryModel.fromJson(json['category']),
+      campaignContributor: (json["campaignContributor"] == null)
+          ? null
+          : (json['campaignContributor'] as List?)
+                ?.map((json) => CampaignContributorModel.fromJson(json))
+                .toList(),
+      campaignUpdates: (json["campaignUpdates"] == null)
+          ? null
+          : (json['campaignUpdates'] as List?)
+                ?.map((json) => CampaignUpdateModel.fromJson(json))
+                .toList(),
+      campaignMidias: (json["campaignMidias"] == null)
+          ? null
+          : (json['campaignMidias'] as List?)
+                ?.map((json) => CampaignMidiaModel.fromJson(json))
+                .toList(),
+      campaignComments: (json["campaignComments"] == null)
+          ? null
+          : (json['campaignComments'] as List?)
+                ?.map((json) => CampaignCommentModel.fromJson(json))
+                .toList(),
 
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'title': title,
-      'description': description,
-      'imageCoverUrl': imageCoverUrl,
-      'mediaUrls': mediaUrls,
-      'documentUrls': documentUrls,
-      'status': status,
-      'userId': userId,
-      'categoryId': categoryId,
-      'startDate': startDate?.toIso8601String(),
-      'endDate': endDate?.toIso8601String(),
-      'location': location,
-      'phoneNumber': phoneNumber,
-      'fundraisingGoal': fundraisingGoal,
-      'fundsRaised': fundsRaised,
-      'beneficiaryName': beneficiaryName,
-      'campaignType': campaignType,
-      'currency': currency,
-      'birth': birth?.toIso8601String(),
-      'urgencyScore': urgencyScore,
-      'createdAt': createdAt?.toIso8601String(),
-      'updatedAt': updatedAt?.toIso8601String(),
-      'isActivate': isActivate,
-    };
+      campaignDocuments: (json["campaignDocuments"] == null)
+          ? null
+          : (json['campaignDocuments'] as List?)
+                ?.map((json) => CampaignDocumentModel.fromJson(json))
+                .toList(),
+    );
   }
 }

@@ -1,13 +1,15 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:help_me/core/usecases/usecase.dart';
-import 'package:help_me/features/auth/data/models/auth_dto.dart';
-import 'package:help_me/features/auth/domain/usecases/login_usecase.dart';
-import 'package:help_me/features/auth/domain/usecases/get_token_usecase.dart';
-import 'package:help_me/features/auth/domain/usecases/clear_token_usecase.dart';
-import 'package:help_me/features/auth/domain/usecases/get_user_name_usecase.dart';
-import 'package:help_me/features/auth/domain/usecases/get_user_avatar_usecase.dart';
-import 'package:help_me/features/auth/domain/usecases/clear_user_data_usecase.dart';
+import '../../../../core/entities/user_entity.dart';
+import '../../../../core/usecases/usecase.dart';
+import '../../domain/entities/auth_response_entity.dart';
+import '../../domain/params/login_request_params.dart';
+import '../../domain/usecases/clear_token_usecase.dart';
+import '../../domain/usecases/clear_user_data_usecase.dart';
+import '../../domain/usecases/get_token_usecase.dart';
+import '../../domain/usecases/get_user_avatar_usecase.dart';
+import '../../domain/usecases/get_user_name_usecase.dart';
+import '../../domain/usecases/login_usecase.dart';
 
 part 'auth_state.dart';
 
@@ -28,13 +30,9 @@ class AuthCubit extends Cubit<AuthState> {
     required this.clearUserDataUseCase,
   }) : super(AuthInitial());
 
-  Future<void> login(String email, String password) async {
+  Future<void> login(LoginRequestParams params) async {
     emit(AuthLoading());
-    final result = await loginUseCase(
-      LoginParams(
-        loginRequest: LoginRequestDto(email: email, password: password),
-      ),
-    );
+    final result = await loginUseCase(params);
     result.fold(
       (failure) => emit(AuthError(message: failure.errorMessage.toString())),
       (authResponse) => emit(

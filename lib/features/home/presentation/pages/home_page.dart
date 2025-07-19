@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:help_me/features/campaigns/presentation/pages/campaign_details.dart';
+import 'package:help_me/features/campaigns/presentation/pages/campaign_details_page.dart';
 import '../../../../gen/assets.gen.dart';
 import '../../../auth/presentation/cubit/user_cubit.dart';
 import '../../../campaigns/presentation/widgets/campaign_widget.dart';

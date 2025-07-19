@@ -1,4 +1,3 @@
-
 import 'package:equatable/equatable.dart';
 
 class CreateCampaignDto extends Equatable {
@@ -27,11 +26,5 @@ class CreateCampaignDto extends Equatable {
   }
 
   @override
-  List<Object?> get props => [
-        title,
-        description,
-        status,
-        userId,
-        categoryId,
-      ];
+  List<Object?> get props => [title, description, status, userId, categoryId];
 }

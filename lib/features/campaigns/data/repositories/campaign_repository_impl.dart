@@ -5,8 +5,8 @@ import 'package:help_me/core/error/failures.dart';
 import 'package:help_me/core/network/network_info.dart';
 import 'package:help_me/features/campaigns/data/datasources/campaign_remote_data_source.dart';
 
-import 'package:help_me/features/campaigns/data/models/create_campaign_dto.dart';
-import 'package:help_me/features/campaigns/data/models/update_campaign_dto.dart';
+import 'package:help_me/features/campaigns/data/dto/create_campaign_dto.dart';
+import 'package:help_me/features/campaigns/data/dto/update_campaign_dto.dart';
 import 'package:help_me/features/campaigns/domain/entities/campaign_entity.dart';
 import 'package:help_me/features/campaigns/domain/repositories/campaign_repository.dart';
 

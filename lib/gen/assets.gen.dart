@@ -362,6 +362,10 @@ class $AssetsSvgGen {
   /// File path: assets/svg/animal.svg
   SvgGenImage get animal => const SvgGenImage('assets/svg/animal.svg');
 
+  /// File path: assets/svg/arrow-left-lg.svg
+  SvgGenImage get arrowLeftLg =>
+      const SvgGenImage('assets/svg/arrow-left-lg.svg');
+
   /// File path: assets/svg/campaign-filled.svg
   SvgGenImage get campaignFilled =>
       const SvgGenImage('assets/svg/campaign-filled.svg');
@@ -405,6 +409,9 @@ class $AssetsSvgGen {
   /// File path: assets/svg/home.svg
   SvgGenImage get home => const SvgGenImage('assets/svg/home.svg');
 
+  /// File path: assets/svg/location-1.svg
+  SvgGenImage get location1 => const SvgGenImage('assets/svg/location-1.svg');
+
   /// File path: assets/svg/medicine.svg
   SvgGenImage get medicine => const SvgGenImage('assets/svg/medicine.svg');
 
@@ -431,6 +438,7 @@ class $AssetsSvgGen {
   /// List of all assets
   List<SvgGenImage> get values => [
     animal,
+    arrowLeftLg,
     campaignFilled,
     campaign,
     categoryAlt,
@@ -444,6 +452,7 @@ class $AssetsSvgGen {
     heart,
     homeFilled,
     home,
+    location1,
     medicine,
     menu,
     notificationBellOutline,

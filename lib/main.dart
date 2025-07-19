@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 import 'package:help_me/config/themes/themes.dart';
 import 'package:help_me/config/themes/theme_cubit/theme_cubit.dart';
@@ -19,6 +20,7 @@ import 'features/categories/presentation/cubit/category_cubit.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await initializeDateFormatting('pt_BR', null);
   await dotenv.load(fileName: ".env");
   await di.init();
   configLoading();
