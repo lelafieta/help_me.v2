@@ -334,19 +334,7 @@ class _HomePageState extends State<HomePage> {
                         builder: (context, child) {
                           return Transform.scale(
                             scale: 1.0,
-                            child: InkWell(
-                              //
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        CampaignDetailsPage(campaign: campaign),
-                                  ),
-                                );
-                              },
-                              child: CampaignWidget(campaign: campaign),
-                            ),
+                            child: CampaignWidget(campaign: campaign),
                           );
                         },
                       );

@@ -1,20 +1,19 @@
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
-import 'package:help_me/core/error/exceptions.dart';
-import 'package:help_me/core/error/failures.dart';
-import 'package:help_me/core/network/network_info.dart';
-import 'package:help_me/features/campaigns/data/datasources/campaign_remote_data_source.dart';
 
-import 'package:help_me/features/campaigns/data/dto/create_campaign_dto.dart';
-import 'package:help_me/features/campaigns/data/dto/update_campaign_dto.dart';
-import 'package:help_me/features/campaigns/domain/entities/campaign_entity.dart';
-import 'package:help_me/features/campaigns/domain/repositories/campaign_repository.dart';
+import '../../../../core/error/failures.dart';
+import '../../../../core/network/network_info.dart';
+import '../../domain/entities/campaign_entity.dart';
+import '../../domain/repositories/i_campaign_repository.dart';
+import '../datasources/i_campaign_remote_data_source.dart';
+import '../dto/create_campaign_dto.dart';
+import '../dto/update_campaign_dto.dart';
 
-class CampaignRepositoryImpl implements CampaignRepository {
-  final CampaignRemoteDataSource remoteDataSource;
+class CampaignRepository implements ICampaignRepository {
+  final ICampaignRemoteDataSource remoteDataSource;
   final NetworkInfo networkInfo;
 
-  CampaignRepositoryImpl({
+  CampaignRepository({
     required this.remoteDataSource,
     required this.networkInfo,
   });

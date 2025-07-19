@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:get/get.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 import 'package:help_me/config/themes/themes.dart';
@@ -65,7 +66,7 @@ class MyApp extends StatelessWidget {
       ],
       child: BlocBuilder<ThemeCubit, ThemeState>(
         builder: (context, state) {
-          return MaterialApp(
+          return GetMaterialApp(
             title: 'Help-me',
             theme: AppTheme.lightTheme,
             darkTheme: AppTheme.darkTheme,

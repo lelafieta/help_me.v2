@@ -1,10 +1,11 @@
 
 import 'package:dio/dio.dart';
-import 'package:help_me/features/campaigns/data/models/campaign_model.dart';
-import 'package:help_me/features/campaigns/data/dto/create_campaign_dto.dart';
-import 'package:help_me/features/campaigns/data/dto/update_campaign_dto.dart';
 
-abstract class CampaignRemoteDataSource {
+import '../dto/create_campaign_dto.dart';
+import '../dto/update_campaign_dto.dart';
+import '../models/campaign_model.dart';
+
+abstract class ICampaignRemoteDataSource {
   Future<CampaignModel> createCampaign(
       CreateCampaignDto dto, List<MultipartFile> documents, List<MultipartFile> midias, MultipartFile cover);
   Future<List<CampaignModel>> getAllCampaigns();

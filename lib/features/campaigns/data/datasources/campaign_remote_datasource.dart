@@ -1,13 +1,13 @@
 import 'package:dio/dio.dart';
-import 'package:help_me/features/campaigns/data/datasources/campaign_remote_data_source.dart';
-import 'package:help_me/features/campaigns/data/models/campaign_model.dart';
-import 'package:help_me/features/campaigns/data/dto/create_campaign_dto.dart';
-import 'package:help_me/features/campaigns/data/dto/update_campaign_dto.dart';
+import '../dto/create_campaign_dto.dart';
+import '../dto/update_campaign_dto.dart';
+import '../models/campaign_model.dart';
+import 'i_campaign_remote_data_source.dart';
 
-class CampaignRemoteDataSourceImpl implements CampaignRemoteDataSource {
+class CampaignRemoteDataSource implements ICampaignRemoteDataSource {
   final Dio dio;
 
-  CampaignRemoteDataSourceImpl({required this.dio});
+  CampaignRemoteDataSource({required this.dio});
 
   @override
   Future<CampaignModel> createCampaign(

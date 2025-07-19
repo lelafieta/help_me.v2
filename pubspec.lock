@@ -73,6 +73,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.2"
+  bottom_inset_observer:
+    dependency: transitive
+    description:
+      name: bottom_inset_observer
+      sha256: cbfb01e0e07cc4922052701786d5e607765a6f54e1844f41061abf8744519a7d
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.1.0"
+  bottom_sheet:
+    dependency: "direct main"
+    description:
+      name: bottom_sheet
+      sha256: efd28f52357d23e1c01eaeb45466b407f1e29318305bd6d10baf814fda18bd7e
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.0.4"
   build:
     dependency: transitive
     description:
@@ -528,6 +544,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  fluttertoast:
+    dependency: "direct main"
+    description:
+      name: fluttertoast
+      sha256: "25e51620424d92d3db3832464774a6143b5053f15e382d8ffbfd40b6e795dcf1"
+      url: "https://pub.dev"
+    source: hosted
+    version: "8.2.12"
   frontend_server_client:
     dependency: transitive
     description:
@@ -880,6 +904,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.5.0"
+  roundcheckbox:
+    dependency: "direct main"
+    description:
+      name: roundcheckbox
+      sha256: "5d6f607ed9d26fde0072af2545f56d84a6b6d2a45972b0c41f90c2d73224f339"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.5"
   rxdart:
     dependency: transitive
     description:

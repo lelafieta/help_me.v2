@@ -18,10 +18,10 @@ import 'features/auth/domain/usecases/get_user_name_usecase.dart';
 import 'features/auth/domain/usecases/login_usecase.dart';
 import 'features/auth/presentation/cubit/auth_cubit.dart';
 import 'features/auth/presentation/cubit/user_cubit.dart';
-import 'features/campaigns/data/datasources/campaign_remote_data_source.dart';
-import 'features/campaigns/data/datasources/campaign_remote_data_source_impl.dart';
-import 'features/campaigns/data/repositories/campaign_repository_impl.dart';
-import 'features/campaigns/domain/repositories/campaign_repository.dart';
+import 'features/campaigns/data/datasources/i_campaign_remote_data_source.dart';
+import 'features/campaigns/data/datasources/campaign_remote_datasource.dart';
+import 'features/campaigns/data/repositories/campaign_repository.dart';
+import 'features/campaigns/domain/repositories/i_campaign_repository.dart';
 import 'features/campaigns/domain/usecases/create_campaign_usecase.dart';
 import 'features/campaigns/domain/usecases/delete_campaign_usecase.dart';
 import 'features/campaigns/domain/usecases/get_all_campaigns_usecase.dart';
@@ -137,7 +137,9 @@ Future<void> init() async {
   );
 
   // Core
-  sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl(sl()));
+  sl.registerLazySingleton<INetworkInfo>(
+    () => NetworkInfo(connectionChecker: sl()),
+  );
 
   final baseUrl = dotenv.env['BASE_URL'] ?? '';
   sl.registerLazySingleton(
