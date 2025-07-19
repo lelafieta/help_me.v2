@@ -181,7 +181,7 @@ class _CampaignDetailsPageState extends State<CampaignDetailsPage>
                                       ),
                                       TextSpan(
                                         text: AppUtils.formatCurrency(
-                                          widget.campaign.fundsRaised!,
+                                          widget.campaign.fundraisingGoal!,
                                         ),
                                         style: TextStyle(
                                           color: AppColors.primaryColor,
@@ -202,7 +202,9 @@ class _CampaignDetailsPageState extends State<CampaignDetailsPage>
                                         style: TextStyle(),
                                       ),
                                       TextSpan(
-                                        text: "AOA 3 mil",
+                                        text: AppUtils.formatCurrency(
+                                          widget.campaign.fundsRaised!,
+                                        ),
                                         style: TextStyle(
                                           color: Colors.black,
                                           fontWeight: FontWeight.bold,
@@ -267,7 +269,7 @@ class _CampaignDetailsPageState extends State<CampaignDetailsPage>
                                   width: 25,
                                   height: 25,
                                   decoration: BoxDecoration(
-                                    color: Colors.amber,
+                                    color: Colors.grey,
                                     shape: BoxShape.circle,
                                     border: Border.all(
                                       color: Theme.of(
@@ -286,7 +288,7 @@ class _CampaignDetailsPageState extends State<CampaignDetailsPage>
                                   width: 25,
                                   height: 25,
                                   decoration: BoxDecoration(
-                                    color: Colors.green,
+                                    color: Colors.grey,
                                     shape: BoxShape.circle,
                                     border: Border.all(
                                       color: Theme.of(
@@ -304,7 +306,7 @@ class _CampaignDetailsPageState extends State<CampaignDetailsPage>
                                   width: 25,
                                   height: 25,
                                   decoration: BoxDecoration(
-                                    color: Colors.black,
+                                    color: Colors.grey,
                                     shape: BoxShape.circle,
                                     border: Border.all(
                                       color: Theme.of(
@@ -375,9 +377,7 @@ class _CampaignDetailsPageState extends State<CampaignDetailsPage>
                     ],
                   ),
                   const SizedBox(height: 20),
-                  Text(
-                    "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-                  ),
+                  Text("${widget.campaign.description}"),
                   SizedBox(height: 10),
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 10),
@@ -399,7 +399,9 @@ class _CampaignDetailsPageState extends State<CampaignDetailsPage>
                       ),
                       title: Row(
                         children: [
-                          Text("Lela ONG"),
+                          (widget.campaign.ong == null)
+                              ? Text(widget.campaign.user.fullName)
+                              : Text("${widget.campaign.ong!.name}"),
                           SizedBox(width: 5),
                           SvgPicture.asset(
                             Assets.svg.verifiedCheckFill.path,
@@ -420,13 +422,21 @@ class _CampaignDetailsPageState extends State<CampaignDetailsPage>
                           border: Border.all(color: AppColors.primaryColor),
                         ),
                         child: Center(
-                          child: Text(
-                            "Visitar",
-                            style: TextStyle(
-                              color: AppColors.primaryColor,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
+                          child: (widget.campaign.ong == null)
+                              ? Text(
+                                  "Visitar",
+                                  style: TextStyle(
+                                    color: AppColors.primaryColor,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                )
+                              : Text(
+                                  "Ver Perfil",
+                                  style: TextStyle(
+                                    color: AppColors.primaryColor,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
                         ),
                       ),
                     ),

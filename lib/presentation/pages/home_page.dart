@@ -9,6 +9,7 @@ import 'package:help_me/features/campaigns/presentation/pages/my_campaign_page.d
 import 'package:help_me/features/chat/presentation/pages/chat_page.dart';
 import 'package:help_me/features/explore/presentation/pages/explore_page.dart';
 import 'package:help_me/gen/assets.gen.dart';
+import 'package:help_me/presentation/pages/home_tab_content_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -55,7 +56,7 @@ class _HomePageState extends State<HomePage> {
     ),
   ];
   final List<Widget> pages = [
-    const Text("1"),
+    const HomeTabContentPage(),
     const ExplorePage(),
     const MyCampaignPage(),
     const ChatPage(),

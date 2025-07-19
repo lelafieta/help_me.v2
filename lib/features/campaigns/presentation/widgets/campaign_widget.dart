@@ -15,7 +15,6 @@ class CampaignWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        print("CLICOU!!");
         // Get.to(CampaignDetailsPage(campaign: campaign));
         Navigator.push(
           context,

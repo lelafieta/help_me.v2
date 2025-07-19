@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
-
+import '../../../../core/entities/user_entity.dart';
 import '../../../categories/domain/entities/category_entity.dart';
+import '../../../ongs/domain/ong_entity.dart';
 import 'campaign_comment_entity.dart';
 import 'campaign_contributor_entity.dart';
 import 'campaign_document_entity.dart';
@@ -33,11 +34,13 @@ class CampaignEntity extends Equatable {
   final int? numberOfContributions;
   final int? urgencyScore;
   final CategoryEntity category;
+  final UserEntity user;
   final List<CampaignContributorEntity>? campaignContributor;
   final List<CampaignDocumentEntity>? campaignDocuments;
   final List<CampaignMidiaEntity>? campaignMidias;
   final List<CampaignUpdateEntity>? campaignUpdates;
   final List<CampaignCommentEntity>? campaignComments;
+  final OngEntity? ong;
 
   const CampaignEntity({
     this.id,
@@ -56,6 +59,7 @@ class CampaignEntity extends Equatable {
     this.startDate,
     this.endDate,
     required this.isActivate,
+    required this.user,
     this.beneficiaryName,
     this.campaignType,
     this.currency,
@@ -70,6 +74,7 @@ class CampaignEntity extends Equatable {
     this.campaignComments,
     this.campaignMidias,
     this.campaignUpdates,
+    this.ong,
   });
 
   @override
@@ -84,6 +89,7 @@ class CampaignEntity extends Equatable {
     userId,
     categoryId,
     location,
+    user,
     phoneNumber,
     createdAt,
     updatedAt,
@@ -104,5 +110,6 @@ class CampaignEntity extends Equatable {
     campaignComments,
     campaignMidias,
     campaignUpdates,
+    ong,
   ];
 }

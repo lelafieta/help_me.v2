@@ -1,4 +1,6 @@
+import '../../../../core/models/user_model.dart';
 import '../../../categories/data/models/category_model.dart';
+import '../../../ongs/data/models/ong_model.dart';
 import '../../domain/entities/campaign_entity.dart';
 import 'campaign_comment_model.dart';
 import 'campaign_contribuitor_model.dart';
@@ -31,16 +33,26 @@ class CampaignModel extends CampaignEntity {
     super.createdAt,
     super.updatedAt,
     required super.isActivate,
-    required super.category,
-    super.campaignDocuments,
-    super.campaignComments,
-    super.campaignMidias,
-    super.campaignUpdates,
-    super.campaignContributor,
-  });
+    required final UserModel user,
+    required final CategoryModel category,
+    final List<CampaignContributorModel>? campaignContributor,
+    final List<CampaignDocumentModel>? campaignDocuments,
+    final List<CampaignMidiaModel>? campaignMidias,
+    final List<CampaignUpdateModel>? campaignUpdates,
+    final List<CampaignCommentModel>? campaignComments,
+    final OngModel? ong,
+  }) : super(
+         user: user,
+         category: category,
+         campaignContributor: campaignContributor,
+         campaignDocuments: campaignDocuments,
+         campaignMidias: campaignMidias,
+         campaignUpdates: campaignUpdates,
+         campaignComments: campaignComments,
+         ong: ong,
+       );
 
   factory CampaignModel.fromJson(Map<String, dynamic> json) {
-    print(json["campaignContributor"]);
     return CampaignModel(
       id: json['id'],
       title: json['title'],
@@ -50,7 +62,9 @@ class CampaignModel extends CampaignEntity {
       documentUrls: List<String>.from(json['documentUrls'] ?? []),
       status: json['status'],
       userId: json['userId'],
+      user: UserModel.fromJson(json['user']),
       categoryId: json['categoryId'],
+      category: CategoryModel.fromJson(json['category']),
       startDate: json['startDate'] != null
           ? DateTime.parse(json['startDate'])
           : null,
@@ -60,7 +74,7 @@ class CampaignModel extends CampaignEntity {
       fundraisingGoal: (json['fundraisingGoal'] as num).toDouble(),
       fundsRaised: (json['fundsRaised'] != null)
           ? (json['fundsRaised'] as num).toDouble()
-          : null,
+          : 0,
       beneficiaryName: json['beneficiaryName'],
       campaignType: json['campaignType'],
       currency: json['currency'],
@@ -73,33 +87,24 @@ class CampaignModel extends CampaignEntity {
           ? DateTime.parse(json['updatedAt'])
           : DateTime.now(),
       isActivate: json['isActivate'] as bool,
-      category: CategoryModel.fromJson(json['category']),
-      campaignContributor: (json["campaignContributor"] == null)
-          ? null
-          : (json['campaignContributor'] as List?)
-                ?.map((json) => CampaignContributorModel.fromJson(json))
-                .toList(),
-      campaignUpdates: (json["campaignUpdates"] == null)
-          ? null
-          : (json['campaignUpdates'] as List?)
-                ?.map((json) => CampaignUpdateModel.fromJson(json))
-                .toList(),
-      campaignMidias: (json["campaignMidias"] == null)
-          ? null
-          : (json['campaignMidias'] as List?)
-                ?.map((json) => CampaignMidiaModel.fromJson(json))
-                .toList(),
-      campaignComments: (json["campaignComments"] == null)
-          ? null
-          : (json['campaignComments'] as List?)
-                ?.map((json) => CampaignCommentModel.fromJson(json))
-                .toList(),
 
-      campaignDocuments: (json["campaignDocuments"] == null)
-          ? null
-          : (json['campaignDocuments'] as List?)
-                ?.map((json) => CampaignDocumentModel.fromJson(json))
-                .toList(),
+      campaignContributor: (json['campaignContributor'] as List?)
+          ?.map((e) => CampaignContributorModel.fromJson(e))
+          .toList(),
+      campaignUpdates: (json['campaignUpdates'] as List?)
+          ?.map((e) => CampaignUpdateModel.fromJson(e))
+          .toList(),
+      campaignMidias: (json['campaignMidias'] as List?)
+          ?.map((e) => CampaignMidiaModel.fromJson(e))
+          .toList(),
+      campaignComments: (json['campaignComments'] as List?)
+          ?.map((e) => CampaignCommentModel.fromJson(e))
+          .toList(),
+      campaignDocuments: (json['campaignDocuments'] as List?)
+          ?.map((e) => CampaignDocumentModel.fromJson(e))
+          .toList(),
+
+      ong: json['ong'] != null ? OngModel.fromJson(json['ong']) : null,
     );
   }
 }
