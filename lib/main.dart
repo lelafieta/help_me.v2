@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
+import 'package:help_me/features/campaigns/presentation/cubit/campaign_store_favorite_cubit/campaign_store_favorite_cubit.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 import 'package:help_me/config/themes/themes.dart';
@@ -55,7 +56,7 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => di.sl<UserCubit>()..loadUser()),
-        BlocProvider(create: (context) => ThemeCubit()),
+        BlocProvider(create: (context) => di.sl<ThemeCubit>()),
         BlocProvider(create: (context) => di.sl<AuthCubit>()),
         BlocProvider(create: (context) => di.sl<ProfileCubit>()),
         BlocProvider(create: (context) => di.sl<CountDonationCubit>()),
@@ -66,6 +67,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => di.sl<CampaignCubit>()),
         BlocProvider(create: (context) => di.sl<UrgentCampaignCubit>()),
         BlocProvider(create: (context) => di.sl<FavoriteCubit>()),
+        BlocProvider(create: (context) => di.sl<CampaignStoreFavoriteCubit>()),
       ],
       child: BlocBuilder<ThemeCubit, ThemeState>(
         builder: (context, state) {
