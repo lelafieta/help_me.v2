@@ -20,7 +20,9 @@ class UpdateActionCubit extends Cubit<UpdateActionState> {
     emit(UpdateActionLoading());
     final result = await createCampaignUpdateUseCase.call(params);
 
-    result.fold((l) => emit(UpdateActionFailure(message: l.message.toString())),
-        (r) => emit(UpdateActionSuccess()));
+    result.fold(
+      (l) => emit(UpdateActionFailure(message: l.errorMessage.toString())),
+      (r) => emit(UpdateActionSuccess()),
+    );
   }
 }

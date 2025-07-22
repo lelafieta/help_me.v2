@@ -10,7 +10,7 @@ class GetCampaignByIdUseCase
     extends UseCase<CampaignEntity, GetCampaignByIdParams> {
   final CampaignRepository repository;
 
-  GetCampaignByIdUseCase(this.repository);
+  GetCampaignByIdUseCase({required this.repository});
 
   @override
   Future<Either<Failure, CampaignEntity>> call(

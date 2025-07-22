@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
-import 'package:utueji/src/features/campaigns/domain/entities/campaign_params.dart';
+import 'package:help_me/core/usecases/usecase.dart';
 import '../../../domain/entities/campaign_entity.dart';
+import '../../../domain/params/campaign_params.dart';
 import '../../../domain/usecases/get_all_my_campaigns_usecase.dart';
 import 'my_campaign_state.dart';
 
@@ -8,13 +9,14 @@ class MyCampaignCubit extends Cubit<MyCampaignState> {
   final GetAllMyCampaignsUseCase getAllMyCampaignsUseCase;
 
   MyCampaignCubit({required this.getAllMyCampaignsUseCase})
-      : super(MyCampaignInitial());
+    : super(MyCampaignInitial());
 
   int page = 1;
   int limit = 10;
-  Future<void> getAllMyCamapigns(
-      {bool isRefresh = false, CampaignParams? params}) async {
-    print(params!.status);
+  Future<void> getAllMyCamapigns({
+    bool isRefresh = false,
+    CampaignParams? params,
+  }) async {
     if (state is MyCampaignLoading) return;
 
     if (isRefresh) {
@@ -31,11 +33,11 @@ class MyCampaignCubit extends Cubit<MyCampaignState> {
 
     emit(MyCampaignLoading(oldCampaigns, isFirstFetch: page == 1));
 
-    final result = await getAllMyCampaignsUseCase.call(CampaignParams(
-        page: page, limit: limit, status: params.status, title: params.title));
+    final result = await getAllMyCampaignsUseCase.call(NoParams());
 
     result.fold(
-      (failure) => emit(MyCampaignError(message: failure.message.toString())),
+      (failure) =>
+          emit(MyCampaignError(message: failure.errorMessage.toString())),
       (myCampaigns) {
         if (isRefresh) {
           oldCampaigns.clear();

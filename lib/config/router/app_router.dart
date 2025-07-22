@@ -1,14 +1,13 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
-import 'package:help_me/features/help_me/presentation/pages/help_me_page.dart';
-import 'package:help_me/presentation/pages/home_page.dart';
-import 'package:help_me/presentation/pages/onboarding_page.dart';
-import 'package:help_me/presentation/pages/splash_page.dart';
-import 'package:help_me/presentation/pages/login_page.dart';
-import 'package:help_me/presentation/pages/category_page.dart';
-
 import '../../features/campaigns/domain/entities/campaign_entity.dart';
-import '../../features/campaigns/presentation/pages/campaign_details_page.dart' show CampaignDetailsPage;
+import '../../features/campaigns/presentation/pages/campaign_details_page.dart';
+import '../../features/help_me/presentation/pages/help_me_page.dart';
+import '../../features/home/presentation/pages/home_page.dart';
+import '../../presentation/pages/category_page.dart';
+import '../../presentation/pages/login_page.dart';
+import '../../presentation/pages/onboarding_page.dart';
+import '../../presentation/pages/splash_page.dart';
 
 class AppRouter {
   static const String splashRoute = '/';

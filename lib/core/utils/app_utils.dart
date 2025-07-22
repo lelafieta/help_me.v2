@@ -31,6 +31,12 @@ class AppUtils {
     return date.difference(today).inDays;
   }
 
+  static String formatFullCurrency(num value) {
+    return NumberFormat.currency(locale: 'pt_AO', symbol: "AOA").format(value);
+  }
+
+  
+
   /// Retorna quantos dias já se passaram desde a data até hoje (sempre positivo)
   // static int daysSinceDate(DateTime date) {
   //   DateTime today = DateTime.now();

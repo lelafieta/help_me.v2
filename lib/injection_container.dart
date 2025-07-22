@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
+import 'package:help_me/features/favorites/data/datasources/favorite_datasource.dart';
+import 'package:help_me/features/favorites/data/datasources/i_favorite_datasource.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -32,12 +34,17 @@ import 'features/campaigns/domain/usecases/get_my_campaigns_by_status_usecase.da
 import 'features/campaigns/domain/usecases/get_urgent_campaigns_smart_usecase.dart';
 import 'features/campaigns/domain/usecases/update_campaign_usecase.dart';
 import 'features/campaigns/presentation/cubit/campaign_cubit.dart';
+import 'features/campaigns/presentation/cubit/campaign_store_favorite_cubit/campaign_store_favorite_cubit.dart';
 import 'features/categories/data/datasources/category_remote_data_source.dart';
 import 'features/categories/data/datasources/category_remote_data_source_impl.dart';
 import 'features/categories/data/repositories/category_repository_impl.dart';
 import 'features/categories/domain/repositories/category_repository.dart';
 import 'features/categories/domain/usecases/get_categories_usecase.dart';
 import 'features/categories/presentation/cubit/category_cubit.dart';
+import 'features/favorites/data/repositories/favorite_repository.dart';
+import 'features/favorites/domain/repositories/i_favorite_repository.dart';
+import 'features/favorites/domain/usecases/add_favorite_usecase.dart';
+import 'features/favorites/domain/usecases/remove_favorite_usecase.dart';
 import 'features/home/presentation/cubit/urgent_campaign/urgent_campaign_cubit.dart';
 import 'features/profile/presentation/cubit/count_donation_cubit/count_donation_cubit.dart';
 import 'features/profile/presentation/cubit/profile_cubit.dart';
@@ -87,25 +94,41 @@ Future<void> init() async {
   // Features - Solidary
   sl.registerFactory(() => SolidaryCubit());
 
+  sl.registerFactory(
+    () => CampaignStoreFavoriteCubit(
+      addFavoriteUseCase: sl(),
+      removeFavoriteUseCase: sl(),
+    ),
+  );
+
   // Features -
 
   // Use cases
-  sl.registerLazySingleton(() => LoginUseCase(sl()));
-  sl.registerLazySingleton(() => GetTokenUseCase(sl()));
-  sl.registerLazySingleton(() => ClearTokenUseCase(sl()));
-  sl.registerLazySingleton(() => GetUserNameUseCase(sl()));
-  sl.registerLazySingleton(() => GetUserAvatarUseCase(sl()));
-  sl.registerLazySingleton(() => ClearUserDataUseCase(sl()));
-  sl.registerLazySingleton(() => GetCategoriesUseCase(sl()));
-  sl.registerLazySingleton(() => CreateCampaignUseCase(sl()));
-  sl.registerLazySingleton(() => GetAllCampaignsUseCase(sl()));
-  sl.registerLazySingleton(() => GetCampaignsByUserIdUseCase(sl()));
-  sl.registerLazySingleton(() => GetCampaignByIdUseCase(sl()));
-  sl.registerLazySingleton(() => GetCampaignsByCategoryIdUseCase(sl()));
-  sl.registerLazySingleton(() => GetMyCampaignsByStatusUseCase(sl()));
-  sl.registerLazySingleton(() => GetUrgentCampaignsSmartUseCase(sl()));
-  sl.registerLazySingleton(() => UpdateCampaignUseCase(sl()));
-  sl.registerLazySingleton(() => DeleteCampaignUseCase(sl()));
+  sl.registerLazySingleton(() => LoginUseCase(repository: sl()));
+  sl.registerLazySingleton(() => GetTokenUseCase(repository: sl()));
+  sl.registerLazySingleton(() => ClearTokenUseCase(repository: sl()));
+  sl.registerLazySingleton(() => GetUserNameUseCase(repository: sl()));
+  sl.registerLazySingleton(() => GetUserAvatarUseCase(repository: sl()));
+  sl.registerLazySingleton(() => ClearUserDataUseCase(repository: sl()));
+  sl.registerLazySingleton(() => GetCategoriesUseCase(repository: sl()));
+  sl.registerLazySingleton(() => CreateCampaignUseCase(repository: sl()));
+  sl.registerLazySingleton(() => GetAllCampaignsUseCase(repository: sl()));
+  sl.registerLazySingleton(() => GetCampaignsByUserIdUseCase(repository: sl()));
+  sl.registerLazySingleton(() => GetCampaignByIdUseCase(repository: sl()));
+  sl.registerLazySingleton(
+    () => GetCampaignsByCategoryIdUseCase(repository: sl()),
+  );
+  sl.registerLazySingleton(
+    () => GetMyCampaignsByStatusUseCase(repository: sl()),
+  );
+  sl.registerLazySingleton(
+    () => GetUrgentCampaignsSmartUseCase(repository: sl()),
+  );
+  sl.registerLazySingleton(() => UpdateCampaignUseCase(repository: sl()));
+  sl.registerLazySingleton(() => DeleteCampaignUseCase(repository: sl()));
+
+  sl.registerLazySingleton(() => AddFavoriteUseCase(repository: sl()));
+  sl.registerLazySingleton(() => RemoveFavoriteUseCase(repository: sl()));
 
   // Repository
   sl.registerLazySingleton<AuthRepository>(
@@ -118,8 +141,11 @@ Future<void> init() async {
   sl.registerLazySingleton<CategoryRepository>(
     () => CategoryRepositoryImpl(remoteDataSource: sl(), networkInfo: sl()),
   );
-  sl.registerLazySingleton<CampaignRepository>(
-    () => CampaignRepositoryImpl(remoteDataSource: sl(), networkInfo: sl()),
+  sl.registerLazySingleton<ICampaignRepository>(
+    () => CampaignRepository(remoteDataSource: sl(), networkInfo: sl()),
+  );
+  sl.registerLazySingleton<IFavoriteRepository>(
+    () => FavoriteRepository(networkInfo: sl(), favoriteDataSource: sl()),
   );
 
   // Data sources
@@ -132,8 +158,12 @@ Future<void> init() async {
   sl.registerLazySingleton<CategoryRemoteDataSource>(
     () => CategoryRemoteDataSourceImpl(dio: sl()),
   );
-  sl.registerLazySingleton<CampaignRemoteDataSource>(
-    () => CampaignRemoteDataSourceImpl(dio: sl()),
+  sl.registerLazySingleton<ICampaignRemoteDataSource>(
+    () => CampaignRemoteDataSource(dio: sl()),
+  );
+
+  sl.registerLazySingleton<IFavoriteDataSource>(
+    () => FavoriteDataSource(dio: sl()),
   );
 
   // Core

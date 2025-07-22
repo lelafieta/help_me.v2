@@ -9,7 +9,7 @@ class GetUrgentCampaignsSmartUseCase
     extends UseCase<List<CampaignEntity>, GetUrgentCampaignsSmartParams> {
   final ICampaignRepository repository;
 
-  GetUrgentCampaignsSmartUseCase(this.repository);
+  GetUrgentCampaignsSmartUseCase({required this.repository});
 
   @override
   Future<Either<Failure, List<CampaignEntity>>> call(

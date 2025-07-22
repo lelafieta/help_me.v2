@@ -9,7 +9,7 @@ import '../models/category_model.dart';
 
 class CategoryRepositoryImpl implements CategoryRepository {
   final CategoryRemoteDataSource remoteDataSource;
-  final NetworkInfo networkInfo;
+  final INetworkInfo networkInfo;
 
   CategoryRepositoryImpl({
     required this.remoteDataSource,

@@ -14,7 +14,7 @@ import '../dto/login_dto.dart';
 class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource remoteDataSource;
   final AuthLocalDataSource localDataSource;
-  final NetworkInfo networkInfo;
+  final INetworkInfo networkInfo;
 
   AuthRepositoryImpl({
     required this.remoteDataSource,

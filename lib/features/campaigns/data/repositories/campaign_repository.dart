@@ -4,6 +4,8 @@ import 'package:dio/dio.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/network/network_info.dart';
 import '../../domain/entities/campaign_entity.dart';
+import '../../domain/params/create_campaign_params.dart';
+import '../../domain/params/update_campaign_params.dart';
 import '../../domain/repositories/i_campaign_repository.dart';
 import '../datasources/i_campaign_remote_data_source.dart';
 import '../dto/create_campaign_dto.dart';
@@ -11,7 +13,7 @@ import '../dto/update_campaign_dto.dart';
 
 class CampaignRepository implements ICampaignRepository {
   final ICampaignRemoteDataSource remoteDataSource;
-  final NetworkInfo networkInfo;
+  final INetworkInfo networkInfo;
 
   CampaignRepository({
     required this.remoteDataSource,
@@ -20,18 +22,12 @@ class CampaignRepository implements ICampaignRepository {
 
   @override
   Future<Either<Failure, CampaignEntity>> createCampaign(
-    CreateCampaignDto dto,
-    List<MultipartFile> documents,
-    List<MultipartFile> midias,
-    MultipartFile cover,
+    CreateCampaignParams params,
   ) async {
     if (await networkInfo.isConnected) {
       try {
         final remoteCampaign = await remoteDataSource.createCampaign(
-          dto,
-          documents,
-          midias,
-          cover,
+          CreateCampaignDto(),
         );
         return Right(remoteCampaign);
       } on DioException catch (e) {
@@ -148,12 +144,14 @@ class CampaignRepository implements ICampaignRepository {
 
   @override
   Future<Either<Failure, CampaignEntity>> updateCampaign(
-    int id,
-    UpdateCampaignDto dto,
+    UpdateCampaignParams updateParams,
   ) async {
     if (await networkInfo.isConnected) {
       try {
-        final remoteCampaign = await remoteDataSource.updateCampaign(id, dto);
+        final remoteCampaign = await remoteDataSource.updateCampaign(
+          1,
+          UpdateCampaignDto(),
+        );
         return Right(remoteCampaign);
       } on DioException catch (e) {
         return Left(ServerFailure(errorMessage: e.message));
@@ -164,11 +162,11 @@ class CampaignRepository implements ICampaignRepository {
   }
 
   @override
-  Future<Either<Failure, void>> deleteCampaign(int id) async {
+  Future<Either<Failure, Unit>> deleteCampaign(int id) async {
     if (await networkInfo.isConnected) {
       try {
         await remoteDataSource.deleteCampaign(id);
-        return const Right(null);
+        return const Right(unit);
       } on DioException catch (e) {
         return Left(ServerFailure(errorMessage: e.message));
       }

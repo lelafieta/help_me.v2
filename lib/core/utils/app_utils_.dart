@@ -225,7 +225,7 @@ class AppUtils {
   }
 
   static String formatFullCurrency(num value) {
-    return "${NumberFormat.currency(locale: 'pt_AO', symbol: "AOA").format(value)}";
+    return NumberFormat.currency(locale: 'pt_AO', symbol: "AOA").format(value);
   }
 
   static int daysBetweenToday(DateTime date) {

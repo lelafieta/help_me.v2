@@ -7,7 +7,7 @@ import 'package:help_me/features/categories/domain/repositories/category_reposit
 class GetCategoriesUseCase implements UseCase<List<CategoryEntity>, NoParams> {
   final CategoryRepository repository;
 
-  GetCategoriesUseCase(this.repository);
+  GetCategoriesUseCase({required this.repository});
 
   @override
   Future<Either<Failure, List<CategoryEntity>>> call(NoParams params) async {

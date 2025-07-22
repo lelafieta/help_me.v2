@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
 import '../../../domain/entities/campaign_entity.dart';
+import '../../../domain/params/create_campaign_params.dart';
 import '../../../domain/usecases/create_campaign_usecase.dart';
 import '../../../domain/usecases/update_campaign_usecase.dart';
 

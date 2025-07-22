@@ -6,7 +6,7 @@ import 'package:help_me/features/auth/domain/repositories/auth_repository.dart';
 class GetUserNameUseCase implements UseCase<String?, NoParams> {
   final AuthRepository repository;
 
-  GetUserNameUseCase(this.repository);
+  GetUserNameUseCase({required this.repository});
 
   @override
   Future<Either<Failure, String?>> call(NoParams params) async {

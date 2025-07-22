@@ -10,7 +10,7 @@ class UpdateCampaignUseCase
     extends UseCase<CampaignEntity, UpdateCampaignParams> {
   final ICampaignRepository repository;
 
-  UpdateCampaignUseCase(this.repository);
+  UpdateCampaignUseCase({required this.repository});
 
   @override
   Future<Either<Failure, CampaignEntity>> call(

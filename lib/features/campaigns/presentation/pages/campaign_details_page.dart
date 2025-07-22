@@ -613,36 +613,48 @@
 //   }
 // }
 
-
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:video_player/video_player.dart';
 
 import 'package:flutter_animation_progress_bar/flutter_animation_progress_bar.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_cached_pdfview/flutter_cached_pdfview.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
+import '../../../../config/router/app_router.dart';
+import '../../../../config/themes/app_colors.dart';
 import '../../../../core/resources/icons/app_icons.dart';
+import '../../../../core/utils/app_date_utils_helper.dart';
 import '../../../../core/utils/app_functions_utils_helper.dart';
 import '../../../../core/utils/app_utils.dart';
 import '../../../../core/utils/app_values.dart';
+import '../../../../gen/assets.gen.dart';
 import '../../domain/entities/campaign_entity.dart';
 import '../../../../core/utils/app_strings.dart';
+import '../../domain/usecases/get_campaign_by_id_usecase.dart';
+import '../cubit/campaign_detail_cubit/campaign_detail_cubit.dart';
+import '../cubit/campaign_detail_cubit/campaign_detail_state.dart';
 
-class CampaignDetailPage extends StatefulWidget {
+class CampaignDetailsPage extends StatefulWidget {
   final CampaignEntity campaign;
 
-  const CampaignDetailPage({super.key, required this.campaign});
+  const CampaignDetailsPage({super.key, required this.campaign});
 
   @override
-  State<CampaignDetailPage> createState() => _CampaignDetailPageState();
+  State<CampaignDetailsPage> createState() => _CampaignDetailsPageState();
 }
 
-class _CampaignDetailPageState extends State<CampaignDetailPage> {
+class _CampaignDetailsPageState extends State<CampaignDetailsPage> {
   int selected = 0;
 
   @override
   void initState() {
-    context.read<CampaignDetailCubit>().getCampaignById(widget.campaign.id!);
+    context.read<CampaignDetailCubit>().getCampaignById(
+      GetCampaignByIdParams(id: widget.campaign.id!),
+    );
     super.initState();
   }
 
@@ -655,7 +667,10 @@ class _CampaignDetailPageState extends State<CampaignDetailPage> {
           Scaffold(
             backgroundColor: Colors.white,
             appBar: AppBar(
-              title: Text('Arrecadação de Fundos', style: TextStyle(color: Colors.black)),
+              title: Text(
+                'Arrecadação de Fundos',
+                style: TextStyle(color: Colors.black),
+              ),
               centerTitle: true,
               backgroundColor: Colors.white,
               elevation: 0,
@@ -677,7 +692,7 @@ class _CampaignDetailPageState extends State<CampaignDetailPage> {
                           children: [
                             (widget.campaign.imageCoverUrl == null)
                                 ? Image.asset(
-                                    AppImages.coverBackground,
+                                    Assets.images.coverBackground.path,
                                     width: double.infinity,
                                     fit: BoxFit.cover,
                                     height: 220,
@@ -709,7 +724,7 @@ class _CampaignDetailPageState extends State<CampaignDetailPage> {
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                                 child: Text(
-                                  state.campaign.category!.name.toString(),
+                                  state.campaign.category.name.toString(),
                                   style: TextStyle(
                                     fontSize: 14,
                                     color: AppColors.primaryColor,
@@ -775,7 +790,10 @@ class _CampaignDetailPageState extends State<CampaignDetailPage> {
                                           (widget.campaign.imageCoverUrl ==
                                               null)
                                           ? Image.asset(
-                                              AppImages.coverBackground,
+                                              Assets
+                                                  .images
+                                                  .coverBackground
+                                                  .path,
                                               fit: BoxFit.cover,
                                             )
                                           : CachedNetworkImage(
@@ -821,7 +839,7 @@ class _CampaignDetailPageState extends State<CampaignDetailPage> {
                                       const SizedBox(width: 5),
                                       SvgPicture.asset(
                                         width: 16,
-                                        AppIcons.shieldTrust,
+                                        Assets.icons.shieldTrust.path,
                                         color: AppColors.blueColor,
                                       ),
                                     ],
@@ -866,7 +884,7 @@ class _CampaignDetailPageState extends State<CampaignDetailPage> {
                                   child: Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: Image.asset(
-                                      AppImages.healthcare,
+                                      Assets.images.healthcare.path,
                                       width: 10,
                                     ),
                                   ),
@@ -954,7 +972,9 @@ class _CampaignDetailPageState extends State<CampaignDetailPage> {
                                               onTap: () {
                                                 AppUtils.contributorUsers(
                                                   context,
-                                                  widget.campaign.contributors!,
+                                                  widget
+                                                      .campaign
+                                                      .campaignContributors!,
                                                 );
                                               },
                                               child: Row(
@@ -962,7 +982,7 @@ class _CampaignDetailPageState extends State<CampaignDetailPage> {
                                                   AppUtils.contributores(
                                                     widget
                                                         .campaign
-                                                        .contributors!,
+                                                        .campaignContributors!,
                                                   ),
                                                 ],
                                               ),
@@ -1024,11 +1044,10 @@ class _CampaignDetailPageState extends State<CampaignDetailPage> {
                           unselectedLabelStyle: TextStyle(
                             fontWeight: FontWeight.normal,
                             fontFamily: AppStrings.fontFamily,
-
                           ),
                           unselectedLabelColor: Colors.black54,
                           isScrollable: true,
-                          onTap: (index){
+                          onTap: (index) {
                             setState(() {
                               selected = index;
                             });
@@ -1038,11 +1057,11 @@ class _CampaignDetailPageState extends State<CampaignDetailPage> {
                             Text("Documentações"),
                             Text("Actualizações"),
                             Text("Ajuda"),
-
                           ],
                         ),
                         _menuWidget(state.campaign),
                         SizedBox(height: 90),
+
                         // TabBarView(
                         //   children: [
                         //     AboutWidget(campaign: state.campaign),
@@ -1051,8 +1070,6 @@ class _CampaignDetailPageState extends State<CampaignDetailPage> {
                         //     HelpWidget(campaign: state.campaign),
                         //   ],
                         // ),
-
-
                       ],
                     ),
                   );
@@ -1082,7 +1099,7 @@ class _CampaignDetailPageState extends State<CampaignDetailPage> {
                     ),
                     onPressed: () {
                       Get.toNamed(
-                        AppRoutes.paymentRoute,
+                        AppRouter.paymentRoute,
                         arguments: widget.campaign,
                       );
                     },
@@ -1122,14 +1139,14 @@ class UpdateWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(10.0),
-      child: (campaign.updates!.length == 0)
+      child: (campaign.campaignUpdates!.isEmpty)
           ? Center(child: Text("Sem actualizações"))
           : ListView.separated(
               physics: ClampingScrollPhysics(),
               shrinkWrap: true,
               padding: EdgeInsets.zero,
               itemBuilder: (context, index) {
-                final update = campaign.updates![index];
+                final update = campaign.campaignUpdates![index];
                 return Card(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
@@ -1163,7 +1180,7 @@ class UpdateWidget extends StatelessWidget {
               separatorBuilder: (context, index) {
                 return const SizedBox(height: 10);
               },
-              itemCount: campaign.updates!.length,
+              itemCount: campaign.campaignUpdates!.length,
             ),
     );
   }
@@ -1183,10 +1200,10 @@ class _DocumentWidgetState extends State<DocumentWidget> {
   @override
   void initState() {
     super.initState();
-    widget.campaign.documents!.forEach((element) {
-      if (element.isApproved == true) {
-        counterApprovedDoc.add(true);
-      }
+    widget.campaign.campaignComments!.forEach((element) {
+      // if (element.isApproved == true) {
+      //   counterApprovedDoc.add(true);
+      // }
     });
   }
 
@@ -1200,7 +1217,7 @@ class _DocumentWidgetState extends State<DocumentWidget> {
         padding: EdgeInsets.zero,
         children: [
           const SizedBox(height: 20),
-          (widget.campaign.documents!.length == 0)
+          (widget.campaign.campaignDocuments!.isEmpty)
               ? SizedBox.shrink()
               : Container(
                   width: double.infinity,
@@ -1213,15 +1230,15 @@ class _DocumentWidgetState extends State<DocumentWidget> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       (counterApprovedDoc.length ==
-                              widget.campaign.documents!.length)
+                              widget.campaign.campaignDocuments!.length)
                           ? SvgPicture.asset(
-                              AppIcons.shieldTrust,
+                              Assets.icons.shieldTrust.path,
                               color: AppColors.primaryColor,
                             )
                           : Icon(Icons.close, color: Colors.red),
                       const SizedBox(width: 10),
                       (counterApprovedDoc.length ==
-                              widget.campaign.documents!.length)
+                              widget.campaign.campaignDocuments!.length)
                           ? Text(
                               "Documentos aprovados e verificados",
                               style: TextStyle(
@@ -1245,7 +1262,7 @@ class _DocumentWidgetState extends State<DocumentWidget> {
               width: 280,
               height: 180,
               color: Colors.black12,
-              child: (widget.campaign.documents!.length < 1)
+              child: (widget.campaign.campaignDocuments!.isEmpty)
                   ? Center(child: Text("Vazio"))
                   : PDF(
                       enableSwipe: false,
@@ -1266,7 +1283,9 @@ class _DocumentWidgetState extends State<DocumentWidget> {
                       onPageChanged: ((int? page, int? total) {
                         print('page change: $page/$total');
                       }),
-                    ).fromUrl(widget.campaign.documents![0].documentPath!),
+                    ).fromUrl(
+                      widget.campaign.campaignDocuments![0].documentPath,
+                    ),
             ),
           ),
           const SizedBox(height: 10),
@@ -1280,7 +1299,7 @@ class _DocumentWidgetState extends State<DocumentWidget> {
                       width: 50,
                       height: 100,
                       color: Colors.black12,
-                      child: (widget.campaign.documents!.length <= 1)
+                      child: (widget.campaign.campaignDocuments!.length <= 1)
                           ? Center(child: Text("Vazio"))
                           : PDF(
                               enableSwipe: false,
@@ -1302,7 +1321,10 @@ class _DocumentWidgetState extends State<DocumentWidget> {
                                 print('page change: $page/$total');
                               }),
                             ).fromUrl(
-                              widget.campaign.documents![1].documentPath!,
+                              widget
+                                  .campaign
+                                  .campaignDocuments![1]
+                                  .documentPath!,
                             ),
                     ),
                   ),
@@ -1312,7 +1334,7 @@ class _DocumentWidgetState extends State<DocumentWidget> {
                       width: 50,
                       height: 100,
                       color: Colors.black12,
-                      child: (widget.campaign.documents!.length <= 2)
+                      child: (widget.campaign.campaignDocuments!.length <= 2)
                           ? Center(child: Text("Vazio"))
                           : PDF(
                               enableSwipe: false,
@@ -1334,7 +1356,10 @@ class _DocumentWidgetState extends State<DocumentWidget> {
                                 print('page change: $page/$total');
                               }),
                             ).fromUrl(
-                              widget.campaign.documents![2].documentPath!,
+                              widget
+                                  .campaign
+                                  .campaignDocuments![2]
+                                  .documentPath!,
                             ),
                     ),
                   ),
@@ -1344,7 +1369,7 @@ class _DocumentWidgetState extends State<DocumentWidget> {
                       width: 50,
                       height: 100,
                       color: Colors.black12,
-                      child: (widget.campaign.documents!.length < 4)
+                      child: (widget.campaign.campaignDocuments!.length < 4)
                           ? Center(child: Text("Vazio"))
                           : PDF(
                               enableSwipe: false,
@@ -1366,7 +1391,10 @@ class _DocumentWidgetState extends State<DocumentWidget> {
                                 print('page change: $page/$total');
                               }),
                             ).fromUrl(
-                              widget.campaign.documents![3].documentPath!,
+                              widget
+                                  .campaign
+                                  .campaignDocuments![3]
+                                  .documentPath!,
                             ),
                     ),
                   ),
@@ -1408,63 +1436,63 @@ class _AboutWidgetState extends State<AboutWidget> {
                 SizedBox(
                   width: double.infinity,
                   height: 200,
-                  child: (widget.campaign.midias!.isEmpty)
+                  child: (widget.campaign.campaignMidias!.isEmpty)
                       ? (widget.campaign.imageCoverUrl == null)
-                      ? Image.asset(AppImages.coverBackground)
-                      : InkWell(
-                    onTap: () => _openPreview(
-                      context,
-                      "local",
-                      AppImages.coverBackground,
-                    ),
-                    child: CachedNetworkImage(
-                      imageUrl: widget.campaign.imageCoverUrl!,
-                      fit: BoxFit.cover,
-                      placeholder: (context, url) =>
-                      const CircularProgressIndicator(),
-                    ),
-                  )
+                            ? Image.asset(Assets.images.coverBackground.path)
+                            : InkWell(
+                                onTap: () => _openPreview(
+                                  context,
+                                  "local",
+                                  Assets.images.coverBackground.path,
+                                ),
+                                child: CachedNetworkImage(
+                                  imageUrl: widget.campaign.imageCoverUrl!,
+                                  fit: BoxFit.cover,
+                                  placeholder: (context, url) =>
+                                      const CircularProgressIndicator(),
+                                ),
+                              )
                       : CarouselSlider.builder(
-                    itemCount: widget.campaign.midias!.length,
-                    itemBuilder:
-                        (BuildContext context, int itemIndex, int _) {
-                      final campaignMidia =
-                      widget.campaign.midias![itemIndex];
+                          itemCount: widget.campaign.campaignMidias!.length,
+                          itemBuilder:
+                              (BuildContext context, int itemIndex, int _) {
+                                final campaignMidia =
+                                    widget.campaign.campaignMidias![itemIndex];
 
-                      return GestureDetector(
-                        onTap: () => _openPreview(
-                          context,
-                          campaignMidia.midiaType!,
-                          campaignMidia.midiaUrl!,
-                        ),
-                        child: Container(
-                          color: AppColors.primaryColor,
-                          width: double.infinity,
-                          height: 200,
-                          child: campaignMidia.midiaType == "video"
-                              ? VideoThumbnail(
-                            videoUrl: campaignMidia.midiaUrl!,
-                          )
-                              : CachedNetworkImage(
-                            width: double.infinity,
+                                return GestureDetector(
+                                  onTap: () => _openPreview(
+                                    context,
+                                    campaignMidia.midiaType,
+                                    campaignMidia.midiaUrl,
+                                  ),
+                                  child: Container(
+                                    color: AppColors.primaryColor,
+                                    width: double.infinity,
+                                    height: 200,
+                                    child: campaignMidia.midiaType == "video"
+                                        ? VideoThumbnail(
+                                            videoUrl: campaignMidia.midiaUrl!,
+                                          )
+                                        : CachedNetworkImage(
+                                            width: double.infinity,
+                                            height: 200,
+                                            fit: BoxFit.cover,
+                                            imageUrl: campaignMidia.midiaUrl!,
+                                          ),
+                                  ),
+                                );
+                              },
+                          options: CarouselOptions(
                             height: 200,
-                            fit: BoxFit.cover,
-                            imageUrl: campaignMidia.midiaUrl!,
+                            aspectRatio: 16 / 9,
+                            viewportFraction: 0.95,
+                            initialPage: 0,
+                            enableInfiniteScroll: true,
+                            animateToClosest: true,
+                            autoPlay: false,
+                            scrollDirection: Axis.horizontal,
                           ),
                         ),
-                      );
-                    },
-                    options: CarouselOptions(
-                      height: 200,
-                      aspectRatio: 16 / 9,
-                      viewportFraction: 0.95,
-                      initialPage: 0,
-                      enableInfiniteScroll: true,
-                      animateToClosest: true,
-                      autoPlay: false,
-                      scrollDirection: Axis.horizontal,
-                    ),
-                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(16.0),
@@ -1483,14 +1511,13 @@ class _AboutWidgetState extends State<AboutWidget> {
                             children: [
                               TextSpan(
                                 text:
-                                (widget.campaign.campaignType ==
-                                    "Um Individuo")
+                                    (widget.campaign.campaignType ==
+                                        "Um Individuo")
                                     ? "Beneficiário: "
                                     : "Intsituicao: ",
                               ),
                               TextSpan(
-                                text:
-                                (widget.campaign.beneficiaryName == null)
+                                text: (widget.campaign.beneficiaryName == null)
                                     ? "Não especificado"
                                     : widget.campaign.beneficiaryName!,
                                 style: TextStyle(fontWeight: FontWeight.bold),
@@ -1529,10 +1556,10 @@ class _AboutWidgetState extends State<AboutWidget> {
 class VideoThumbnail extends StatefulWidget {
   final String videoUrl;
 
-  const VideoThumbnail({Key? key, required this.videoUrl}) : super(key: key);
+  const VideoThumbnail({super.key, required this.videoUrl});
 
   @override
-  _VideoThumbnailState createState() => _VideoThumbnailState();
+  State<VideoThumbnail> createState() => _VideoThumbnailState();
 }
 
 class _VideoThumbnailState extends State<VideoThumbnail> {
@@ -1581,7 +1608,7 @@ class FullScreenPreview extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _FullScreenPreviewState createState() => _FullScreenPreviewState();
+  State<FullScreenPreview> createState() => _FullScreenPreviewState();
 }
 
 class _FullScreenPreviewState extends State<FullScreenPreview> {
@@ -1642,15 +1669,15 @@ class HelpWidget extends StatelessWidget {
       physics: ClampingScrollPhysics(),
       children: [
         ExpansionTile(
-          title: Text('Comentários [${campaign.comments!.length}]'),
+          title: Text('Comentários [${campaign.campaignComments!.length}]'),
           children: [
             Container(
               height: 200, // Define a altura da lista de comentários
               child: ListView.builder(
-                itemCount: campaign.comments!.length,
+                itemCount: campaign.campaignComments!.length,
                 padding: EdgeInsets.zero,
                 itemBuilder: (context, index) {
-                  final comment = campaign.comments![index];
+                  final comment = campaign.campaignComments![index];
                   return ListTile(
                     // titleAlignment: ListTileTitleAlignment.center,
                     leading: ClipRRect(
@@ -1680,7 +1707,7 @@ class HelpWidget extends StatelessWidget {
                       children: [
                         Text(
                           AppDateUtilsHelper.formatDate(
-                            data: comment.user!.createdAt!,
+                            data: comment.createdAt!,
                             showTime: true,
                           ),
                           style: TextStyle(fontSize: 14),
@@ -1864,15 +1891,15 @@ class HelpWidget extends StatelessWidget {
   }
 }
 
-// class CampaignDetailPage extends StatefulWidget {
+// class CampaignDetailsPage extends StatefulWidget {
 //   final CampaignEntity campaign;
-//   const CampaignDetailPage({super.key, required this.campaign});
+//   const CampaignDetailsPage({super.key, required this.campaign});
 
 //   @override
-//   State<CampaignDetailPage> createState() => _CampaignDetailPageState();
+//   State<CampaignDetailsPage> createState() => _CampaignDetailsPageState();
 // }
 
-// class _CampaignDetailPageState extends State<CampaignDetailPage> {
+// class _CampaignDetailsPageState extends State<CampaignDetailsPage> {
 //   ValueNotifier<Color> color = ValueNotifier(AppColors.whiteColor);
 //   List<String> menuList = ["Sobre", "Documentos", "Actualizações", "Ajuda"];
 //   int selected = 0;
@@ -2421,7 +2448,7 @@ class HelpWidget extends StatelessWidget {
 //   @override
 //   void initState() {
 //     super.initState();
-//     widget.campaign.documents!.forEach((element) {
+//     widget.campaign.campaignDocuments!.forEach((element) {
 //       if (element.isApproved == true) {
 //         counterApprovedDoc.add(true);
 //       }
@@ -2437,7 +2464,7 @@ class HelpWidget extends StatelessWidget {
 //           crossAxisAlignment: CrossAxisAlignment.start,
 //           children: [
 //             const SizedBox(height: 20),
-//             (widget.campaign.documents!.length == 0)
+//             (widget.campaign.campaignDocuments!.length == 0)
 //                 ? SizedBox.shrink()
 //                 : Container(
 //                     width: double.infinity,
@@ -2450,7 +2477,7 @@ class HelpWidget extends StatelessWidget {
 //                       mainAxisAlignment: MainAxisAlignment.center,
 //                       children: [
 //                         (counterApprovedDoc.length ==
-//                                 widget.campaign.documents!.length)
+//                                 widget.campaign.campaignDocuments!.length)
 //                             ? SvgPicture.asset(
 //                                 AppIcons.shieldTrust,
 //                                 color: AppColors.primaryColor,
@@ -2458,7 +2485,7 @@ class HelpWidget extends StatelessWidget {
 //                             : Icon(Icons.close, color: Colors.red),
 //                         const SizedBox(width: 10),
 //                         (counterApprovedDoc.length ==
-//                                 widget.campaign.documents!.length)
+//                                 widget.campaign.campaignDocuments!.length)
 //                             ? Text(
 //                                 "Documentos aprovados e verificados",
 //                                 style: TextStyle(
@@ -2482,7 +2509,7 @@ class HelpWidget extends StatelessWidget {
 //                 width: 280,
 //                 height: 180,
 //                 color: Colors.black12,
-//                 child: (widget.campaign.documents!.length < 1)
+//                 child: (widget.campaign.campaignDocuments!.length < 1)
 //                     ? Center(child: Text("Vazio"))
 //                     : PDF(
 //                         enableSwipe: false,
@@ -2503,7 +2530,7 @@ class HelpWidget extends StatelessWidget {
 //                         onPageChanged: ((int? page, int? total) {
 //                           print('page change: $page/$total');
 //                         }),
-//                       ).fromUrl(widget.campaign.documents![0].documentPath!),
+//                       ).fromUrl(widget.campaign.campaignDocuments![0].documentPath!),
 //               ),
 //             ),
 //             const SizedBox(height: 10),
@@ -2517,7 +2544,7 @@ class HelpWidget extends StatelessWidget {
 //                         width: 50,
 //                         height: 100,
 //                         color: Colors.black12,
-//                         child: (widget.campaign.documents!.length <= 1)
+//                         child: (widget.campaign.campaignDocuments!.length <= 1)
 //                             ? Center(child: Text("Vazio"))
 //                             : PDF(
 //                                 enableSwipe: false,
@@ -2539,7 +2566,7 @@ class HelpWidget extends StatelessWidget {
 //                                   print('page change: $page/$total');
 //                                 }),
 //                               ).fromUrl(
-//                                 widget.campaign.documents![1].documentPath!,
+//                                 widget.campaign.campaignDocuments![1].documentPath!,
 //                               ),
 //                       ),
 //                     ),
@@ -2549,7 +2576,7 @@ class HelpWidget extends StatelessWidget {
 //                         width: 50,
 //                         height: 100,
 //                         color: Colors.black12,
-//                         child: (widget.campaign.documents!.length <= 2)
+//                         child: (widget.campaign.campaignDocuments!.length <= 2)
 //                             ? Center(child: Text("Vazio"))
 //                             : PDF(
 //                                 enableSwipe: false,
@@ -2571,7 +2598,7 @@ class HelpWidget extends StatelessWidget {
 //                                   print('page change: $page/$total');
 //                                 }),
 //                               ).fromUrl(
-//                                 widget.campaign.documents![2].documentPath!,
+//                                 widget.campaign.campaignDocuments![2].documentPath!,
 //                               ),
 //                       ),
 //                     ),
@@ -2581,7 +2608,7 @@ class HelpWidget extends StatelessWidget {
 //                         width: 50,
 //                         height: 100,
 //                         color: Colors.black12,
-//                         child: (widget.campaign.documents!.length < 4)
+//                         child: (widget.campaign.campaignDocuments!.length < 4)
 //                             ? Center(child: Text("Vazio"))
 //                             : PDF(
 //                                 enableSwipe: false,
@@ -2603,7 +2630,7 @@ class HelpWidget extends StatelessWidget {
 //                                   print('page change: $page/$total');
 //                                 }),
 //                               ).fromUrl(
-//                                 widget.campaign.documents![3].documentPath!,
+//                                 widget.campaign.campaignDocuments![3].documentPath!,
 //                               ),
 //                       ),
 //                     ),
@@ -2645,7 +2672,7 @@ class HelpWidget extends StatelessWidget {
 //                   SizedBox(
 //                     width: double.infinity,
 //                     height: 200,
-//                     child: (widget.campaign.midias!.isEmpty)
+//                     child: (widget.campaign.campaignMidias!.isEmpty)
 //                         ? (widget.campaign.imageCoverUrl == null)
 //                               ? Image.asset(AppImages.coverBackground)
 //                               : InkWell(
@@ -2662,11 +2689,11 @@ class HelpWidget extends StatelessWidget {
 //                                   ),
 //                                 )
 //                         : CarouselSlider.builder(
-//                             itemCount: widget.campaign.midias!.length,
+//                             itemCount: widget.campaign.campaignMidias!.length,
 //                             itemBuilder:
 //                                 (BuildContext context, int itemIndex, int _) {
 //                                   final campaignMidia =
-//                                       widget.campaign.midias![itemIndex];
+//                                       widget.campaign.campaignMidias![itemIndex];
 
 //                                   return GestureDetector(
 //                                     onTap: () => _openPreview(

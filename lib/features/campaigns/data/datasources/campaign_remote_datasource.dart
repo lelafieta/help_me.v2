@@ -11,21 +11,9 @@ class CampaignRemoteDataSource implements ICampaignRemoteDataSource {
 
   @override
   Future<CampaignModel> createCampaign(
-    CreateCampaignDto dto,
-    List<MultipartFile> documents,
-    List<MultipartFile> midias,
-    MultipartFile cover,
+    CreateCampaignDto createCampaignDto,
   ) async {
-    final formData = FormData.fromMap({
-      'title': dto.title,
-      'description': dto.description,
-      'status': dto.status,
-      'userId': dto.userId,
-      'categoryId': dto.categoryId,
-      'imageCoverUrl': cover,
-      'campaignDocuments': documents,
-      'campaignMidias': midias,
-    });
+    final formData = FormData.fromMap({});
     final response = await dio.post('/campaigns', data: formData);
     return CampaignModel.fromJson(response.data);
   }

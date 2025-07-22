@@ -1,4 +1,3 @@
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:help_me/core/error/failures.dart';
@@ -16,6 +15,8 @@ import 'package:help_me/features/campaigns/domain/usecases/get_my_campaigns_by_s
 import 'package:help_me/features/campaigns/domain/usecases/get_urgent_campaigns_smart_usecase.dart';
 import 'package:help_me/features/campaigns/domain/usecases/update_campaign_usecase.dart';
 import 'package:dio/dio.dart';
+
+import '../../domain/params/create_campaign_params.dart';
 
 part 'campaign_state.dart';
 
@@ -62,12 +63,7 @@ class CampaignCubit extends Cubit<CampaignState> {
     required MultipartFile cover,
   }) async {
     emit(CampaignLoading());
-    final result = await createCampaignUseCase(CreateCampaignParams(
-      dto: dto,
-      documents: documents,
-      midias: midias,
-      cover: cover,
-    ));
+    final result = await createCampaignUseCase(CreateCampaignParams());
     result.fold(
       (failure) => emit(CampaignError(message: _mapFailureToMessage(failure))),
       (campaign) => emit(CampaignCreated(campaign: campaign)),
@@ -85,7 +81,9 @@ class CampaignCubit extends Cubit<CampaignState> {
 
   Future<void> getCampaignsByUserId(int userId) async {
     emit(CampaignLoading());
-    final result = await getCampaignsByUserIdUseCase(GetCampaignsByUserIdParams(userId: userId));
+    final result = await getCampaignsByUserIdUseCase(
+      GetCampaignsByUserIdParams(userId: userId),
+    );
     result.fold(
       (failure) => emit(CampaignError(message: _mapFailureToMessage(failure))),
       (campaigns) => emit(CampaignLoaded(campaigns: campaigns)),
@@ -103,7 +101,9 @@ class CampaignCubit extends Cubit<CampaignState> {
 
   Future<void> getCampaignsByCategoryId(int categoryId) async {
     emit(CampaignLoading());
-    final result = await getCampaignsByCategoryIdUseCase(GetCampaignsByCategoryIdParams(categoryId: categoryId));
+    final result = await getCampaignsByCategoryIdUseCase(
+      GetCampaignsByCategoryIdParams(categoryId: categoryId),
+    );
     result.fold(
       (failure) => emit(CampaignError(message: _mapFailureToMessage(failure))),
       (campaigns) => emit(CampaignLoaded(campaigns: campaigns)),
@@ -112,7 +112,9 @@ class CampaignCubit extends Cubit<CampaignState> {
 
   Future<void> getMyCampaignsByStatus(int userId, String status) async {
     emit(CampaignLoading());
-    final result = await getMyCampaignsByStatusUseCase(GetMyCampaignsByStatusParams(userId: userId, status: status));
+    final result = await getMyCampaignsByStatusUseCase(
+      GetMyCampaignsByStatusParams(userId: userId, status: status),
+    );
     result.fold(
       (failure) => emit(CampaignError(message: _mapFailureToMessage(failure))),
       (campaigns) => emit(CampaignLoaded(campaigns: campaigns)),
@@ -121,7 +123,9 @@ class CampaignCubit extends Cubit<CampaignState> {
 
   Future<void> getUrgentCampaignsSmart(int userId) async {
     emit(CampaignLoading());
-    final result = await getUrgentCampaignsSmartUseCase(GetUrgentCampaignsSmartParams(userId: userId));
+    final result = await getUrgentCampaignsSmartUseCase(
+      GetUrgentCampaignsSmartParams(userId: userId),
+    );
     result.fold(
       (failure) => emit(CampaignError(message: _mapFailureToMessage(failure))),
       (campaigns) => emit(CampaignLoaded(campaigns: campaigns)),
@@ -130,7 +134,9 @@ class CampaignCubit extends Cubit<CampaignState> {
 
   Future<void> updateCampaign(int id, UpdateCampaignDto dto) async {
     emit(CampaignLoading());
-    final result = await updateCampaignUseCase(UpdateCampaignParams(id: id, dto: dto));
+    final result = await updateCampaignUseCase(
+      UpdateCampaignParams(id: id, dto: dto),
+    );
     result.fold(
       (failure) => emit(CampaignError(message: _mapFailureToMessage(failure))),
       (campaign) => emit(CampaignUpdated(campaign: campaign)),

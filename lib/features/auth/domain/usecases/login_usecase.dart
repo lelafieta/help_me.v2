@@ -8,7 +8,7 @@ import '../repositories/auth_repository.dart';
 class LoginUseCase implements UseCase<AuthResponseEntity, LoginRequestParams> {
   final AuthRepository repository;
 
-  LoginUseCase(this.repository);
+  LoginUseCase({required this.repository});
 
   @override
   Future<Either<Failure, AuthResponseEntity>> call(
