@@ -3,12 +3,11 @@ import 'package:equatable/equatable.dart';
 import 'package:help_me/core/error/failures.dart';
 import 'package:help_me/core/usecases/usecase.dart';
 import 'package:help_me/features/campaigns/domain/entities/campaign_entity.dart';
-
-import '../../data/repositories/campaign_repository.dart';
+import '../repositories/i_campaign_repository.dart';
 
 class GetCampaignByIdUseCase
     extends UseCase<CampaignEntity, GetCampaignByIdParams> {
-  final CampaignRepository repository;
+  final ICampaignRepository repository;
 
   GetCampaignByIdUseCase({required this.repository});
 

@@ -520,6 +520,7 @@ import 'package:get/get.dart';
 import '../../../../../gen/assets.gen.dart';
 import '../../../../config/router/app_router.dart';
 import '../../../../config/themes/app_colors.dart';
+import '../../../../core/api/end_poitns.dart';
 import '../../../../core/utils/app_date_utils_helper.dart';
 import '../../../../core/utils/app_functions_utils_helper.dart';
 import '../../../../core/utils/app_utils.dart';
@@ -563,7 +564,8 @@ class CampaignWidget extends StatelessWidget {
                                   fit: BoxFit.cover,
                                 )
                               : CachedNetworkImage(
-                                  imageUrl: campaign.imageCoverUrl!,
+                                  imageUrl:
+                                      "${Endpoints.baseUrl}${campaign.imageCoverUrl}",
                                   fit: BoxFit.cover,
                                   placeholder: (context, url) => const Center(
                                     child: SizedBox(

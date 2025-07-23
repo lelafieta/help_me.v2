@@ -18,6 +18,7 @@ import 'package:help_me/features/profile/presentation/cubit/count_donation_cubit
 import 'package:help_me/features/solidary/presentation/cubit/solidary_cubit.dart';
 import 'package:help_me/features/campaigns/presentation/cubit/campaign_cubit.dart';
 
+import 'features/campaigns/presentation/cubit/campaign_detail_cubit/campaign_detail_cubit.dart';
 import 'features/categories/presentation/cubit/category_cubit.dart';
 import 'features/favorites/presentation/cubit/favorite_cubit.dart';
 import 'injection_container.dart' as di;
@@ -67,7 +68,11 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => di.sl<CampaignCubit>()),
         BlocProvider(create: (context) => di.sl<UrgentCampaignCubit>()),
         BlocProvider(create: (context) => di.sl<FavoriteCubit>()),
+        BlocProvider(create: (context) => di.sl<CampaignDetailCubit>()),
         BlocProvider(create: (context) => di.sl<CampaignStoreFavoriteCubit>()),
+        //
+
+        //
       ],
       child: BlocBuilder<ThemeCubit, ThemeState>(
         builder: (context, state) {

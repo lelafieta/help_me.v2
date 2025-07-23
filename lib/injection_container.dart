@@ -7,13 +7,10 @@ import 'package:help_me/features/campaigns/data/datasources/update_remote_dataso
 import 'package:help_me/features/campaigns/data/repositories/donation_repository.dart';
 import 'package:help_me/features/campaigns/data/repositories/update_repository.dart';
 import 'package:help_me/features/campaigns/domain/repositories/i_donation_respository.dart';
-import 'package:help_me/features/campaigns/domain/repositories/i_update_repository.dart';
 import 'package:help_me/features/campaigns/domain/usecases/create_campaign_update_usecase.dart';
 import 'package:help_me/features/campaigns/domain/usecases/delete_campaign_update_usecase.dart';
 import 'package:help_me/features/campaigns/domain/usecases/get_all_my_campaigns_usecase.dart';
 import 'package:help_me/features/campaigns/domain/usecases/get_all_urgent_campaigns_usecase.dart';
-import 'package:help_me/features/campaigns/domain/usecases/get_campaign_updates_usecase.dart';
-import 'package:help_me/features/campaigns/domain/usecases/get_latest_urgent_campaigns_usecase.dart';
 import 'package:help_me/features/campaigns/domain/usecases/update_campaign_update_usecase.dart';
 import 'package:help_me/features/favorites/data/datasources/favorite_datasource.dart';
 import 'package:help_me/features/favorites/data/datasources/i_favorite_datasource.dart';
@@ -43,12 +40,15 @@ import 'features/campaigns/data/datasources/i_campaign_remote_data_source.dart';
 import 'features/campaigns/data/datasources/campaign_remote_datasource.dart';
 import 'features/campaigns/data/repositories/campaign_repository.dart';
 import 'features/campaigns/domain/repositories/i_campaign_repository.dart';
+import 'features/campaigns/domain/repositories/i_update_repository.dart';
 import 'features/campaigns/domain/usecases/create_campaign_usecase.dart';
 import 'features/campaigns/domain/usecases/delete_campaign_usecase.dart';
 import 'features/campaigns/domain/usecases/get_all_campaigns_usecase.dart';
 import 'features/campaigns/domain/usecases/get_campaign_by_id_usecase.dart';
+import 'features/campaigns/domain/usecases/get_campaign_updates_usecase.dart';
 import 'features/campaigns/domain/usecases/get_campaigns_by_category_id_usecase.dart';
 import 'features/campaigns/domain/usecases/get_campaigns_by_user_id_usecase.dart';
+import 'features/campaigns/domain/usecases/get_latest_urgent_campaigns_usecase.dart';
 import 'features/campaigns/domain/usecases/get_my_campaigns_by_status_usecase.dart';
 import 'features/campaigns/domain/usecases/get_urgent_campaigns_smart_usecase.dart';
 import 'features/campaigns/domain/usecases/update_campaign_usecase.dart';
@@ -73,7 +73,6 @@ import 'features/favorites/domain/usecases/add_favorite_usecase.dart';
 import 'features/favorites/domain/usecases/remove_favorite_usecase.dart';
 import 'features/favorites/presentation/cubit/favorite_cubit.dart';
 import 'features/home/presentation/cubit/urgent_campaign/urgent_campaign_cubit.dart';
-import 'features/profile/presentation/cubit/count_donation_cubit/count_donation_cubit.dart';
 import 'features/profile/presentation/cubit/profile_cubit.dart';
 import 'features/solidary/presentation/cubit/solidary_cubit.dart';
 
@@ -116,7 +115,7 @@ Future<void> init() async {
   );
   // Features - Profile
   sl.registerFactory(() => ProfileCubit());
-  sl.registerFactory(() => CountDonationCubit());
+  // sl.registerFactory(() => CountDonationCubit(getCountMyDonationsUseCase: sl()));
 
   // Features - Solidary
   sl.registerFactory(() => SolidaryCubit());
@@ -147,6 +146,7 @@ Future<void> init() async {
       updateCampaignUseCase: sl(),
     ),
   );
+
   sl.registerFactory(() => CampaignDetailCubit(getCampaignByIdUseCase: sl()));
   sl.registerFactory(() => CategoryCampaignCubit(getAllCampaignsUseCase: sl()));
   sl.registerFactory(
@@ -193,6 +193,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => GetAllFavoritesByUseCase(repository: sl()));
   sl.registerLazySingleton(() => GetFavoritesByTypeUseCase(repository: sl()));
   sl.registerLazySingleton(() => IsMyFavoriteUseCase(repository: sl()));
+  // sl.registerLazySingleton(() => GetCountMyDonationsUseCase(repository: sl()));
 
   // Repository
   sl.registerLazySingleton<AuthRepository>(
@@ -202,12 +203,15 @@ Future<void> init() async {
       networkInfo: sl(),
     ),
   );
-  sl.registerLazySingleton<CategoryRepository>(
-    () => CategoryRepositoryImpl(remoteDataSource: sl(), networkInfo: sl()),
-  );
+
   sl.registerLazySingleton<ICampaignRepository>(
     () => CampaignRepository(remoteDataSource: sl(), networkInfo: sl()),
   );
+
+  sl.registerLazySingleton<CategoryRepository>(
+    () => CategoryRepositoryImpl(remoteDataSource: sl(), networkInfo: sl()),
+  );
+
   sl.registerLazySingleton<IFavoriteRepository>(
     () => FavoriteRepository(networkInfo: sl(), favoriteDataSource: sl()),
   );

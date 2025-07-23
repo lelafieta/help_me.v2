@@ -3,10 +3,10 @@ import '../../../../core/error/failures.dart';
 import '../../../../core/usecases/usecase.dart';
 import '../../data/repositories/favorite_repository.dart';
 import '../entities/favorite_entity.dart';
-
+import '../repositories/i_favorite_repository.dart';
 
 class AddFavoriteUseCase extends UseCase<Unit, FavoriteEntity> {
-  final FavoriteRepository repository;
+  final IFavoriteRepository repository;
 
   AddFavoriteUseCase({required this.repository});
 
