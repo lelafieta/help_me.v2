@@ -132,6 +132,9 @@ dependencies:
   webview_flutter: ^4.13.0
   appinio_social_share: ^0.3.2
 
+flutter_gen:
+  output: lib/core/gen 
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
