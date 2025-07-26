@@ -28,7 +28,6 @@ import '../../../ongs/presentation/cubit/ong_state.dart';
 import '../../../ongs/presentation/widgets/ong_widget.dart';
 import '../../../solidary/cubit/solidary_cubit.dart';
 import '../cubit/home_campaign_cubit/home_campaign_state.dart';
-import '../cubit/home_profile_data_cubit/home_profile_data_cubit.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -50,6 +49,51 @@ class _HomePageState extends State<HomePage> {
     context.read<EventCubit>().getLatestEvents();
     context.read<OngCubit>().getLatestOngs();
   }
+
+  final List<Map<String, Color>> colorPairs = [
+    {
+      'background': const Color.fromRGBO(255, 0, 0, 0.2), // vermelho vivo opaco
+      'color': const Color(0xFFFF0000), // vermelho vivo
+    },
+    {
+      'background': const Color.fromRGBO(0, 122, 255, 0.2), // azul vivo opaco
+      'color': const Color(0xFF007AFF), // azul vivo
+    },
+    {
+      'background': const Color.fromRGBO(
+        255,
+        204,
+        0,
+        0.2,
+      ), // amarelo ouro opaco
+      'color': const Color(0xFFFFCC00), // amarelo ouro
+    },
+    {
+      'background': const Color.fromRGBO(52, 199, 89, 0.2), // verde limão opaco
+      'color': const Color(0xFF34C759), // verde limão
+    },
+    {
+      'background': const Color.fromRGBO(175, 82, 222, 0.2), // roxo opaco
+      'color': const Color(0xFFAF52DE), // roxo
+    },
+    {
+      'background': const Color.fromRGBO(255, 45, 85, 0.2), // rosa choque opaco
+      'color': const Color(0xFFFF2D55), // rosa choque
+    },
+    {
+      'background': const Color.fromRGBO(90, 200, 250, 0.2), // azul claro opaco
+      'color': const Color(0xFF5AC8FA), // azul claro
+    },
+    {
+      'background': const Color.fromRGBO(
+        255,
+        159,
+        10,
+        0.2,
+      ), // laranja queimado opaco
+      'color': const Color(0xFFFF9F0A), // laranja queimado
+    },
+  ];
 
   Future<void> getUserData() async {
     secureCacheHelper.getData(key: "fullName").then((value) {
@@ -99,7 +143,7 @@ class _HomePageState extends State<HomePage> {
                               )
                       : SizedBox.shrink(),
                 ),
-                trailing: Container(
+                trailing: SizedBox(
                   width: 100,
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.end,
@@ -287,27 +331,29 @@ class _HomePageState extends State<HomePage> {
                                 arguments: categories[index],
                               );
                             },
-                            child: Container(
-                              child: Column(
-                                children: [
-                                  Card(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    child: Container(
-                                      width: 60,
-                                      height: 60,
-                                      padding: const EdgeInsets.all(18),
-                                      child: SvgPicture.asset(
-                                        categories[index].iconPath!,
-                                        width: 12,
-                                        color: AppColors.primaryColor,
-                                      ),
-                                    ),
+                            child: Column(
+                              children: [
+                                Container(
+                                  width: 60,
+                                  height: 60,
+                                  padding: const EdgeInsets.all(18),
+                                  decoration: BoxDecoration(
+                                    color:
+                                        colorPairs[index %
+                                            colorPairs.length]['background'],
+                                    borderRadius: BorderRadius.circular(10),
                                   ),
-                                  Text(categories[index].name.toString()),
-                                ],
-                              ),
+                                  child: SvgPicture.asset(
+                                    categories[index].iconPath!,
+                                    width: 12,
+                                    color:
+                                        colorPairs[index %
+                                            colorPairs.length]['color'],
+                                  ),
+                                ),
+                                SizedBox(height: 5),
+                                Text(categories[index].name.toString()),
+                              ],
                             ),
                           );
                         },
@@ -362,7 +408,7 @@ class _HomePageState extends State<HomePage> {
                                   return CampaignWidget(campaign: camapaign);
                                 },
                             options: CarouselOptions(
-                              height: 420,
+                              height: 350,
                               aspectRatio: 16 / 9,
                               viewportFraction: 0.95,
                               initialPage: 0,
