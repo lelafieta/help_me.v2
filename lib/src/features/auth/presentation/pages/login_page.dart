@@ -216,7 +216,6 @@ import '../../../../../core/gen/assets.gen.dart';
 import '../../../../app/app_entity.dart';
 import '../../../../config/routes/app_routes.dart';
 import '../../../../config/themes/app_colors.dart';
-import '../../../../core/resources/icons/app_icons.dart';
 import '../../../../core/utils/app_utils.dart';
 import '../cubit/auth_cubit.dart';
 import '../cubit/auth_state.dart';
@@ -235,7 +234,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFEFF5EF),
+      backgroundColor: AppColors.scaffoldBackgroundColor,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: BlocConsumer<AuthCubit, AuthState>(
@@ -262,17 +261,12 @@ class _LoginPageState extends State<LoginPage> {
                     children: [
                       const SizedBox(height: 16),
                       // Logo
-                      Image.asset('assets/logo.png', height: 80),
-                      const SizedBox(height: 8),
-                      const Text(
-                        'cha•cha',
-                        style: TextStyle(
-                          fontSize: 28,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.black87,
-                        ),
+                      Image.asset(
+                        Assets.images.icon.path,
+                        width: 150,
+                        height: 80,
                       ),
-                      const SizedBox(height: 40),
+                      const SizedBox(height: 16),
 
                       const Text(
                         'Iniciar uma conta',
@@ -297,7 +291,7 @@ class _LoginPageState extends State<LoginPage> {
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       color: isEmailTab
-                                          ? Colors.green
+                                          ? AppColors.primaryColor
                                           : Colors.grey[600],
                                     ),
                                   ),
@@ -389,7 +383,7 @@ class _LoginPageState extends State<LoginPage> {
                         name: "password",
                         obscureText: true,
                         decoration: InputDecoration(
-                          hintText: "Enter your password",
+                          hintText: "Sua password",
                           prefixIcon: Container(
                             margin: EdgeInsets.all(8),
                             // padding: EdgeInsets.all(5),
@@ -483,7 +477,7 @@ class _LoginPageState extends State<LoginPage> {
                               TextSpan(
                                 text: 'Log in here.',
                                 style: TextStyle(
-                                  color: Colors.green,
+                                  color: AppColors.primaryColor,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
