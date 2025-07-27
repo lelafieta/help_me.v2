@@ -81,15 +81,7 @@ class _CampaignDetailPageState extends State<CampaignDetailPage> {
                     (isCollapsed, scrollingOffset, maxExtent) {},
                 collapsedBackgroundColor: Colors.black,
                 expandedBackgroundColor: Colors.transparent,
-                backdropWidget: CachedNetworkImage(
-                  imageUrl: widget.campaign.imageCoverUrl!,
-                  fit: BoxFit.cover,
-                  progressIndicatorBuilder: (context, url, downloadProgress) =>
-                      CircularProgressIndicator(
-                        value: downloadProgress.progress,
-                      ),
-                  errorWidget: (context, url, error) => const Icon(Icons.error),
-                ),
+                backdropWidget: SizedBox.shrink(),
                 leading: Container(
                   margin: const EdgeInsets.all(8.0),
                   decoration: BoxDecoration(
@@ -171,11 +163,20 @@ class _CampaignDetailPageState extends State<CampaignDetailPage> {
                   ),
                 ),
                 expandedContentHeight: 200,
-                expandedContent: Container(color: Colors.red.withOpacity(.4)),
+                expandedContent: CachedNetworkImage(
+                  imageUrl: widget.campaign.imageCoverUrl!,
+                  fit: BoxFit.cover,
+                  progressIndicatorBuilder: (context, url, downloadProgress) =>
+                      CircularProgressIndicator(
+                        value: downloadProgress.progress,
+                      ),
+                  errorWidget: (context, url, error) => const Icon(Icons.error),
+                ),
                 collapsedContent: SizedBox.shrink(),
                 body: Material(
                   color: Theme.of(context).scaffoldBackgroundColor,
-                  child: AboutWidget(campaign: campaign),
+                  // child: AboutWidget(campaign: campaign),
+                  child: DocumentWidget(campaign: campaign),
                 ),
                 // body: Column(
                 //   children: [
@@ -731,187 +732,201 @@ class _DocumentWidgetState extends State<DocumentWidget> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(10.0),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 20),
-            (widget.campaign.documents!.length == 0)
-                ? SizedBox.shrink()
-                : Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(15),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.white,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        (counterApprovedDoc.length ==
-                                widget.campaign.documents!.length)
-                            ? SvgPicture.asset(
-                                AppIcons.shieldTrust,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          (widget.campaign.documents!.isEmpty)
+              ? SizedBox.shrink()
+              : Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(15),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.white,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      (counterApprovedDoc.length ==
+                              widget.campaign.documents!.length)
+                          ? SvgPicture.asset(
+                              AppIcons.shieldTrust,
+                              color: AppColors.primaryColor,
+                            )
+                          : Icon(Icons.close, color: Colors.red),
+                      const SizedBox(width: 10),
+                      (counterApprovedDoc.length ==
+                              widget.campaign.documents!.length)
+                          ? Text(
+                              "Documentos aprovados e verificados",
+                              style: TextStyle(
                                 color: AppColors.primaryColor,
-                              )
-                            : Icon(Icons.close, color: Colors.red),
-                        const SizedBox(width: 10),
-                        (counterApprovedDoc.length ==
-                                widget.campaign.documents!.length)
-                            ? Text(
-                                "Documentos aprovados e verificados",
-                                style: TextStyle(
-                                  color: AppColors.primaryColor,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              )
-                            : Text(
-                                "Documentos não verificados",
-                                style: TextStyle(
-                                  color: Colors.red,
-                                  fontWeight: FontWeight.w600,
-                                ),
+                                fontWeight: FontWeight.w600,
                               ),
-                      ],
+                            )
+                          : Text(
+                              "Documentos não verificados",
+                              style: TextStyle(
+                                color: Colors.red,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                    ],
+                  ),
+                ),
+          const SizedBox(height: 20),
+          Center(
+            child: Container(
+              width: double.infinity,
+              height: 200,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: Colors.grey.shade300),
+              ),
+              child: (widget.campaign.documents!.isEmpty)
+                  ? Center(child: Text("Vazio"))
+                  : PDF(
+                      enableSwipe: false,
+                      swipeHorizontal: false,
+                      autoSpacing: false,
+                      pageFling: false,
+                      fitEachPage: false,
+                      fitPolicy: FitPolicy.HEIGHT,
+                      pageSnap: false,
+                      backgroundColor: Colors.grey,
+                      preventLinkNavigation: true,
+                      onError: (error) {
+                        print(error.toString());
+                      },
+                      onPageError: (page, error) {
+                        print('$page: ${error.toString()}');
+                      },
+                      onPageChanged: ((int? page, int? total) {
+                        print('page change: $page/$total');
+                      }),
+                    ).fromUrl(widget.campaign.documents![0].documentPath!),
+            ),
+          ),
+          const SizedBox(height: 10),
+          Center(
+            child: SizedBox(
+              width: double.infinity,
+              height: 200,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      width: 50,
+                      height: 200,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: Colors.grey.shade300),
+                      ),
+                      child: (widget.campaign.documents!.length <= 1)
+                          ? Center(child: Text("Vazio"))
+                          : PDF(
+                              enableSwipe: false,
+                              swipeHorizontal: false,
+                              autoSpacing: false,
+                              pageFling: false,
+                              fitEachPage: false,
+                              fitPolicy: FitPolicy.HEIGHT,
+                              pageSnap: false,
+                              backgroundColor: Colors.grey,
+                              preventLinkNavigation: true,
+                              onError: (error) {
+                                print(error.toString());
+                              },
+                              onPageError: (page, error) {
+                                print('$page: ${error.toString()}');
+                              },
+                              onPageChanged: ((int? page, int? total) {
+                                print('page change: $page/$total');
+                              }),
+                            ).fromUrl(
+                              widget.campaign.documents![1].documentPath!,
+                            ),
                     ),
                   ),
-            const SizedBox(height: 20),
-            Center(
-              child: Container(
-                width: 280,
-                height: 180,
-                color: Colors.black12,
-                child: (widget.campaign.documents!.length < 1)
-                    ? Center(child: Text("Vazio"))
-                    : PDF(
-                        enableSwipe: false,
-                        swipeHorizontal: false,
-                        autoSpacing: false,
-                        pageFling: false,
-                        fitEachPage: false,
-                        fitPolicy: FitPolicy.HEIGHT,
-                        pageSnap: false,
-                        backgroundColor: Colors.grey,
-                        preventLinkNavigation: true,
-                        onError: (error) {
-                          print(error.toString());
-                        },
-                        onPageError: (page, error) {
-                          print('$page: ${error.toString()}');
-                        },
-                        onPageChanged: ((int? page, int? total) {
-                          print('page change: $page/$total');
-                        }),
-                      ).fromUrl(widget.campaign.documents![0].documentPath!),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Container(
+                      width: 50,
+                      height: 200,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: Colors.grey.shade300),
+                      ),
+                      child: (widget.campaign.documents!.length <= 2)
+                          ? Center(child: Text("Vazio"))
+                          : PDF(
+                              enableSwipe: false,
+                              swipeHorizontal: false,
+                              autoSpacing: false,
+                              pageFling: false,
+                              fitEachPage: false,
+                              fitPolicy: FitPolicy.HEIGHT,
+                              pageSnap: false,
+                              backgroundColor: Colors.grey,
+                              preventLinkNavigation: true,
+                              onError: (error) {
+                                print(error.toString());
+                              },
+                              onPageError: (page, error) {
+                                print('$page: ${error.toString()}');
+                              },
+                              onPageChanged: ((int? page, int? total) {
+                                print('page change: $page/$total');
+                              }),
+                            ).fromUrl(
+                              widget.campaign.documents![2].documentPath!,
+                            ),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Container(
+                      width: 50,
+                      height: 200,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: Colors.grey.shade300),
+                      ),
+                      child: (widget.campaign.documents!.length < 4)
+                          ? Center(child: Text("Vazio"))
+                          : PDF(
+                              enableSwipe: false,
+                              swipeHorizontal: false,
+                              autoSpacing: false,
+                              pageFling: false,
+                              fitEachPage: false,
+                              fitPolicy: FitPolicy.HEIGHT,
+                              pageSnap: true,
+                              backgroundColor: Colors.grey,
+                              preventLinkNavigation: true,
+                              onError: (error) {
+                                print(error.toString());
+                              },
+                              onPageError: (page, error) {
+                                print('$page: ${error.toString()}');
+                              },
+                              onPageChanged: ((int? page, int? total) {
+                                print('page change: $page/$total');
+                              }),
+                            ).fromUrl(
+                              widget.campaign.documents![3].documentPath!,
+                            ),
+                    ),
+                  ),
+                ],
               ),
             ),
-            const SizedBox(height: 10),
-            Center(
-              child: Container(
-                width: 280,
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Container(
-                        width: 50,
-                        height: 100,
-                        color: Colors.black12,
-                        child: (widget.campaign.documents!.length <= 1)
-                            ? Center(child: Text("Vazio"))
-                            : PDF(
-                                enableSwipe: false,
-                                swipeHorizontal: false,
-                                autoSpacing: false,
-                                pageFling: false,
-                                fitEachPage: false,
-                                fitPolicy: FitPolicy.HEIGHT,
-                                pageSnap: false,
-                                backgroundColor: Colors.grey,
-                                preventLinkNavigation: true,
-                                onError: (error) {
-                                  print(error.toString());
-                                },
-                                onPageError: (page, error) {
-                                  print('$page: ${error.toString()}');
-                                },
-                                onPageChanged: ((int? page, int? total) {
-                                  print('page change: $page/$total');
-                                }),
-                              ).fromUrl(
-                                widget.campaign.documents![1].documentPath!,
-                              ),
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Container(
-                        width: 50,
-                        height: 100,
-                        color: Colors.black12,
-                        child: (widget.campaign.documents!.length <= 2)
-                            ? Center(child: Text("Vazio"))
-                            : PDF(
-                                enableSwipe: false,
-                                swipeHorizontal: false,
-                                autoSpacing: false,
-                                pageFling: false,
-                                fitEachPage: false,
-                                fitPolicy: FitPolicy.HEIGHT,
-                                pageSnap: false,
-                                backgroundColor: Colors.grey,
-                                preventLinkNavigation: true,
-                                onError: (error) {
-                                  print(error.toString());
-                                },
-                                onPageError: (page, error) {
-                                  print('$page: ${error.toString()}');
-                                },
-                                onPageChanged: ((int? page, int? total) {
-                                  print('page change: $page/$total');
-                                }),
-                              ).fromUrl(
-                                widget.campaign.documents![2].documentPath!,
-                              ),
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Container(
-                        width: 50,
-                        height: 100,
-                        color: Colors.black12,
-                        child: (widget.campaign.documents!.length < 4)
-                            ? Center(child: Text("Vazio"))
-                            : PDF(
-                                enableSwipe: false,
-                                swipeHorizontal: false,
-                                autoSpacing: false,
-                                pageFling: false,
-                                fitEachPage: false,
-                                fitPolicy: FitPolicy.HEIGHT,
-                                pageSnap: true,
-                                backgroundColor: Colors.grey,
-                                preventLinkNavigation: true,
-                                onError: (error) {
-                                  print(error.toString());
-                                },
-                                onPageError: (page, error) {
-                                  print('$page: ${error.toString()}');
-                                },
-                                onPageChanged: ((int? page, int? total) {
-                                  print('page change: $page/$total');
-                                }),
-                              ).fromUrl(
-                                widget.campaign.documents![3].documentPath!,
-                              ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
