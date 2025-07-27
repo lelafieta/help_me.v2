@@ -22,14 +22,23 @@ class $AssetsIconsGen {
   /// File path: assets/icons/Aarrow-left-lg.svg
   String get aarrowLeftLg => 'assets/icons/Aarrow-left-lg.svg';
 
+  /// File path: assets/icons/add-friends-filled.svg
+  String get addFriendsFilled => 'assets/icons/add-friends-filled.svg';
+
   /// File path: assets/icons/bell.svg
   String get bell => 'assets/icons/bell.svg';
 
   /// File path: assets/icons/bullseye-arrow.svg
   String get bullseyeArrow => 'assets/icons/bullseye-arrow.svg';
 
+  /// File path: assets/icons/calendar-2.svg
+  String get calendar2 => 'assets/icons/calendar-2.svg';
+
   /// File path: assets/icons/calendar.svg
   String get calendar => 'assets/icons/calendar.svg';
+
+  /// File path: assets/icons/clock.svg
+  String get clock => 'assets/icons/clock.svg';
 
   /// File path: assets/icons/comment-alt.svg
   String get commentAlt => 'assets/icons/comment-alt.svg';
@@ -117,11 +126,20 @@ class $AssetsIconsGen {
   /// File path: assets/icons/key.svg
   String get key => 'assets/icons/key.svg';
 
+  /// File path: assets/icons/language.svg
+  String get language => 'assets/icons/language.svg';
+
   /// File path: assets/icons/lightbulb-on.svg
   String get lightbulbOn => 'assets/icons/lightbulb-on.svg';
 
   /// File path: assets/icons/link.svg
   String get link => 'assets/icons/link.svg';
+
+  /// File path: assets/icons/live-helpoutline.svg
+  String get liveHelpoutline => 'assets/icons/live-helpoutline.svg';
+
+  /// File path: assets/icons/location.svg
+  String get location => 'assets/icons/location.svg';
 
   /// File path: assets/icons/lock-password-locked.svg
   String get lockPasswordLocked => 'assets/icons/lock-password-locked.svg';
@@ -129,11 +147,21 @@ class $AssetsIconsGen {
   /// File path: assets/icons/menu-dots.svg
   String get menuDots => 'assets/icons/menu-dots.svg';
 
+  /// File path: assets/icons/menu.svg
+  String get menu => 'assets/icons/menu.svg';
+
   /// File path: assets/icons/microphone.svg
   String get microphone => 'assets/icons/microphone.svg';
 
   /// File path: assets/icons/mobile-3.svg
   String get mobile3 => 'assets/icons/mobile-3.svg';
+
+  /// File path: assets/icons/note-04.svg
+  String get note04 => 'assets/icons/note-04.svg';
+
+  /// File path: assets/icons/notification-bell-outline.svg
+  String get notificationBellOutline =>
+      'assets/icons/notification-bell-outline.svg';
 
   /// File path: assets/icons/old-people.svg
   String get oldPeople => 'assets/icons/old-people.svg';
@@ -147,6 +175,16 @@ class $AssetsIconsGen {
   /// File path: assets/icons/paw.svg
   String get paw => 'assets/icons/paw.svg';
 
+  /// File path: assets/icons/play.svg
+  String get play => 'assets/icons/play.svg';
+
+  /// File path: assets/icons/reader-outline.svg
+  String get readerOutline => 'assets/icons/reader-outline.svg';
+
+  /// File path: assets/icons/rewarded-ads-outlinerounded.svg
+  String get rewardedAdsOutlinerounded =>
+      'assets/icons/rewarded-ads-outlinerounded.svg';
+
   /// File path: assets/icons/search.svg
   String get search => 'assets/icons/search.svg';
 
@@ -155,6 +193,9 @@ class $AssetsIconsGen {
 
   /// File path: assets/icons/shield-trust.svg
   String get shieldTrust => 'assets/icons/shield-trust.svg';
+
+  /// File path: assets/icons/sign-out.svg
+  String get signOut => 'assets/icons/sign-out.svg';
 
   /// File path: assets/icons/square-plus.svg
   String get squarePlus => 'assets/icons/square-plus.svg';
@@ -174,9 +215,12 @@ class $AssetsIconsGen {
   /// List of all assets
   List<String> get values => [
         aarrowLeftLg,
+        addFriendsFilled,
         bell,
         bullseyeArrow,
+        calendar2,
         calendar,
+        clock,
         commentAlt,
         commentsBold,
         comments,
@@ -205,19 +249,29 @@ class $AssetsIconsGen {
         houseChimney,
         instagram,
         key,
+        language,
         lightbulbOn,
         link,
+        liveHelpoutline,
+        location,
         lockPasswordLocked,
         menuDots,
+        menu,
         microphone,
         mobile3,
+        note04,
+        notificationBellOutline,
         oldPeople,
         padlock,
         paperPlane,
         paw,
+        play,
+        readerOutline,
+        rewardedAdsOutlinerounded,
         search,
         share,
         shieldTrust,
+        signOut,
         squarePlus,
         tennis,
         triangleWarning,
