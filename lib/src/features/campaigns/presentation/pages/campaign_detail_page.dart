@@ -1,3 +1,4 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider_plus/carousel_slider_plus.dart';
 import 'package:flutter/material.dart';
@@ -36,6 +37,7 @@ class _CampaignDetailPageState extends State<CampaignDetailPage> {
   ValueNotifier<Color> color = ValueNotifier(AppColors.whiteColor);
   List<String> menuList = ["Sobre", "Documentos", "Actualizações", "Ajuda"];
   int selected = 0;
+  int pageSelectedIndex = 0;
 
   @override
   void initState() {
@@ -86,11 +88,13 @@ class _CampaignDetailPageState extends State<CampaignDetailPage> {
                   margin: const EdgeInsets.all(8.0),
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    shape: BoxShape
-                        .circle, // ou BoxShape.rectangle se quiser bordas quadradas
+                    shape: BoxShape.rectangle,
+                    borderRadius: BorderRadius.circular(10),
                   ),
                   child: IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Get.back();
+                    },
                     icon: SvgPicture.asset(
                       Assets.icons.aarrowLeftLg,
                       color: Colors.black,
@@ -153,6 +157,11 @@ class _CampaignDetailPageState extends State<CampaignDetailPage> {
                       ).textTheme.bodyMedium,
                       unselectedLabelColor: Colors.grey,
                       indicatorColor: AppColors.primaryColor,
+                      onTap: (index) {
+                        setState(() {
+                          pageSelectedIndex = index;
+                        });
+                      },
                       tabs: [
                         Tab(text: "Sumário"),
                         Tab(text: "Documentos"),
@@ -176,7 +185,13 @@ class _CampaignDetailPageState extends State<CampaignDetailPage> {
                 body: Material(
                   color: Theme.of(context).scaffoldBackgroundColor,
                   // child: AboutWidget(campaign: campaign),
-                  child: DocumentWidget(campaign: campaign),
+                  child: switch (pageSelectedIndex) {
+                    0 => FadeIn(child: AboutWidget(campaign: campaign)),
+                    1 => FadeIn(child: DocumentWidget(campaign: campaign)),
+                    2 => FadeIn(child: UpdateWidget(campaign: campaign)),
+                    3 => FadeIn(child: HelpWidget(campaign: campaign)),
+                    _ => Container(),
+                  },
                 ),
                 // body: Column(
                 //   children: [
@@ -660,7 +675,7 @@ class UpdateWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(10.0),
-      child: (campaign.updates!.length == 0)
+      child: (campaign.updates!.isEmpty)
           ? Center(child: Text("Sem actualizações"))
           : ListView.separated(
               physics: ClampingScrollPhysics(),
@@ -731,7 +746,7 @@ class _DocumentWidgetState extends State<DocumentWidget> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(10.0),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -739,7 +754,7 @@ class _DocumentWidgetState extends State<DocumentWidget> {
               ? SizedBox.shrink()
               : Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.all(15),
+                  padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
                     color: Colors.white,
@@ -1050,7 +1065,7 @@ class _AboutWidgetState extends State<AboutWidget> {
                               widget.campaign.fundraisingGoal,
                             ),
                         backgroundColor: AppColors.strokeColor,
-                        progressColor: Colors.black,
+                        progressColor: AppColors.primaryColor,
                         changeProgressColor: Colors.red,
                         size: 15,
                         displayTextStyle: const TextStyle(
