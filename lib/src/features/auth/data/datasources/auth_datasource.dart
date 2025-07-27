@@ -26,7 +26,7 @@ class AuthDataSource implements IAuthDataSource {
       final user = response.user;
 
       if (user == null) {
-        throw ServerFailure(message: 'Usuário não encontrado.');
+        throw ServerFailure(errorMessage: 'Usuário não encontrado.');
       }
 
       final profileResponse = await supabase
@@ -38,7 +38,9 @@ class AuthDataSource implements IAuthDataSource {
       return UserModel.fromJson(profileResponse);
     } catch (e) {
       print(e);
-      throw ServerFailure(message: 'Erro inesperado ao tentar fazer login.');
+      throw ServerFailure(
+        errorMessage: 'Erro inesperado ao tentar fazer login.',
+      );
     }
   }
 
@@ -48,13 +50,12 @@ class AuthDataSource implements IAuthDataSource {
       await supabase.auth.signOut();
       return unit;
     } catch (e) {
-      throw ServerFailure(message: 'Erro ao fazer logout');
+      throw ServerFailure(errorMessage: 'Erro ao fazer logout');
     }
   }
 
   @override
   Future<UserModel?> signUp(String email, String password) {
-    // TODO: implement signUp
     throw UnimplementedError();
   }
 
@@ -65,7 +66,7 @@ class AuthDataSource implements IAuthDataSource {
       return unit;
     } catch (e) {
       print(e);
-      throw ServerFailure(message: 'Erro ao fazer Login $e');
+      throw ServerFailure(errorMessage: 'Erro ao fazer Login $e');
     }
   }
 
@@ -81,7 +82,7 @@ class AuthDataSource implements IAuthDataSource {
       return UserModel.fromJson(profileResponse);
     } catch (e) {
       print(e);
-      throw ServerFailure(message: 'Erro ao buscar usuário autenticado.');
+      throw ServerFailure(errorMessage: 'Erro ao buscar usuário autenticado.');
     }
   }
 }

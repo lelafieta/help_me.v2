@@ -6,19 +6,20 @@ import 'home_campaign_state.dart';
 
 class HomeCampaignCubit extends Cubit<HomeCampaignState> {
   final GetLatestUrgentCampaignsUseCase getLatestUrgentCampaignsUseCase;
-  HomeCampaignCubit({
-    required this.getLatestUrgentCampaignsUseCase,
-  }) : super(HomeCampaignInitial());
+  HomeCampaignCubit({required this.getLatestUrgentCampaignsUseCase})
+    : super(HomeCampaignInitial());
 
   Future<void> getLatestUrgentCampaigns() async {
     emit(HomeCampaignLoading());
 
-    final response = await getLatestUrgentCampaignsUseCase
-        .call(CampaignParams(page: 1, limit: 10));
+    final response = await getLatestUrgentCampaignsUseCase.call(
+      CampaignParams(page: 1, limit: 10),
+    );
 
     response.fold(
-        (failure) =>
-            emit(HomeCampaignError(message: failure.message.toString())),
-        (campaigns) => emit(HomeCampaignLoaded(campaigns: campaigns)));
+      (failure) =>
+          emit(HomeCampaignError(message: failure.errorMessage.toString())),
+      (campaigns) => emit(HomeCampaignLoaded(campaigns: campaigns)),
+    );
   }
 }

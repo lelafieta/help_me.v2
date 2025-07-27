@@ -20,7 +20,7 @@ class SolidaryCubit extends Cubit<SolidaryState> {
     result.fold(
       (failure) {
         print("ERROR!!");
-        emit(GetUserDataErrorState(error: failure.message.toString()));
+        emit(GetUserDataErrorState(error: failure.errorMessage.toString()));
       },
       (user) {
         print("CARREGOU!!");

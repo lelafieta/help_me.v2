@@ -13,11 +13,12 @@ class FavoriteRepository extends IFavoriteRepository {
   @override
   Future<Either<Failure, Unit>> addFavorite(FavoriteEntity favorite) async {
     try {
-      final response =
-          await datasource.addFavorite(FavoriteModel.fromEntity(favorite));
+      final response = await datasource.addFavorite(
+        FavoriteModel.fromEntity(favorite),
+      );
       return Right(response);
     } catch (e) {
-      return Left(ServerFailure(message: e.toString()));
+      return Left(ServerFailure(errorMessage: e.toString()));
     }
   }
 
@@ -38,7 +39,7 @@ class FavoriteRepository extends IFavoriteRepository {
       final response = await datasource.isMyFavorite(id);
       return Right(response);
     } catch (e) {
-      return Left(ServerFailure(message: e.toString()));
+      return Left(ServerFailure(errorMessage: e.toString()));
     }
   }
 
@@ -46,11 +47,12 @@ class FavoriteRepository extends IFavoriteRepository {
   Future<Either<Failure, Unit>> removeFavorite(FavoriteEntity favorite) async {
     print(favorite);
     try {
-      final response =
-          await datasource.removeFavorite(FavoriteModel.fromEntity(favorite));
+      final response = await datasource.removeFavorite(
+        FavoriteModel.fromEntity(favorite),
+      );
       return Right(response);
     } catch (e) {
-      return Left(ServerFailure(message: e.toString()));
+      return Left(ServerFailure(errorMessage: e.toString()));
     }
   }
 }

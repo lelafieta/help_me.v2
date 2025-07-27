@@ -4,9 +4,8 @@ import 'campaign_detail_state.dart';
 
 class CampaignDetailCubit extends Cubit<CampaignDetailState> {
   final GetCampaignByIdUseCase getCampaignByIdUseCase;
-  CampaignDetailCubit({
-    required this.getCampaignByIdUseCase,
-  }) : super(CampaignDetailInitial());
+  CampaignDetailCubit({required this.getCampaignByIdUseCase})
+    : super(CampaignDetailInitial());
 
   Future<void> getCampaignById(String id) async {
     emit(CampaignDetailLoading());
@@ -14,8 +13,9 @@ class CampaignDetailCubit extends Cubit<CampaignDetailState> {
     final result = await getCampaignByIdUseCase.call(id);
 
     result.fold(
-        (failure) =>
-            emit(CampaignDetailError(message: failure.message.toString())),
-        (campaign) => emit(CampaignDetailLoaded(campaign: campaign)));
+      (failure) =>
+          emit(CampaignDetailError(message: failure.errorMessage.toString())),
+      (campaign) => emit(CampaignDetailLoaded(campaign: campaign)),
+    );
   }
 }

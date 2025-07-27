@@ -15,12 +15,13 @@ class UpdateRepository extends IUpdateRepository {
   @override
   Future<Either<Failure, Unit>> create(CampaignUpdateEntity update) async {
     try {
-      final response =
-          await datasource.create(CampaignUpdateModel.fromEntity(update));
+      final response = await datasource.create(
+        CampaignUpdateModel.fromEntity(update),
+      );
 
       return right(response);
     } catch (e) {
-      return left(ServerFailure());
+      return left(ServerFailure(errorMessage: e.toString()));
     }
   }
 
@@ -32,7 +33,8 @@ class UpdateRepository extends IUpdateRepository {
 
   @override
   Future<Either<Failure, List<CampaignUpdateEntity>>> listCampaignUpdates(
-      String id) {
+    String id,
+  ) {
     // TODO: implement listCampaignUpdates
     throw UnimplementedError();
   }

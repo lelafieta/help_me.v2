@@ -16,27 +16,32 @@ class AuthCubit extends Cubit<AuthState> {
   final SignInWithOtpUseCase signInWithOtpUseCase;
   final SecureCacheHelper secureCacheHelper;
 
-  AuthCubit(
-      {required this.signInUseCase,
-      required this.signUpUseCase,
-      required this.signOutUseCase,
-      required this.secureCacheHelper,
-      required this.signInWithOtpUseCase})
-      : super(AuthInitial());
+  AuthCubit({
+    required this.signInUseCase,
+    required this.signUpUseCase,
+    required this.signOutUseCase,
+    required this.secureCacheHelper,
+    required this.signInWithOtpUseCase,
+  }) : super(AuthInitial());
 
   Future<void> login(String email, String password) async {
     emit(AuthLoading());
-    final response = await signInUseCase
-        .call(LoginParameters(email: email, password: password));
+    final response = await signInUseCase.call(
+      LoginParameters(email: email, password: password),
+    );
 
     response.fold(
-      (failure) => emit(AuthFailure(failure: failure.message.toString())),
+      (failure) => emit(AuthFailure(failure: failure.errorMessage.toString())),
       (user) async {
         await secureCacheHelper.saveData(key: "uid", value: user!.id!);
         await secureCacheHelper.saveData(
-            key: "fullName", value: user.fullName!);
+          key: "fullName",
+          value: user.fullName!,
+        );
         await secureCacheHelper.saveData(
-            key: "avatarUrl", value: user.avatarUrl!);
+          key: "avatarUrl",
+          value: user.avatarUrl!,
+        );
 
         AppEntity.currentUser = user;
 
@@ -54,7 +59,7 @@ class AuthCubit extends Cubit<AuthState> {
     final response = await signOutUseCase.call(NoParams());
 
     response.fold(
-      (failure) => emit(AuthFailure(failure: failure.message.toString())),
+      (failure) => emit(AuthFailure(failure: failure.errorMessage.toString())),
       (user) {
         secureCacheHelper.saveData(key: "uid", value: "");
         emit(AuthSignedOut());
@@ -64,11 +69,12 @@ class AuthCubit extends Cubit<AuthState> {
 
   Future<void> signInWithOtp(String phone) async {
     emit(AuthLoading());
-    final response =
-        await signInWithOtpUseCase.call(LoginParameters(phone: phone));
+    final response = await signInWithOtpUseCase.call(
+      LoginParameters(phone: phone),
+    );
 
     response.fold(
-      (failure) => emit(AuthFailure(failure: failure.message.toString())),
+      (failure) => emit(AuthFailure(failure: failure.errorMessage.toString())),
       (user) {
         // secureCacheHelper.saveData(key: "uid", value: "");
         emit(AuthOtpSendSms());

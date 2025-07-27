@@ -8,12 +8,14 @@ class MyCampaignCubit extends Cubit<MyCampaignState> {
   final GetAllMyCampaignsUseCase getAllMyCampaignsUseCase;
 
   MyCampaignCubit({required this.getAllMyCampaignsUseCase})
-      : super(MyCampaignInitial());
+    : super(MyCampaignInitial());
 
   int page = 1;
   int limit = 10;
-  Future<void> getAllMyCamapigns(
-      {bool isRefresh = false, CampaignParams? params}) async {
+  Future<void> getAllMyCamapigns({
+    bool isRefresh = false,
+    CampaignParams? params,
+  }) async {
     print(params!.status);
     if (state is MyCampaignLoading) return;
 
@@ -31,11 +33,18 @@ class MyCampaignCubit extends Cubit<MyCampaignState> {
 
     emit(MyCampaignLoading(oldCampaigns, isFirstFetch: page == 1));
 
-    final result = await getAllMyCampaignsUseCase.call(CampaignParams(
-        page: page, limit: limit, status: params.status, title: params.title));
+    final result = await getAllMyCampaignsUseCase.call(
+      CampaignParams(
+        page: page,
+        limit: limit,
+        status: params.status,
+        title: params.title,
+      ),
+    );
 
     result.fold(
-      (failure) => emit(MyCampaignError(message: failure.message.toString())),
+      (failure) =>
+          emit(MyCampaignError(message: failure.errorMessage.toString())),
       (myCampaigns) {
         if (isRefresh) {
           oldCampaigns.clear();

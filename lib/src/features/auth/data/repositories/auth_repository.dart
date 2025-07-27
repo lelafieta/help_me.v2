@@ -18,19 +18,21 @@ class AuthRespository extends IAuthRepository {
       final response = await datasource.isSignIn();
       return Right(response);
     } catch (e) {
-      return Left(ServerFailure(message: e.toString()));
+      return Left(ServerFailure(errorMessage: e.toString()));
     }
   }
 
   @override
-  Future<Either<Failure, UserEntity>> signIn(
-      {required String email, required String password}) async {
+  Future<Either<Failure, UserEntity>> signIn({
+    required String email,
+    required String password,
+  }) async {
     try {
       UserEntity? response = await datasource.signIn(email, password);
       return Right(response!);
     } catch (e) {
       debugPrint("object ${e}");
-      return Left(ServerFailure(message: e.toString()));
+      return Left(ServerFailure(errorMessage: e.toString()));
     }
   }
 
@@ -41,7 +43,7 @@ class AuthRespository extends IAuthRepository {
       return Right(unit);
     } catch (e) {
       debugPrint("object ${e}");
-      return Left(ServerFailure(message: e.toString()));
+      return Left(ServerFailure(errorMessage: e.toString()));
     }
   }
 
@@ -57,7 +59,7 @@ class AuthRespository extends IAuthRepository {
       await datasource.signInWithOtp(phone);
       return Right(unit);
     } catch (e) {
-      return Left(ServerFailure(message: e.toString()));
+      return Left(ServerFailure(errorMessage: e.toString()));
     }
   }
 
@@ -68,7 +70,7 @@ class AuthRespository extends IAuthRepository {
       return Right(response);
     } catch (e) {
       debugPrint("object ${e}");
-      return Left(ServerFailure(message: e.toString()));
+      return Left(ServerFailure(errorMessage: e.toString()));
     }
   }
 }

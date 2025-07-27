@@ -21,10 +21,10 @@ class CampaignRepository implements ICampaignRepository {
         await datasource.createCampaign(campaign);
         return right(unit);
       } catch (e) {
-        return left(ServerFailure(message: e.toString()));
+        return left(ServerFailure(errorMessage: e.toString()));
       }
     } else {
-      return left(ServerFailure(message: "Sem conexão de internet"));
+      return left(ServerFailure(errorMessage: "Sem conexão de internet"));
     }
   }
 
@@ -35,31 +35,33 @@ class CampaignRepository implements ICampaignRepository {
 
   @override
   Future<Either<Failure, List<CampaignEntity>>> getAllCampaigns(
-      CampaignParams params) async {
+    CampaignParams params,
+  ) async {
     if (await networkInfo.isConnected == true) {
       try {
         final response = await datasource.getAllCampaigns(params);
         return right(response);
       } catch (e) {
-        return left(ServerFailure(message: e.toString()));
+        return left(ServerFailure(errorMessage: e.toString()));
       }
     } else {
-      return left(ServerFailure(message: "Sem conexão de internet"));
+      return left(ServerFailure(errorMessage: "Sem conexão de internet"));
     }
   }
 
   @override
   Future<Either<Failure, List<CampaignEntity>>> getAllUrgentCampaigns(
-      CampaignParams params) async {
+    CampaignParams params,
+  ) async {
     if (await networkInfo.isConnected == true) {
       try {
         final response = await datasource.getAllUrgentCampaigns(params);
         return right(response);
       } catch (e) {
-        return left(ServerFailure(message: e.toString()));
+        return left(ServerFailure(errorMessage: e.toString()));
       }
     } else {
-      return left(ServerFailure(message: "Sem conexão de internet"));
+      return left(ServerFailure(errorMessage: "Sem conexão de internet"));
     }
   }
 
@@ -70,31 +72,32 @@ class CampaignRepository implements ICampaignRepository {
         final response = await datasource.getCampaignById(id);
         return right(response);
       } catch (e) {
-        return left(ServerFailure(message: e.toString()));
+        return left(ServerFailure(errorMessage: e.toString()));
       }
     } else {
-      return left(ServerFailure(message: "Sem conexão de internet"));
+      return left(ServerFailure(errorMessage: "Sem conexão de internet"));
     }
   }
 
   @override
   Future<Either<Failure, List<CampaignEntity>>> getLatestUrgentCampaigns(
-      CampaignParams params) async {
+    CampaignParams params,
+  ) async {
     // if (await networkInfo.isConnected == true) {
     //   try {
     //     final response = await datasource.getLatestUrgentCampaigns();
     //     return right(response);
     //   } catch (e) {
-    //     return left(ServerFailure(message: e.toString()));
+    //     return left(ServerFailure(errorMessage: e.toString()));
     //   }
     // } else {
-    //   return left(ServerFailure(message: "Sem conexão de internet"));
+    //   return left(ServerFailure(errorMessage: "Sem conexão de internet"));
     // }
     try {
       final response = await datasource.getLatestUrgentCampaigns(params);
       return right(response);
     } catch (e) {
-      return left(ServerFailure(message: e.toString()));
+      return left(ServerFailure(errorMessage: e.toString()));
     }
   }
 
@@ -106,16 +109,17 @@ class CampaignRepository implements ICampaignRepository {
 
   @override
   Future<Either<Failure, List<CampaignEntity>>> getAllMyCampaigns(
-      CampaignParams params) async {
+    CampaignParams params,
+  ) async {
     if (await networkInfo.isConnected == true) {
       try {
         final response = await datasource.getAllMyCampaigns(params);
         return right(response);
       } catch (e) {
-        return left(ServerFailure(message: e.toString()));
+        return left(ServerFailure(errorMessage: e.toString()));
       }
     } else {
-      return left(ServerFailure(message: "Sem conexão de internet"));
+      return left(ServerFailure(errorMessage: "Sem conexão de internet"));
     }
   }
 }

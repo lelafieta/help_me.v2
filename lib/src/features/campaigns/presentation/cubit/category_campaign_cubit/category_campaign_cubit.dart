@@ -7,15 +7,16 @@ import 'category_campaign_state.dart';
 
 class CategoryCampaignCubit extends Cubit<CategoryCampaignState> {
   final GetAllCampaignsUseCase getAllCampaignsUseCase;
-  CategoryCampaignCubit({
-    required this.getAllCampaignsUseCase,
-  }) : super(CategoryCampaignInitial());
+  CategoryCampaignCubit({required this.getAllCampaignsUseCase})
+    : super(CategoryCampaignInitial());
 
   int page = 1;
   int limit = 10;
 
-  Future<void> getAllCategoryCampaigns(
-      {bool isRefresh = false, CampaignParams? params}) async {
+  Future<void> getAllCategoryCampaigns({
+    bool isRefresh = false,
+    CampaignParams? params,
+  }) async {
     if (state is CategoryCampaignLoading) return;
 
     if (isRefresh) {
@@ -32,33 +33,34 @@ class CategoryCampaignCubit extends Cubit<CategoryCampaignState> {
 
     emit(CategoryCampaignLoading(oldCampaigns, isFirstFetch: page == 1));
 
-    final result = await getAllCampaignsUseCase.call(CampaignParams(
+    final result = await getAllCampaignsUseCase.call(
+      CampaignParams(
         page: page,
         limit: limit,
         status: params!.status,
         title: params.title,
         filter: params.filter,
-        categoryId: params.categoryId));
+        categoryId: params.categoryId,
+      ),
+    );
 
     result.fold(
       (failure) =>
-          emit(CategoryCampaignError(message: failure.message.toString())),
+          emit(CategoryCampaignError(message: failure.errorMessage.toString())),
       (myCampaigns) {
         if (isRefresh) {
           oldCampaigns.clear();
         }
 
         if (myCampaigns.isEmpty) {
-          emit(CategoryCampaignLoaded(
-              campaigns: oldCampaigns, isLastPage: true));
+          emit(
+            CategoryCampaignLoaded(campaigns: oldCampaigns, isLastPage: true),
+          );
         } else {
           page++;
           final campaigns = (state as CategoryCampaignLoading).oldCampaigns;
           campaigns.addAll(myCampaigns);
-          emit(CategoryCampaignLoaded(
-            campaigns: campaigns,
-            isLastPage: false,
-          ));
+          emit(CategoryCampaignLoaded(campaigns: campaigns, isLastPage: false));
         }
       },
     );

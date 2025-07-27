@@ -21,7 +21,7 @@ class OngRepository extends IOngRepository {
       await datasource.createOng(ong);
       return right(unit);
     } catch (e) {
-      return left(ServerFailure(message: e.toString()));
+      return left(ServerFailure(errorMessage: e.toString()));
     }
   }
 }

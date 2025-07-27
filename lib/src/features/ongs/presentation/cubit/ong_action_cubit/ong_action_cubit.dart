@@ -14,7 +14,9 @@ class OngActionCubit extends Cubit<OngActionState> {
     emit(OngActionLoading());
     final result = await createOngUseCase.call(ong);
 
-    result.fold((l) => emit(OngActionFailure(error: l.message.toString())),
-        (r) => emit(OngActionSuccess()));
+    result.fold(
+      (l) => emit(OngActionFailure(error: l.errorMessage.toString())),
+      (r) => emit(OngActionSuccess()),
+    );
   }
 }

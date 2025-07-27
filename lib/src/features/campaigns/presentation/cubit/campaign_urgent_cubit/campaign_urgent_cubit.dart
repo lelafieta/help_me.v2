@@ -7,15 +7,16 @@ import 'campaign_urgent_state.dart';
 
 class CampaignUrgentCubit extends Cubit<CampaignUrgentState> {
   final GetAllUrgentCampaignsUseCase getUrgentCampaignsUseCase;
-  CampaignUrgentCubit({
-    required this.getUrgentCampaignsUseCase,
-  }) : super(CampaignUrgentInitial());
+  CampaignUrgentCubit({required this.getUrgentCampaignsUseCase})
+    : super(CampaignUrgentInitial());
 
   int page = 1;
   int limit = 10;
 
-  Future<void> getUrgentCampaigns(
-      {bool isRefresh = false, CampaignParams? params}) async {
+  Future<void> getUrgentCampaigns({
+    bool isRefresh = false,
+    CampaignParams? params,
+  }) async {
     if (state is CampaignUrgentLoading) return;
 
     if (isRefresh) {
@@ -32,16 +33,19 @@ class CampaignUrgentCubit extends Cubit<CampaignUrgentState> {
 
     emit(CampaignUrgentLoading(oldCampaigns, isFirstFetch: page == 1));
 
-    final result = await getUrgentCampaignsUseCase.call(CampaignParams(
+    final result = await getUrgentCampaignsUseCase.call(
+      CampaignParams(
         page: page,
         limit: limit,
         status: params!.status,
         title: params.title,
-        categoryId: params.categoryId));
+        categoryId: params.categoryId,
+      ),
+    );
 
     result.fold(
       (failure) =>
-          emit(CampaignUrgentError(message: failure.message.toString())),
+          emit(CampaignUrgentError(message: failure.errorMessage.toString())),
       (myCampaigns) {
         if (isRefresh) {
           oldCampaigns.clear();
@@ -53,10 +57,7 @@ class CampaignUrgentCubit extends Cubit<CampaignUrgentState> {
           page++;
           final campaigns = (state as CampaignUrgentLoading).oldCampaigns;
           campaigns.addAll(myCampaigns);
-          emit(CampaignUrgentLoaded(
-            campaigns: campaigns,
-            isLastPage: false,
-          ));
+          emit(CampaignUrgentLoaded(campaigns: campaigns, isLastPage: false));
         }
       },
     );

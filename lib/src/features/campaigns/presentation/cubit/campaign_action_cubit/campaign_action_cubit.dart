@@ -10,19 +10,20 @@ class CampaignActionCubit extends Cubit<CampaignActionState> {
   final CreateCampaignUseCase createCampaignUseCase;
   final UpdateCampaignUseCase updateCampaignUseCase;
 
-  CampaignActionCubit(
-      {required this.createCampaignUseCase,
-      required this.updateCampaignUseCase})
-      : super(CampaignActionInitial());
+  CampaignActionCubit({
+    required this.createCampaignUseCase,
+    required this.updateCampaignUseCase,
+  }) : super(CampaignActionInitial());
 
   Future<void> create(CampaignEntity params) async {
     emit(CampaignActionLoading());
     final result = await createCampaignUseCase.call(params);
 
     result.fold(
-        (failure) =>
-            emit(CampaignActionError(message: failure.message.toString())),
-        (success) => emit(CampaignActionSuccess()));
+      (failure) =>
+          emit(CampaignActionError(message: failure.errorMessage.toString())),
+      (success) => emit(CampaignActionSuccess()),
+    );
   }
 
   Future<void> update(CampaignEntity params) async {
@@ -30,8 +31,9 @@ class CampaignActionCubit extends Cubit<CampaignActionState> {
     final result = await updateCampaignUseCase.call(params);
 
     result.fold(
-        (failure) =>
-            emit(CampaignActionError(message: failure.message.toString())),
-        (success) => emit(CampaignActionSuccess()));
+      (failure) =>
+          emit(CampaignActionError(message: failure.errorMessage.toString())),
+      (success) => emit(CampaignActionSuccess()),
+    );
   }
 }

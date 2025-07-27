@@ -17,7 +17,9 @@ class FavoriteDataSource extends IFavoriteDataSource {
       await supabase.from(SupabaseConsts.favorites).insert(favorite.toMap());
       return unit;
     } catch (e) {
-      throw ServerFailure(message: 'Erro inesperado ao tentar fazer login.');
+      throw ServerFailure(
+        errorMessage: 'Erro inesperado ao tentar fazer login.',
+      );
     }
   }
 
@@ -53,7 +55,9 @@ class FavoriteDataSource extends IFavoriteDataSource {
       }
       return false;
     } catch (e) {
-      throw ServerFailure(message: 'Erro inesperado ao tentar fazer login.');
+      throw ServerFailure(
+        errorMessage: 'Erro inesperado ao tentar fazer login.',
+      );
     }
   }
 
@@ -69,7 +73,9 @@ class FavoriteDataSource extends IFavoriteDataSource {
 
       return unit;
     } catch (e) {
-      throw ServerFailure(message: 'Erro inesperado ao tentar fazer login.');
+      throw ServerFailure(
+        errorMessage: 'Erro inesperado ao tentar fazer login.',
+      );
     }
   }
 }

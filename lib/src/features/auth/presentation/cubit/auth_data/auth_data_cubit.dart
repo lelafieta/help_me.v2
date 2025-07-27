@@ -19,7 +19,7 @@ class AuthDataCubit extends Cubit<AuthDataState> {
 
     result.fold(
       (failure) {
-        emit(AuthDataError(message: failure.message.toString()));
+        emit(AuthDataError(message: failure.errorMessage.toString()));
       },
       (user) {
         print("CARREGOU!!");
