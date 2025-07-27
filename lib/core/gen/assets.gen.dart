@@ -28,6 +28,9 @@ class $AssetsIconsGen {
   /// File path: assets/icons/bullseye-arrow.svg
   String get bullseyeArrow => 'assets/icons/bullseye-arrow.svg';
 
+  /// File path: assets/icons/calendar.svg
+  String get calendar => 'assets/icons/calendar.svg';
+
   /// File path: assets/icons/comment-alt.svg
   String get commentAlt => 'assets/icons/comment-alt.svg';
 
@@ -173,6 +176,7 @@ class $AssetsIconsGen {
         aarrowLeftLg,
         bell,
         bullseyeArrow,
+        calendar,
         commentAlt,
         commentsBold,
         comments,
