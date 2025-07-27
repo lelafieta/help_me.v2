@@ -4,8 +4,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 Dio createDio() {
   final dio = Dio();
-  const storage = FlutterSecureStorage();
-  print(dotenv.env['API_URL']);
+  const storage = FlutterSecureStorage();  
   dio.options
     ..baseUrl = dotenv.env['API_URL'] ?? 'https://fallback-url.com'
     ..connectTimeout = const Duration(seconds: 10)

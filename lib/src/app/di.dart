@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
@@ -7,15 +8,22 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:utueji/src/core/api/dio_consumer.dart';
 
 import '../core/cache/secure_storage.dart';
 import '../core/network/i_network_info.dart';
 import '../core/network/network_info.dart';
 import '../features/auth/data/datasources/auth_datasource.dart';
+import '../features/auth/data/datasources/auth_local_data_source.dart';
 import '../features/auth/data/datasources/i_auth_datasource.dart';
 import '../features/auth/data/repositories/auth_repository.dart';
 import '../features/auth/domain/repositories/i_auth_repository.dart';
+import '../features/auth/domain/usecases/clear_token_usecase.dart';
+import '../features/auth/domain/usecases/clear_user_data_usecase.dart';
 import '../features/auth/domain/usecases/get_auth_user_usecase.dart';
+import '../features/auth/domain/usecases/get_token_usecase.dart';
+import '../features/auth/domain/usecases/get_user_avatar_usecase.dart';
+import '../features/auth/domain/usecases/get_user_name_usecase.dart';
 import '../features/auth/domain/usecases/is_sign_in_usecase.dart';
 import '../features/auth/domain/usecases/sign_in_usecase.dart';
 import '../features/auth/domain/usecases/sign_in_with_otp_usecase.dart';
@@ -100,7 +108,7 @@ import '../features/solidary/cubit/solidary_cubit.dart';
 import '../features/users/data/repositories/user_repository.dart';
 import '../features/users/domain/repositories/i_user_repository.dart';
 
-GetIt instance = GetIt.instance;
+GetIt sl = GetIt.instance;
 
 Future init() async {
   final supabaseUrl = dotenv.env["SUPABASE_URL"];
@@ -117,262 +125,269 @@ Future init() async {
 }
 
 void _setUpExternal() async {
-  instance.registerFactory(() => Supabase.instance.client);
-  instance.registerFactory(() => FirebaseFirestore.instance);
-  // instance.registerFactory(() => GoogleSignIn());
-  instance.registerFactory(() => FirebaseAuth.instance);
-  instance.registerFactory(() => FirebaseStorage.instance);
+  Dio dio = createDio();
+  // FlutterSecureStorage secureStorage = const FlutterSecureStorage();
 
-  instance.registerLazySingleton<SecureCacheHelper>(() => SecureCacheHelper());
-  instance.registerLazySingleton<INetWorkInfo>(
+  sl.registerFactory<Dio>(() => dio);
+
+  sl.registerFactory(() => Supabase.instance.client);
+  sl.registerFactory(() => FirebaseFirestore.instance);
+  // sl.registerFactory(() => GoogleSignIn());
+  sl.registerFactory(() => FirebaseAuth.instance);
+  sl.registerFactory(() => FirebaseStorage.instance);
+
+  sl.registerLazySingleton<SecureCacheHelper>(() => SecureCacheHelper());
+  sl.registerLazySingleton<INetWorkInfo>(
     () => NetWorkInfo(netWorkInfo: InternetConnection.createInstance()),
   );
 }
 
 void _setUpCubits() {
-  instance.registerFactory(
+  sl.registerFactory(
     () => AuthCubit(
-      signInUseCase: instance(),
-      signUpUseCase: instance(),
-      signOutUseCase: instance(),
-      signInWithOtpUseCase: instance(),
-      secureCacheHelper: instance(),
+      signInUseCase: sl(),
+      signUpUseCase: sl(),
+      signOutUseCase: sl(),
+      signInWithOtpUseCase: sl(),
+      secureCacheHelper: sl(),
+      getTokenUseCase: sl(),
+      clearTokenUseCase: sl(),
+      getUserNameUseCase: sl(),
+      getUserAvatarUseCase: sl(),
+      clearUserDataUseCase: sl(),
     ),
   );
-  instance.registerFactory(() => InitialCubit(isSignInUseCase: instance()));
-  instance.registerFactory(
-    () => HomeCampaignCubit(getLatestUrgentCampaignsUseCase: instance()),
+  sl.registerFactory(() => InitialCubit(isSignInUseCase: sl()));
+  sl.registerFactory(
+    () => HomeCampaignCubit(getLatestUrgentCampaignsUseCase: sl()),
   );
-  instance.registerFactory(
-    () => CampaignUrgentCubit(getUrgentCampaignsUseCase: instance()),
-  );
-
-  instance.registerFactory(
-    () => EventCubit(fetchLatestEventsUsecase: instance()),
-  );
-  instance.registerFactory(() => OngCubit(fetchLatestOngsUsecase: instance()));
-  instance.registerFactory(() => FeedCubit(fetchFeedsUseCase: instance()));
-  instance.registerFactory(
-    () => BlogCubit(
-      fetchBlogUseCase: instance(),
-      fetchLatestBlogUseCase: instance(),
-    ),
+  sl.registerFactory(
+    () => CampaignUrgentCubit(getUrgentCampaignsUseCase: sl()),
   );
 
-  instance.registerFactory(
-    () => CampaignDetailCubit(getCampaignByIdUseCase: instance()),
+  sl.registerFactory(() => EventCubit(fetchLatestEventsUsecase: sl()));
+  sl.registerFactory(() => OngCubit(fetchLatestOngsUsecase: sl()));
+  sl.registerFactory(() => FeedCubit(fetchFeedsUseCase: sl()));
+  sl.registerFactory(
+    () => BlogCubit(fetchBlogUseCase: sl(), fetchLatestBlogUseCase: sl()),
   );
 
-  instance.registerFactory(
+  sl.registerFactory(() => CampaignDetailCubit(getCampaignByIdUseCase: sl()));
+
+  sl.registerFactory(
     () => CampaignStoreFavoriteCubit(
-      addFavoriteUseCase: instance(),
-      removeFavoriteUseCase: instance(),
+      addFavoriteUseCase: sl(),
+      removeFavoriteUseCase: sl(),
     ),
   );
 
-  instance.registerFactory(
-    () => FavoriteCubit(getAllFavoritesByUseCase: instance()),
+  sl.registerFactory(() => FavoriteCubit(getAllFavoritesByUseCase: sl()));
+  sl.registerFactory(() => MyCampaignCubit(getAllMyCampaignsUseCase: sl()));
+  sl.registerFactory(
+    () => MyCampaignDetailCubit(getMyCampaignByIdUseCase: sl()),
   );
-  instance.registerFactory(
-    () => MyCampaignCubit(getAllMyCampaignsUseCase: instance()),
-  );
-  instance.registerFactory(
-    () => MyCampaignDetailCubit(getMyCampaignByIdUseCase: instance()),
-  );
-  instance.registerFactory(
+  sl.registerFactory(
     () => UpdateActionCubit(
-      createCampaignUpdateUseCase: instance(),
-      updateCampaignUpdateUseCase: instance(),
-      deleteCampaignUpdateUseCase: instance(),
+      createCampaignUpdateUseCase: sl(),
+      updateCampaignUpdateUseCase: sl(),
+      deleteCampaignUpdateUseCase: sl(),
     ),
   );
-  instance.registerFactory(
+  sl.registerFactory(
     () => CampaignActionCubit(
-      createCampaignUseCase: instance(),
-      updateCampaignUseCase: instance(),
+      createCampaignUseCase: sl(),
+      updateCampaignUseCase: sl(),
     ),
   );
-  instance.registerFactory(
-    () => CategoryCampaignCubit(getAllCampaignsUseCase: instance()),
-  );
-  instance.registerFactory(
-    () => HomeProfileDataCubit(getAuthUserUseCase: instance()),
-  );
-  instance.registerFactory(() => ProfileCubit(getAuthUserUseCase: instance()));
+  sl.registerFactory(() => CategoryCampaignCubit(getAllCampaignsUseCase: sl()));
+  sl.registerFactory(() => HomeProfileDataCubit(getAuthUserUseCase: sl()));
+  sl.registerFactory(() => ProfileCubit(getAuthUserUseCase: sl()));
 
-  instance.registerFactory(
-    () => CountDonationCubit(getCountMyDonationsUseCase: instance()),
+  sl.registerFactory(
+    () => CountDonationCubit(getCountMyDonationsUseCase: sl()),
   );
 
-  instance.registerFactory(() => SolidaryCubit(getAuthUserUseCase: instance()));
-  instance.registerFactory(() => AuthDataCubit(getAuthUserUseCase: instance()));
-  instance.registerFactory(() => OngActionCubit(createOngUseCase: instance()));
+  sl.registerFactory(() => SolidaryCubit(getAuthUserUseCase: sl()));
+  sl.registerFactory(() => AuthDataCubit(getAuthUserUseCase: sl()));
+  sl.registerFactory(() => OngActionCubit(createOngUseCase: sl()));
 }
 
 void _setUpUsecases() {
-  instance.registerLazySingleton<SignInUseCase>(
-    () => SignInUseCase(repository: instance()),
+  sl.registerLazySingleton<SignInUseCase>(
+    () => SignInUseCase(repository: sl()),
   );
-  instance.registerLazySingleton<SignUpUseCase>(
-    () => SignUpUseCase(repository: instance()),
+  sl.registerLazySingleton<SignUpUseCase>(
+    () => SignUpUseCase(repository: sl()),
   );
-  instance.registerLazySingleton<SignOutUseCase>(
-    () => SignOutUseCase(repository: instance()),
+  sl.registerLazySingleton<SignOutUseCase>(
+    () => SignOutUseCase(repository: sl()),
   );
-  instance.registerLazySingleton<IsSignInUseCase>(
-    () => IsSignInUseCase(repository: instance()),
+  sl.registerLazySingleton<IsSignInUseCase>(
+    () => IsSignInUseCase(repository: sl()),
   );
-  instance.registerLazySingleton<SignInWithOtpUseCase>(
-    () => SignInWithOtpUseCase(repository: instance()),
-  );
-
-  instance.registerLazySingleton<CreateCampaignUseCase>(
-    () => CreateCampaignUseCase(repository: instance()),
+  sl.registerLazySingleton<SignInWithOtpUseCase>(
+    () => SignInWithOtpUseCase(repository: sl()),
   );
 
-  instance.registerLazySingleton<DeleteCampaignUseCase>(
-    () => DeleteCampaignUseCase(repository: instance()),
-  );
-  instance.registerLazySingleton<GetAllCampaignsUseCase>(
-    () => GetAllCampaignsUseCase(repository: instance()),
-  );
-  instance.registerLazySingleton<GetAllUrgentCampaignsUseCase>(
-    () => GetAllUrgentCampaignsUseCase(repository: instance()),
+  sl.registerLazySingleton(() => GetTokenUseCase(repository: sl()));
+  sl.registerLazySingleton(() => ClearTokenUseCase(repository: sl()));
+  sl.registerLazySingleton(() => GetUserNameUseCase(repository: sl()));
+  sl.registerLazySingleton(() => GetUserAvatarUseCase(repository: sl()));
+  sl.registerLazySingleton(() => ClearUserDataUseCase(repository: sl()));
+
+  sl.registerLazySingleton<CreateCampaignUseCase>(
+    () => CreateCampaignUseCase(repository: sl()),
   );
 
-  instance.registerLazySingleton<UpdateCampaignUseCase>(
-    () => UpdateCampaignUseCase(repository: instance()),
+  sl.registerLazySingleton<DeleteCampaignUseCase>(
+    () => DeleteCampaignUseCase(repository: sl()),
+  );
+  sl.registerLazySingleton<GetAllCampaignsUseCase>(
+    () => GetAllCampaignsUseCase(repository: sl()),
+  );
+  sl.registerLazySingleton<GetAllUrgentCampaignsUseCase>(
+    () => GetAllUrgentCampaignsUseCase(repository: sl()),
   );
 
-  instance.registerLazySingleton<GetLatestUrgentCampaignsUseCase>(
-    () => GetLatestUrgentCampaignsUseCase(repository: instance()),
-  );
-  instance.registerLazySingleton<FetchLatestEventsUsecase>(
-    () => FetchLatestEventsUsecase(repository: instance()),
-  );
-  instance.registerLazySingleton<FetchLatestOngsUsecase>(
-    () => FetchLatestOngsUsecase(repository: instance()),
-  );
-  instance.registerLazySingleton<FetchFeedsUseCase>(
-    () => FetchFeedsUseCase(repository: instance()),
+  sl.registerLazySingleton<UpdateCampaignUseCase>(
+    () => UpdateCampaignUseCase(repository: sl()),
   );
 
-  instance.registerLazySingleton<FetchBlogUseCase>(
-    () => FetchBlogUseCase(repository: instance()),
+  sl.registerLazySingleton<GetLatestUrgentCampaignsUseCase>(
+    () => GetLatestUrgentCampaignsUseCase(repository: sl()),
   );
-  instance.registerLazySingleton<FetchLatestBlogUseCase>(
-    () => FetchLatestBlogUseCase(repository: instance()),
+  sl.registerLazySingleton<FetchLatestEventsUsecase>(
+    () => FetchLatestEventsUsecase(repository: sl()),
   );
-
-  instance.registerLazySingleton<IsMyFavoriteUseCase>(
-    () => IsMyFavoriteUseCase(repository: instance()),
+  sl.registerLazySingleton<FetchLatestOngsUsecase>(
+    () => FetchLatestOngsUsecase(repository: sl()),
   );
-  instance.registerLazySingleton<GetAllFavoritesByUseCase>(
-    () => GetAllFavoritesByUseCase(repository: instance()),
-  );
-
-  instance.registerLazySingleton<GetCampaignByIdUseCase>(
-    () => GetCampaignByIdUseCase(repository: instance()),
-  );
-  instance.registerLazySingleton<GetAllMyCampaignsUseCase>(
-    () => GetAllMyCampaignsUseCase(repository: instance()),
+  sl.registerLazySingleton<FetchFeedsUseCase>(
+    () => FetchFeedsUseCase(repository: sl()),
   );
 
-  instance.registerLazySingleton<AddFavoriteUseCase>(
-    () => AddFavoriteUseCase(repository: instance()),
+  sl.registerLazySingleton<FetchBlogUseCase>(
+    () => FetchBlogUseCase(repository: sl()),
   );
-  instance.registerLazySingleton<RemoveFavoriteUseCase>(
-    () => RemoveFavoriteUseCase(repository: instance()),
-  );
-
-  instance.registerLazySingleton<CreateCampaignUpdateUseCase>(
-    () => CreateCampaignUpdateUseCase(repository: instance()),
-  );
-  instance.registerLazySingleton<UpdateCampaignUpdateUseCase>(
-    () => UpdateCampaignUpdateUseCase(repository: instance()),
-  );
-  instance.registerLazySingleton<DeleteCampaignUpdateUseCase>(
-    () => DeleteCampaignUpdateUseCase(repository: instance()),
+  sl.registerLazySingleton<FetchLatestBlogUseCase>(
+    () => FetchLatestBlogUseCase(repository: sl()),
   );
 
-  instance.registerLazySingleton<GetAuthUserUseCase>(
-    () => GetAuthUserUseCase(repository: instance()),
+  sl.registerLazySingleton<IsMyFavoriteUseCase>(
+    () => IsMyFavoriteUseCase(repository: sl()),
+  );
+  sl.registerLazySingleton<GetAllFavoritesByUseCase>(
+    () => GetAllFavoritesByUseCase(repository: sl()),
   );
 
-  instance.registerLazySingleton<GetCountMyDonationsUseCase>(
-    () => GetCountMyDonationsUseCase(repository: instance()),
+  sl.registerLazySingleton<GetCampaignByIdUseCase>(
+    () => GetCampaignByIdUseCase(repository: sl()),
+  );
+  sl.registerLazySingleton<GetAllMyCampaignsUseCase>(
+    () => GetAllMyCampaignsUseCase(repository: sl()),
   );
 
-  instance.registerLazySingleton<CreateOngUseCase>(
-    () => CreateOngUseCase(repository: instance()),
+  sl.registerLazySingleton<AddFavoriteUseCase>(
+    () => AddFavoriteUseCase(repository: sl()),
+  );
+  sl.registerLazySingleton<RemoveFavoriteUseCase>(
+    () => RemoveFavoriteUseCase(repository: sl()),
+  );
+
+  sl.registerLazySingleton<CreateCampaignUpdateUseCase>(
+    () => CreateCampaignUpdateUseCase(repository: sl()),
+  );
+  sl.registerLazySingleton<UpdateCampaignUpdateUseCase>(
+    () => UpdateCampaignUpdateUseCase(repository: sl()),
+  );
+  sl.registerLazySingleton<DeleteCampaignUpdateUseCase>(
+    () => DeleteCampaignUpdateUseCase(repository: sl()),
+  );
+
+  sl.registerLazySingleton<GetAuthUserUseCase>(
+    () => GetAuthUserUseCase(repository: sl()),
+  );
+
+  sl.registerLazySingleton<GetCountMyDonationsUseCase>(
+    () => GetCountMyDonationsUseCase(repository: sl()),
+  );
+
+  sl.registerLazySingleton<CreateOngUseCase>(
+    () => CreateOngUseCase(repository: sl()),
   );
 }
 
 void _setUpRepositories() {
-  instance.registerLazySingleton<IAuthRepository>(
-    () => AuthRespository(datasource: instance()),
+  sl.registerLazySingleton<IAuthRepository>(
+    () => AuthRespository(
+      netWorkInfo: sl(),
+      authDataSource: sl(),
+      localDataSource: sl(),
+    ),
   );
-  instance.registerLazySingleton<ICampaignRepository>(
-    () => CampaignRepository(datasource: instance(), networkInfo: instance()),
+  sl.registerLazySingleton<ICampaignRepository>(
+    () => CampaignRepository(datasource: sl(), networkInfo: sl()),
   );
-  instance.registerLazySingleton<IEventRepository>(
-    () => EventRepository(datasource: instance()),
+  sl.registerLazySingleton<IEventRepository>(
+    () => EventRepository(datasource: sl()),
   );
-  instance.registerLazySingleton<IOngRepository>(
-    () => OngRepository(datasource: instance()),
+  sl.registerLazySingleton<IOngRepository>(
+    () => OngRepository(datasource: sl()),
   );
-  instance.registerLazySingleton<IFeedRepository>(
-    () => FeedRepository(datasource: instance()),
+  sl.registerLazySingleton<IFeedRepository>(
+    () => FeedRepository(datasource: sl()),
   );
-  instance.registerLazySingleton<IBlogRepository>(
-    () => BlogRepository(datasource: instance()),
+  sl.registerLazySingleton<IBlogRepository>(
+    () => BlogRepository(datasource: sl()),
   );
-  instance.registerLazySingleton<IFavoriteRepository>(
-    () => FavoriteRepository(datasource: instance()),
+  sl.registerLazySingleton<IFavoriteRepository>(
+    () => FavoriteRepository(datasource: sl()),
   );
-  instance.registerLazySingleton<IUpdateRepository>(
-    () => UpdateRepository(datasource: instance(), netWorkInfo: instance()),
+  sl.registerLazySingleton<IUpdateRepository>(
+    () => UpdateRepository(datasource: sl(), netWorkInfo: sl()),
   );
 
-  instance.registerLazySingleton<IUserRepository>(
-    () => UserRespository(datasource: instance()),
+  sl.registerLazySingleton<IUserRepository>(
+    () => UserRespository(datasource: sl()),
   );
 
-  instance.registerLazySingleton<IDonationRepository>(
-    () => DonationRepository(datasource: instance()),
+  sl.registerLazySingleton<IDonationRepository>(
+    () => DonationRepository(datasource: sl()),
   );
 }
 
 void _setUpDatasources() {
-  instance.registerLazySingleton<IAuthDataSource>(
-    () => AuthDataSource(supabase: instance()),
+  sl.registerLazySingleton<IAuthDataSource>(
+    () => AuthDataSource(supabase: sl(), dio: sl()),
   );
-  instance.registerLazySingleton<ICampaignRemoteDataSource>(
-    () => CampaignRemoteDataSource(supabase: instance()),
+  sl.registerLazySingleton<ICampaignRemoteDataSource>(
+    () => CampaignRemoteDataSource(supabase: sl()),
   );
-  instance.registerLazySingleton<IEventDataSource>(
-    () => EventDataSource(supabase: instance()),
+  sl.registerLazySingleton<IEventDataSource>(
+    () => EventDataSource(supabase: sl()),
   );
-  instance.registerLazySingleton<IOngDataSource>(
-    () => OngDataSource(supabase: instance()),
-  );
-  instance.registerLazySingleton<IFeedDataSource>(
-    () => FeedDataSource(supabase: instance()),
+  sl.registerLazySingleton<IOngDataSource>(() => OngDataSource(supabase: sl()));
+  sl.registerLazySingleton<IFeedDataSource>(
+    () => FeedDataSource(supabase: sl()),
   );
 
-  instance.registerLazySingleton<IBlogDataSource>(
-    () => BlogDataSource(supabase: instance()),
+  sl.registerLazySingleton<IBlogDataSource>(
+    () => BlogDataSource(supabase: sl()),
   );
 
-  instance.registerLazySingleton<IFavoriteDataSource>(
-    () => FavoriteDataSource(supabase: instance()),
+  sl.registerLazySingleton<IFavoriteDataSource>(
+    () => FavoriteDataSource(supabase: sl()),
   );
 
-  instance.registerLazySingleton<IUpdateDataSource>(
-    () => UpdateDataSource(supabase: instance()),
+  sl.registerLazySingleton<IUpdateDataSource>(
+    () => UpdateDataSource(supabase: sl()),
   );
 
-  instance.registerLazySingleton<IDonationDataSource>(
-    () => DonationDataSource(supabase: instance()),
+  sl.registerLazySingleton<IDonationDataSource>(
+    () => DonationDataSource(supabase: sl()),
+  );
+
+  sl.registerLazySingleton<IAuthLocalDataSource>(
+    () => AuthLocalDataSource(secureStorage: sl()),
   );
 }

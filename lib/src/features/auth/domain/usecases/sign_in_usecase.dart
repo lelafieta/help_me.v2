@@ -1,18 +1,20 @@
 import 'package:dartz/dartz.dart';
+import 'package:utueji/src/features/auth/domain/entities/auth_response_entity.dart';
 
 import '../../../../core/errors/failures.dart';
 import '../../../../core/usecases/base_usecase.dart';
-import '../entities/login_parameters.dart';
-import '../entities/user_entity.dart';
+import '../../params/login_request_params.dart';
 import '../repositories/i_auth_repository.dart';
 
-class SignInUseCase extends BaseUseCase<UserEntity?, LoginParameters> {
+class SignInUseCase
+    extends BaseUseCase<AuthResponseEntity, LoginRequestParams> {
   final IAuthRepository repository;
   SignInUseCase({required this.repository});
 
   @override
-  Future<Either<Failure, UserEntity?>> call(LoginParameters params) async {
-    return await repository.signIn(
-        email: params.email!, password: params.password!);
+  Future<Either<Failure, AuthResponseEntity>> call(
+    LoginRequestParams params,
+  ) async {
+    return repository.signIn(params);
   }
 }

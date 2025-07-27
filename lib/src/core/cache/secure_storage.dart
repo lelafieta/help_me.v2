@@ -9,17 +9,12 @@ class SecureCacheHelper {
   }
 
   //! Obtém um dado armazenado como String
-  Future<String?> getDataString({
-    required String key,
-  }) async {
+  Future<String?> getDataString({required String key}) async {
     return await secureStorage.read(key: key);
   }
 
   //! Salva um dado no armazenamento seguro
-  Future<void> saveData({
-    required String key,
-    required String value,
-  }) async {
+  Future<void> saveData({required String key, required String value}) async {
     await secureStorage.write(key: key, value: value);
   }
 

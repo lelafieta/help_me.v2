@@ -248,7 +248,6 @@ class _LoginPageState extends State<LoginPage> {
             } else if (state is AuthFailure) {
               EasyLoading.showError(state.failure);
             } else if (state is Authenticated) {
-              AppEntity.uid = state.user!.id;
               Get.toNamed(AppRoutes.solidaryRoute);
             }
           },

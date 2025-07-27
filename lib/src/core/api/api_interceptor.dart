@@ -4,7 +4,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 class ApiInterceptor extends Interceptor {
   final FlutterSecureStorage secureStorage;
 
-  ApiInterceptor(this.secureStorage);
+  ApiInterceptor({required this.secureStorage});
 
   @override
   void onRequest(

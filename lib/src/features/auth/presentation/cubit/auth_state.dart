@@ -1,4 +1,4 @@
-import '../../domain/entities/user_entity.dart';
+import '../../domain/entities/auth_response_entity.dart';
 
 class AuthState {}
 
@@ -7,8 +7,8 @@ class AuthInitial extends AuthState {}
 class AuthLoading extends AuthState {}
 
 class Authenticated extends AuthState {
-  final UserEntity? user;
-  Authenticated({required this.user});
+  final AuthResponseEntity? authResponse;
+  Authenticated({required this.authResponse});
 }
 
 class AuthOtpSendSms extends AuthState {}

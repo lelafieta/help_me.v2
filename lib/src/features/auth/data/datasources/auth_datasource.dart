@@ -1,6 +1,9 @@
 import 'package:dartz/dartz.dart';
+import 'package:dio/dio.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:utueji/src/core/supabase/supabase_consts.dart';
+import 'package:utueji/src/features/auth/data/dto/login_dto.dart';
+import 'package:utueji/src/features/auth/data/models/auth_response_model.dart';
 
 import '../../../../core/errors/failures.dart';
 import '../models/user_model.dart';
@@ -8,40 +11,12 @@ import 'i_auth_datasource.dart';
 
 class AuthDataSource implements IAuthDataSource {
   final SupabaseClient supabase;
+  final Dio dio;
 
-  AuthDataSource({required this.supabase});
+  AuthDataSource({required this.supabase, required this.dio});
   @override
   Future<bool> isSignIn() async {
     return supabase.auth.currentUser != null;
-  }
-
-  @override
-  Future<UserModel?> signIn(String email, String password) async {
-    try {
-      final response = await supabase.auth.signInWithPassword(
-        email: email,
-        password: password,
-      );
-
-      final user = response.user;
-
-      if (user == null) {
-        throw ServerFailure(errorMessage: 'Usuário não encontrado.');
-      }
-
-      final profileResponse = await supabase
-          .from(SupabaseConsts.profiles)
-          .select()
-          .eq('id', user.id)
-          .single();
-
-      return UserModel.fromJson(profileResponse);
-    } catch (e) {
-      print(e);
-      throw ServerFailure(
-        errorMessage: 'Erro inesperado ao tentar fazer login.',
-      );
-    }
   }
 
   @override
@@ -81,8 +56,13 @@ class AuthDataSource implements IAuthDataSource {
 
       return UserModel.fromJson(profileResponse);
     } catch (e) {
-      print(e);
       throw ServerFailure(errorMessage: 'Erro ao buscar usuário autenticado.');
     }
+  }
+
+  @override
+  Future<AuthResponseModel> signIn(LoginRequestDto loginDto) async {
+    final response = await dio.post('/auth/login', data: loginDto.toJson());
+    return AuthResponseModel.fromJson(response.data);
   }
 }
