@@ -19,6 +19,9 @@ class $AssetsFontsGen {
 class $AssetsIconsGen {
   const $AssetsIconsGen();
 
+  /// File path: assets/icons/Aarrow-left-lg.svg
+  String get aarrowLeftLg => 'assets/icons/Aarrow-left-lg.svg';
+
   /// File path: assets/icons/bell.svg
   String get bell => 'assets/icons/bell.svg';
 
@@ -82,6 +85,9 @@ class $AssetsIconsGen {
   /// File path: assets/icons/hands-heart.svg
   String get handsHeart => 'assets/icons/hands-heart.svg';
 
+  /// File path: assets/icons/heart-alt.svg
+  String get heartAlt => 'assets/icons/heart-alt.svg';
+
   /// File path: assets/icons/heart-bold.svg
   String get heartBold => 'assets/icons/heart-bold.svg';
 
@@ -141,6 +147,9 @@ class $AssetsIconsGen {
   /// File path: assets/icons/search.svg
   String get search => 'assets/icons/search.svg';
 
+  /// File path: assets/icons/share.svg
+  String get share => 'assets/icons/share.svg';
+
   /// File path: assets/icons/shield-trust.svg
   String get shieldTrust => 'assets/icons/shield-trust.svg';
 
@@ -161,6 +170,7 @@ class $AssetsIconsGen {
 
   /// List of all assets
   List<String> get values => [
+        aarrowLeftLg,
         bell,
         bullseyeArrow,
         commentAlt,
@@ -182,6 +192,7 @@ class $AssetsIconsGen {
         handHoldingHeart,
         handsHeartBold,
         handsHeart,
+        heartAlt,
         heartBold,
         heartPartnerHandshakeBold,
         heartPartnerHandshake,
@@ -201,6 +212,7 @@ class $AssetsIconsGen {
         paperPlane,
         paw,
         search,
+        share,
         shieldTrust,
         squarePlus,
         tennis,

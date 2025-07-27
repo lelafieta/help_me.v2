@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider_plus/carousel_slider_plus.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_animation_progress_bar/flutter_animation_progress_bar.dart';
@@ -8,10 +7,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_cached_pdfview/flutter_cached_pdfview.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:readmore/readmore.dart';
+import 'package:sliver_snap/widgets/sliver_snap.dart';
+import 'package:utueji/core/gen/assets.gen.dart';
 import 'package:utueji/src/config/routes/app_routes.dart';
 
 import 'package:video_player/video_player.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 import '../../../../config/themes/app_colors.dart';
 import '../../../../core/resources/icons/app_icons.dart';
 import '../../../../core/resources/images/app_images.dart';
@@ -48,131 +49,276 @@ class _CampaignDetailPageState extends State<CampaignDetailPage> {
       builder: (context, state) {
         if (state is CampaignDetailLoaded) {
           final campaign = state.campaign;
+          return Scaffold(
+            bottomNavigationBar: SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: ElevatedButton(
+                  style: ButtonStyle(
+                    shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(
+                          AppValues.s10,
+                        ), // Define o raio da borda aqui
+                      ),
+                    ),
+                  ),
+                  onPressed: () {
+                    Get.toNamed(
+                      AppRoutes.paymentRoute,
+                      arguments: widget.campaign,
+                    );
+                  },
+                  child: const Text("Doar Agora"),
+                ),
+              ),
+            ),
+
+            body: DefaultTabController(
+              length: 4,
+              child: SliverSnap(
+                onCollapseStateChanged:
+                    (isCollapsed, scrollingOffset, maxExtent) {},
+                collapsedBackgroundColor: Colors.black,
+                expandedBackgroundColor: Colors.transparent,
+                backdropWidget: CachedNetworkImage(
+                  imageUrl: widget.campaign.imageCoverUrl!,
+                  fit: BoxFit.cover,
+                  progressIndicatorBuilder: (context, url, downloadProgress) =>
+                      CircularProgressIndicator(
+                        value: downloadProgress.progress,
+                      ),
+                  errorWidget: (context, url, error) => const Icon(Icons.error),
+                ),
+                leading: Container(
+                  margin: const EdgeInsets.all(8.0),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape
+                        .circle, // ou BoxShape.rectangle se quiser bordas quadradas
+                  ),
+                  child: IconButton(
+                    onPressed: () {},
+                    icon: SvgPicture.asset(
+                      Assets.icons.aarrowLeftLg,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+                actions: [
+                  Container(
+                    // margin: const EdgeInsets.all(10.0),
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape
+                          .circle, // ou BoxShape.rectangle se quiser bordas quadradas
+                    ),
+                    child: IconButton(
+                      onPressed: () {},
+                      icon: SvgPicture.asset(
+                        Assets.icons.heartBold,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+
+                  Container(
+                    margin: const EdgeInsets.all(10.0),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
+                    ),
+                    child: IconButton(
+                      onPressed: () {},
+                      icon: SvgPicture.asset(
+                        Assets.icons.share,
+                        width: 22,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                ],
+                bottom: PreferredSize(
+                  preferredSize: Size.fromHeight(50),
+                  child: Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(20.0),
+                        topRight: Radius.circular(20.0),
+                      ),
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                    ),
+                    child: TabBar(
+                      isScrollable: true,
+                      labelColor: AppColors.primaryColor,
+                      labelStyle: Theme.of(context).textTheme.bodyMedium!
+                          .copyWith(fontWeight: FontWeight.bold),
+                      unselectedLabelStyle: Theme.of(
+                        context,
+                      ).textTheme.bodyMedium,
+                      unselectedLabelColor: Colors.grey,
+                      indicatorColor: AppColors.primaryColor,
+                      tabs: [
+                        Tab(text: "Sumário"),
+                        Tab(text: "Documentos"),
+                        Tab(text: "Actualizações"),
+                        Tab(text: "Ajuda"),
+                      ],
+                    ),
+                  ),
+                ),
+                expandedContentHeight: 200,
+                expandedContent: Container(color: Colors.red.withOpacity(.4)),
+                collapsedContent: SizedBox.shrink(),
+                body: Material(
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                  child: AboutWidget(campaign: campaign),
+                ),
+                // body: Column(
+                //   children: [
+                //     AboutWidget(campaign: campaign),
+                //     DocumentWidget(campaign: campaign),
+                //     UpdateWidget(campaign: campaign),
+                //     HelpWidget(campaign: campaign),
+                //   ],
+                // ),
+              ),
+            ),
+          );
 
           return NestedScrollView(
             headerSliverBuilder:
                 (BuildContext context, bool innerBoxIsScrolled) {
-              if (innerBoxIsScrolled) {
-                color.value = Colors.black;
-              }
-              return [
-                ValueListenableBuilder(
-                    valueListenable: color,
-                    builder: (context, value, _) {
-                      return SliverAppBar(
-                        expandedHeight: 300.0,
-                        floating: false,
-                        pinned: true,
-                        leading: IconButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          icon: Icon(
-                            Icons.arrow_back,
-                            color: value,
+                  if (innerBoxIsScrolled) {
+                    color.value = Colors.black;
+                  }
+                  return [
+                    ValueListenableBuilder(
+                      valueListenable: color,
+                      builder: (context, value, _) {
+                        return SliverAppBar(
+                          expandedHeight: 300.0,
+                          floating: false,
+                          pinned: true,
+                          leading: IconButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            icon: Icon(Icons.arrow_back, color: value),
                           ),
-                        ),
-                        actions: [
-                          IconButton(
-                            onPressed: () {},
-                            icon: Icon(
-                              Icons.share,
-                              color: value,
+                          actions: [
+                            IconButton(
+                              onPressed: () {},
+                              icon: Icon(Icons.share, color: value),
                             ),
-                          ),
-                        ],
-                        flexibleSpace: FlexibleSpaceBar(
-                          // title: Text(widget.campaign.title!),
-                          background: (widget.campaign.imageCoverUrl == null)
-                              ? Image.asset(
-                                  AppImages.coverBackground,
-                                  fit: BoxFit.cover,
-                                )
-                              : CachedNetworkImage(
-                                  imageUrl: campaign.imageCoverUrl!,
-                                  fit: BoxFit.cover,
-                                ),
-                        ),
-                        bottom: PreferredSize(
-                          preferredSize: const Size.fromHeight(150.0),
-                          child: Container(
-                            width: double.infinity,
-                            padding: const EdgeInsets.symmetric(vertical: 10),
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).scaffoldBackgroundColor,
-                              borderRadius: const BorderRadius.only(
-                                topLeft: Radius.circular(20.0),
-                                topRight: Radius.circular(20.0),
-                              ),
-                            ),
-                            child: Column(
-                              children: [
-                                ListTile(
-                                  title: Text(
-                                    campaign.title!,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleLarge!
-                                        .copyWith(fontWeight: FontWeight.bold),
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
+                          ],
+                          flexibleSpace: FlexibleSpaceBar(
+                            // title: Text(widget.campaign.title!),
+                            background: (widget.campaign.imageCoverUrl == null)
+                                ? Image.asset(
+                                    AppImages.coverBackground,
+                                    fit: BoxFit.cover,
+                                  )
+                                : CachedNetworkImage(
+                                    imageUrl: campaign.imageCoverUrl!,
+                                    fit: BoxFit.cover,
                                   ),
-                                  trailing: ClipRRect(
-                                    borderRadius: BorderRadius.circular(50),
-                                    child: AppUtils.favoriteWidget(
+                          ),
+                          bottom: PreferredSize(
+                            preferredSize: const Size.fromHeight(150.0),
+                            child: Container(
+                              width: double.infinity,
+                              padding: const EdgeInsets.symmetric(vertical: 10),
+                              decoration: BoxDecoration(
+                                color: Theme.of(
+                                  context,
+                                ).scaffoldBackgroundColor,
+                                borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(20.0),
+                                  topRight: Radius.circular(20.0),
+                                ),
+                              ),
+                              child: Column(
+                                children: [
+                                  ListTile(
+                                    title: Text(
+                                      campaign.title!,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleLarge!
+                                          .copyWith(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    trailing: ClipRRect(
+                                      borderRadius: BorderRadius.circular(50),
+                                      child: AppUtils.favoriteWidget(
                                         context: context,
                                         itemId: widget.campaign.id!,
-                                        itemType: "campaign"),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 10),
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: Row(
-                                          children: [
-                                            const Icon(Icons.location_on,
-                                                size: 20),
-                                            const SizedBox(width: 8),
-                                            Expanded(
-                                              child: Text(
-                                                campaign.location!,
-                                                style: const TextStyle(
-                                                    fontSize: 14),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
+                                        itemType: "campaign",
                                       ),
-                                      const SizedBox(width: 10),
-                                      Expanded(
-                                        child: Row(
-                                          children: [
-                                            Icon(Icons.category, size: 20),
-                                            SizedBox(width: 8),
-                                            Expanded(
-                                              child: Text(
-                                                state.campaign.category!.name
-                                                    .toString(),
-                                                style: TextStyle(fontSize: 14),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
+                                    ),
                                   ),
-                                )
-                              ],
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 10,
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: Row(
+                                            children: [
+                                              const Icon(
+                                                Icons.location_on,
+                                                size: 20,
+                                              ),
+                                              const SizedBox(width: 8),
+                                              Expanded(
+                                                child: Text(
+                                                  campaign.location!,
+                                                  style: const TextStyle(
+                                                    fontSize: 14,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        const SizedBox(width: 10),
+                                        Expanded(
+                                          child: Row(
+                                            children: [
+                                              Icon(Icons.category, size: 20),
+                                              SizedBox(width: 8),
+                                              Expanded(
+                                                child: Text(
+                                                  state.campaign.category!.name
+                                                      .toString(),
+                                                  style: TextStyle(
+                                                    fontSize: 14,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      );
-                    }),
-              ];
-            },
+                        );
+                      },
+                    ),
+                  ];
+                },
             body: Container(
               decoration: BoxDecoration(
                 color: Theme.of(context).scaffoldBackgroundColor,
@@ -199,10 +345,11 @@ class _CampaignDetailPageState extends State<CampaignDetailPage> {
                                 : CachedNetworkImage(
                                     imageUrl: campaign.ong!.coverImageUrl!,
                                     fit: BoxFit.cover,
-                                    progressIndicatorBuilder: (context, url,
-                                            downloadProgress) =>
-                                        CircularProgressIndicator(
-                                            value: downloadProgress.progress),
+                                    progressIndicatorBuilder:
+                                        (context, url, downloadProgress) =>
+                                            CircularProgressIndicator(
+                                              value: downloadProgress.progress,
+                                            ),
                                     errorWidget: (context, url, error) =>
                                         const Icon(Icons.error),
                                   ),
@@ -216,9 +363,7 @@ class _CampaignDetailPageState extends State<CampaignDetailPage> {
                           children: [
                             Text(
                               campaign.ong!.name!,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleMedium!
+                              style: Theme.of(context).textTheme.titleMedium!
                                   .copyWith(fontWeight: FontWeight.bold),
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -234,9 +379,7 @@ class _CampaignDetailPageState extends State<CampaignDetailPage> {
                           padding: const EdgeInsets.all(5),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(50),
-                            border: Border.all(
-                              color: AppColors.grey,
-                            ),
+                            border: Border.all(color: AppColors.grey),
                           ),
                           child: const Icon(Icons.call),
                         ),
@@ -245,15 +388,16 @@ class _CampaignDetailPageState extends State<CampaignDetailPage> {
                     const Divider(),
                     Padding(
                       padding: const EdgeInsets.symmetric(
-                          vertical: 20, horizontal: 10),
+                        vertical: 20,
+                        horizontal: 10,
+                      ),
                       child: Text(
                         "Valores a ser arrecadado",
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleMedium!
+                        style: Theme.of(context).textTheme.titleMedium!
                             .copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black54),
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black54,
+                            ),
                       ),
                     ),
                     ListTile(
@@ -263,16 +407,11 @@ class _CampaignDetailPageState extends State<CampaignDetailPage> {
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(10),
-                          border: Border.all(
-                            color: Colors.black12,
-                          ),
+                          border: Border.all(color: Colors.black12),
                         ),
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Image.asset(
-                            AppImages.healthcare,
-                            width: 10,
-                          ),
+                          child: Image.asset(AppImages.healthcare, width: 10),
                         ),
                       ),
                       title: Text(
@@ -292,24 +431,24 @@ class _CampaignDetailPageState extends State<CampaignDetailPage> {
                               children: [
                                 TextSpan(
                                   text: AppUtils.formatFullCurrency(
-                                      widget.campaign.fundsRaised!),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .titleSmall!
+                                    widget.campaign.fundsRaised!,
+                                  ),
+                                  style: Theme.of(context).textTheme.titleSmall!
                                       .copyWith(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 18),
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18,
+                                      ),
                                 ),
                                 const TextSpan(text: " / "),
                                 TextSpan(
-                                    text: AppUtils.formatFullCurrency(
-                                        widget.campaign.fundraisingGoal!))
+                                  text: AppUtils.formatFullCurrency(
+                                    widget.campaign.fundraisingGoal!,
+                                  ),
+                                ),
                               ],
                             ),
                           ),
-                          const SizedBox(
-                            height: 10,
-                          ),
+                          const SizedBox(height: 10),
                           Stack(
                             children: [
                               Container(
@@ -322,34 +461,36 @@ class _CampaignDetailPageState extends State<CampaignDetailPage> {
                               ),
                               Positioned(
                                 child: FAProgressBar(
-                                    currentValue: AppFuncionsUtilsHelper
-                                        .calculateFundraisingPercentage(
-                                            campaign.fundsRaised,
-                                            campaign.fundraisingGoal),
-                                    backgroundColor: AppColors.strokeColor,
-                                    progressColor: Colors.black,
-                                    changeProgressColor: Colors.red,
-                                    size: 15,
-                                    displayTextStyle: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 10,
-                                      color: Colors.white,
-                                    ),
-                                    displayText: '%'),
+                                  currentValue:
+                                      AppFuncionsUtilsHelper.calculateFundraisingPercentage(
+                                        campaign.fundsRaised,
+                                        campaign.fundraisingGoal,
+                                      ),
+                                  backgroundColor: AppColors.strokeColor,
+                                  progressColor: Colors.black,
+                                  changeProgressColor: Colors.red,
+                                  size: 15,
+                                  displayTextStyle: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 10,
+                                    color: Colors.white,
+                                  ),
+                                  displayText: '%',
+                                ),
                               ),
                             ],
                           ),
-                          const SizedBox(
-                            height: 10,
-                          ),
+                          const SizedBox(height: 10),
                           Container(
                             child: Row(
                               children: [
                                 Expanded(
                                   child: InkWell(
                                     onTap: () {
-                                      AppUtils.contributorUsers(context,
-                                          widget.campaign.contributors!);
+                                      AppUtils.contributorUsers(
+                                        context,
+                                        widget.campaign.contributors!,
+                                      );
                                     },
                                     child: Row(
                                       children: [
@@ -360,38 +501,30 @@ class _CampaignDetailPageState extends State<CampaignDetailPage> {
                                     ),
                                   ),
                                 ),
-                                const Icon(
-                                  Icons.timelapse_rounded,
-                                  size: 16,
-                                ),
-                                const SizedBox(
-                                  width: 5,
-                                ),
+                                const Icon(Icons.timelapse_rounded, size: 16),
+                                const SizedBox(width: 5),
                                 (AppDateUtilsHelper.daysRemainingUntil(
-                                            campaign.endDate!) ==
+                                          campaign.endDate!,
+                                        ) ==
                                         0)
                                     ? Text(
                                         "Está acontecer",
-                                        style: const TextStyle(
-                                          fontSize: 12,
-                                        ),
+                                        style: const TextStyle(fontSize: 12),
                                       )
                                     : (AppDateUtilsHelper.daysRemainingUntil(
-                                                campaign.endDate!) <
-                                            0)
-                                        ? Text(
-                                            AppDateUtilsHelper.formatDate(
-                                                data: campaign.endDate!),
-                                            style: const TextStyle(
-                                              fontSize: 12,
-                                            ),
-                                          )
-                                        : Text(
-                                            "Faltando ${AppDateUtilsHelper.daysRemainingUntil(campaign.endDate!)} dias",
-                                            style: const TextStyle(
-                                              fontSize: 12,
-                                            ),
-                                          )
+                                            campaign.endDate!,
+                                          ) <
+                                          0)
+                                    ? Text(
+                                        AppDateUtilsHelper.formatDate(
+                                          data: campaign.endDate!,
+                                        ),
+                                        style: const TextStyle(fontSize: 12),
+                                      )
+                                    : Text(
+                                        "Faltando ${AppDateUtilsHelper.daysRemainingUntil(campaign.endDate!)} dias",
+                                        style: const TextStyle(fontSize: 12),
+                                      ),
                               ],
                             ),
                           ),
@@ -404,18 +537,22 @@ class _CampaignDetailPageState extends State<CampaignDetailPage> {
                         padding: const EdgeInsets.symmetric(horizontal: 10),
                         child: ElevatedButton(
                           style: ButtonStyle(
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(
-                                  AppValues.s10,
-                                ), // Define o raio da borda aqui
-                              ),
-                            ),
+                            shape:
+                                MaterialStateProperty.all<
+                                  RoundedRectangleBorder
+                                >(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(
+                                      AppValues.s10,
+                                    ), // Define o raio da borda aqui
+                                  ),
+                                ),
                           ),
                           onPressed: () {
-                            Get.toNamed(AppRoutes.paymentRoute,
-                                arguments: widget.campaign);
+                            Get.toNamed(
+                              AppRoutes.paymentRoute,
+                              arguments: widget.campaign,
+                            );
                           },
                           child: const Text("Doar"),
                         ),
@@ -427,13 +564,13 @@ class _CampaignDetailPageState extends State<CampaignDetailPage> {
                       width: double.infinity,
                       height: 45,
                       decoration: BoxDecoration(
-                          // border: Border(
-                          //   bottom: BorderSide(
-                          //     width: 2,
-                          //     color: Colors.black12,
-                          //   ),
-                          // ),
-                          ),
+                        // border: Border(
+                        //   bottom: BorderSide(
+                        //     width: 2,
+                        //     color: Colors.black12,
+                        //   ),
+                        // ),
+                      ),
                       child: ListView.separated(
                         physics: const ClampingScrollPhysics(),
                         shrinkWrap: true,
@@ -459,42 +596,40 @@ class _CampaignDetailPageState extends State<CampaignDetailPage> {
                                         ),
                                       )
                                     : Border.all(
-                                        width: 0, color: Colors.transparent),
+                                        width: 0,
+                                        color: Colors.transparent,
+                                      ),
                               ),
                               child: Center(
                                 child: Text(
                                   menuList[index].toString(),
                                   style: (index != selected)
                                       ? Theme.of(context).textTheme.bodyMedium
-                                      : Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium!
-                                          .copyWith(
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.black),
+                                      : Theme.of(
+                                          context,
+                                        ).textTheme.bodyMedium!.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black,
+                                        ),
                                 ),
                               ),
                             ),
                           );
                         },
                         separatorBuilder: (context, index) {
-                          return const SizedBox(
-                            width: 10,
-                          );
+                          return const SizedBox(width: 10);
                         },
                         itemCount: menuList.length,
                       ),
                     ),
-                    _menuWidget(state.campaign)
+                    _menuWidget(state.campaign),
                   ],
                 ),
               ),
             ),
           );
         }
-        return const Center(
-          child: CircularProgressIndicator(),
-        );
+        return const Center(child: CircularProgressIndicator());
       },
     );
   }
@@ -525,9 +660,7 @@ class UpdateWidget extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: (campaign.updates!.length == 0)
-          ? Center(
-              child: Text("Sem actualizações"),
-            )
+          ? Center(child: Text("Sem actualizações"))
           : ListView.separated(
               physics: ClampingScrollPhysics(),
               shrinkWrap: true,
@@ -548,20 +681,17 @@ class UpdateWidget extends StatelessWidget {
                           children: [
                             Text("Update #${index + 1}"),
                             Text(
-                                "${AppDateUtilsHelper.formatDate(data: update.createdAt!)}"),
+                              "${AppDateUtilsHelper.formatDate(data: update.createdAt!)}",
+                            ),
                           ],
                         ),
-                        const SizedBox(
-                          height: 10,
-                        ),
+                        const SizedBox(height: 10),
                         Text(
                           update.title!,
                           style: Theme.of(context).textTheme.titleMedium,
                         ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        Text(update.description!)
+                        const SizedBox(height: 20),
+                        Text(update.description!),
                       ],
                     ),
                   ),
@@ -624,13 +754,8 @@ class _DocumentWidgetState extends State<DocumentWidget> {
                                 AppIcons.shieldTrust,
                                 color: AppColors.primaryColor,
                               )
-                            : Icon(
-                                Icons.close,
-                                color: Colors.red,
-                              ),
-                        const SizedBox(
-                          width: 10,
-                        ),
+                            : Icon(Icons.close, color: Colors.red),
+                        const SizedBox(width: 10),
                         (counterApprovedDoc.length ==
                                 widget.campaign.documents!.length)
                             ? Text(
@@ -680,9 +805,7 @@ class _DocumentWidgetState extends State<DocumentWidget> {
                       ).fromUrl(widget.campaign.documents![0].documentPath!),
               ),
             ),
-            const SizedBox(
-              height: 10,
-            ),
+            const SizedBox(height: 10),
             Center(
               child: Container(
                 width: 280,
@@ -715,12 +838,11 @@ class _DocumentWidgetState extends State<DocumentWidget> {
                                   print('page change: $page/$total');
                                 }),
                               ).fromUrl(
-                                widget.campaign.documents![1].documentPath!),
+                                widget.campaign.documents![1].documentPath!,
+                              ),
                       ),
                     ),
-                    const SizedBox(
-                      width: 10,
-                    ),
+                    const SizedBox(width: 10),
                     Expanded(
                       child: Container(
                         width: 50,
@@ -748,12 +870,11 @@ class _DocumentWidgetState extends State<DocumentWidget> {
                                   print('page change: $page/$total');
                                 }),
                               ).fromUrl(
-                                widget.campaign.documents![2].documentPath!),
+                                widget.campaign.documents![2].documentPath!,
+                              ),
                       ),
                     ),
-                    const SizedBox(
-                      width: 10,
-                    ),
+                    const SizedBox(width: 10),
                     Expanded(
                       child: Container(
                         width: 50,
@@ -781,13 +902,14 @@ class _DocumentWidgetState extends State<DocumentWidget> {
                                   print('page change: $page/$total');
                                 }),
                               ).fromUrl(
-                                widget.campaign.documents![3].documentPath!),
+                                widget.campaign.documents![3].documentPath!,
+                              ),
                       ),
                     ),
                   ],
                 ),
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -807,126 +929,409 @@ class _AboutWidgetState extends State<AboutWidget> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(10.0),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    width: double.infinity,
-                    height: 200,
-                    child: (widget.campaign.midias!.isEmpty)
-                        ? (widget.campaign.imageCoverUrl == null)
-                            ? Image.asset(AppImages.coverBackground)
-                            : InkWell(
-                                onTap: () => _openPreview(
-                                  context,
-                                  "local",
-                                  AppImages.coverBackground,
-                                ),
-                                child: CachedNetworkImage(
-                                  imageUrl: widget.campaign.imageCoverUrl!,
-                                  fit: BoxFit.cover,
-                                  placeholder: (context, url) =>
-                                      const CircularProgressIndicator(),
-                                ),
-                              )
-                        : CarouselSlider.builder(
-                            itemCount: widget.campaign.midias!.length,
-                            itemBuilder:
-                                (BuildContext context, int itemIndex, int _) {
-                              final campaignMidia =
-                                  widget.campaign.midias![itemIndex];
-
-                              return GestureDetector(
-                                onTap: () => _openPreview(
-                                  context,
-                                  campaignMidia.midiaType!,
-                                  campaignMidia.midiaUrl!,
-                                ),
-                                child: Container(
-                                  color: AppColors.primaryColor,
-                                  width: double.infinity,
-                                  height: 200,
-                                  child: campaignMidia.midiaType == "video"
-                                      ? VideoThumbnail(
-                                          videoUrl: campaignMidia.midiaUrl!,
-                                        )
-                                      : CachedNetworkImage(
-                                          width: double.infinity,
-                                          height: 200,
-                                          fit: BoxFit.cover,
-                                          imageUrl: campaignMidia.midiaUrl!,
-                                        ),
-                                ),
-                              );
-                            },
-                            options: CarouselOptions(
-                              height: 200,
-                              aspectRatio: 16 / 9,
-                              viewportFraction: 0.95,
-                              initialPage: 0,
-                              enableInfiniteScroll: true,
-                              animateToClosest: true,
-                              autoPlay: false,
-                              scrollDirection: Axis.horizontal,
-                            ),
-                          ),
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            widget.campaign.title!,
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+          const SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+                decoration: BoxDecoration(
+                  color: AppColors.primaryColor.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Text(
+                  widget.campaign.category!.name!,
+                  style: TextStyle(
+                    color: AppColors.primaryColor,
+                    fontWeight: FontWeight.bold,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ListTile(
-                          contentPadding: EdgeInsets.zero,
-                          title: Text(
-                            widget.campaign.title!,
-                            style: Theme.of(context).textTheme.titleMedium,
-                          ),
-                          subtitle: RichText(
-                            text: TextSpan(
-                              style: Theme.of(context).textTheme.bodyMedium,
-                              children: [
-                                TextSpan(
-                                  text: (widget.campaign.campaignType ==
-                                          "Um Individuo")
-                                      ? "Beneficiário: "
-                                      : "Intsituicao: ",
-                                ),
-                                TextSpan(
-                                  text:
-                                      (widget.campaign.beneficiaryName == null)
-                                          ? "Não especificado"
-                                          : widget.campaign.beneficiaryName!,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        Text(
-                          widget.campaign.description!,
-                          style: const TextStyle(color: Colors.black87),
-                        ),
-                      ],
-                    ),
-                  )
-                ],
+                ),
               ),
+
+              RichText(
+                text: TextSpan(
+                  style: Theme.of(context).textTheme.bodyMedium,
+                  children: [
+                    TextSpan(
+                      text: "Criado: ",
+                      style: TextStyle(
+                        fontWeight: FontWeight.normal,
+                        color: Colors.grey,
+                      ),
+                    ),
+                    TextSpan(
+                      text: AppDateUtilsHelper.formatDate(
+                        data: widget.campaign.createdAt!,
+                        showTime: false,
+                      ),
+                      style: TextStyle(
+                        fontWeight: FontWeight.normal,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: Colors.black12),
             ),
-          ],
-        ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                RichText(
+                  text: TextSpan(
+                    style: DefaultTextStyle.of(context).style,
+                    children: [
+                      TextSpan(
+                        text: AppUtils.formatFullCurrency(
+                          widget.campaign.fundsRaised!,
+                        ),
+                        style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                          color: AppColors.primaryColor,
+                        ),
+                      ),
+                      const TextSpan(text: " / "),
+                      TextSpan(
+                        text: AppUtils.formatFullCurrency(
+                          widget.campaign.fundraisingGoal!,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Stack(
+                  children: [
+                    Container(
+                      width: double.infinity,
+                      height: 15,
+                      decoration: BoxDecoration(
+                        color: AppColors.strokeColor,
+                        borderRadius: BorderRadius.circular(100),
+                      ),
+                    ),
+                    Positioned(
+                      child: FAProgressBar(
+                        currentValue:
+                            AppFuncionsUtilsHelper.calculateFundraisingPercentage(
+                              widget.campaign.fundsRaised,
+                              widget.campaign.fundraisingGoal,
+                            ),
+                        backgroundColor: AppColors.strokeColor,
+                        progressColor: Colors.black,
+                        changeProgressColor: Colors.red,
+                        size: 15,
+                        displayTextStyle: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 10,
+                          color: Colors.white,
+                        ),
+                        displayText: '%',
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  children: [
+                    Expanded(
+                      child: InkWell(
+                        onTap: () {
+                          AppUtils.contributorUsers(
+                            context,
+                            widget.campaign.contributors!,
+                          );
+                        },
+                        child: Row(
+                          children: [
+                            AppUtils.contributores(
+                              widget.campaign.contributors!,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const Icon(Icons.timelapse_rounded, size: 16),
+                    const SizedBox(width: 5),
+                    (AppDateUtilsHelper.daysRemainingUntil(
+                              widget.campaign.endDate!,
+                            ) ==
+                            0)
+                        ? Text(
+                            "Está acontecer",
+                            style: const TextStyle(fontSize: 12),
+                          )
+                        : (AppDateUtilsHelper.daysRemainingUntil(
+                                widget.campaign.endDate!,
+                              ) <
+                              0)
+                        ? Text(
+                            AppDateUtilsHelper.formatDate(
+                              data: widget.campaign.endDate!,
+                            ),
+                            style: const TextStyle(fontSize: 12),
+                          )
+                        : Text(
+                            "Faltando ${AppDateUtilsHelper.daysRemainingUntil(widget.campaign.endDate!)} dias",
+                            style: const TextStyle(fontSize: 12),
+                          ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          (widget.campaign.ong == null)
+              ? ListTile(
+                  contentPadding: const EdgeInsets.all(0),
+                  leading: ClipOval(
+                    child: SizedBox(
+                      width: 50,
+                      height: 50,
+                      child: (widget.campaign.user!.avatarUrl == null)
+                          ? Image.asset(
+                              Assets.images.avatarBackground.path,
+                              fit: BoxFit.cover,
+                            )
+                          : CachedNetworkImage(
+                              imageUrl: widget.campaign.user!.avatarUrl!,
+                              fit: BoxFit.cover,
+                              progressIndicatorBuilder:
+                                  (context, url, downloadProgress) =>
+                                      CircularProgressIndicator(
+                                        value: downloadProgress.progress,
+                                      ),
+                              errorWidget: (context, url, error) =>
+                                  const Icon(Icons.error),
+                            ),
+                    ),
+                  ),
+                  title: Text(
+                    "Criado por",
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                  subtitle: Row(
+                    children: [
+                      Text(
+                        widget.campaign.ong!.name!,
+                        style: Theme.of(context).textTheme.titleMedium!
+                            .copyWith(fontWeight: FontWeight.bold),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(width: 5),
+                      SvgPicture.asset(
+                        width: 16,
+                        AppIcons.shieldTrust,
+                        color: AppColors.blueColor,
+                      ),
+                    ],
+                  ),
+                  trailing: Container(
+                    padding: const EdgeInsets.all(5),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(50),
+                      border: Border.all(color: AppColors.grey),
+                    ),
+                    child: const Icon(Icons.call),
+                  ),
+                )
+              : ListTile(
+                  contentPadding: const EdgeInsets.all(0),
+                  leading: ClipRRect(
+                    borderRadius: BorderRadius.circular(50),
+                    child: SizedBox(
+                      width: 50,
+                      height: 50,
+                      child: (widget.campaign.ong!.coverImageUrl == null)
+                          ? Image.asset(
+                              AppImages.coverBackground,
+                              fit: BoxFit.cover,
+                            )
+                          : CachedNetworkImage(
+                              imageUrl: widget.campaign.ong!.coverImageUrl!,
+                              fit: BoxFit.cover,
+                              progressIndicatorBuilder:
+                                  (context, url, downloadProgress) =>
+                                      CircularProgressIndicator(
+                                        value: downloadProgress.progress,
+                                      ),
+                              errorWidget: (context, url, error) =>
+                                  const Icon(Icons.error),
+                            ),
+                    ),
+                  ),
+                  title: Text(
+                    "Criado por",
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                  subtitle: Row(
+                    children: [
+                      Text(
+                        widget.campaign.ong!.name!,
+                        style: Theme.of(context).textTheme.titleMedium!
+                            .copyWith(fontWeight: FontWeight.bold),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(width: 5),
+                      SvgPicture.asset(
+                        width: 16,
+                        AppIcons.shieldTrust,
+                        color: AppColors.blueColor,
+                      ),
+                    ],
+                  ),
+                  trailing: Container(
+                    padding: const EdgeInsets.all(5),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(50),
+                      border: Border.all(color: AppColors.grey),
+                    ),
+                    child: const Icon(Icons.call),
+                  ),
+                ),
+          const SizedBox(height: 10),
+          ReadMoreText(
+            widget.campaign.description!,
+            trimMode: TrimMode.Line,
+            trimLines: 5,
+            colorClickableText: Colors.red,
+            trimCollapsedText: 'Mostrar mais',
+            trimExpandedText: 'Mostrar menos',
+            moreStyle: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+              color: AppColors.primaryColor,
+            ),
+          ),
+
+          // Card(
+          //   shape: RoundedRectangleBorder(
+          //     borderRadius: BorderRadius.circular(10),
+          //   ),
+          //   child: Column(
+          //     crossAxisAlignment: CrossAxisAlignment.start,
+          //     children: [
+          //       SizedBox(
+          //         width: double.infinity,
+          //         height: 200,
+          //         child: (widget.campaign.midias!.isEmpty)
+          //             ? (widget.campaign.imageCoverUrl == null)
+          //                   ? Image.asset(AppImages.coverBackground)
+          //                   : InkWell(
+          //                       onTap: () => _openPreview(
+          //                         context,
+          //                         "local",
+          //                         AppImages.coverBackground,
+          //                       ),
+          //                       child: CachedNetworkImage(
+          //                         imageUrl: widget.campaign.imageCoverUrl!,
+          //                         fit: BoxFit.cover,
+          //                         placeholder: (context, url) =>
+          //                             const CircularProgressIndicator(),
+          //                       ),
+          //                     )
+          //             : CarouselSlider.builder(
+          //                 itemCount: widget.campaign.midias!.length,
+          //                 itemBuilder:
+          //                     (BuildContext context, int itemIndex, int _) {
+          //                       final campaignMidia =
+          //                           widget.campaign.midias![itemIndex];
+
+          //                       return GestureDetector(
+          //                         onTap: () => _openPreview(
+          //                           context,
+          //                           campaignMidia.midiaType!,
+          //                           campaignMidia.midiaUrl!,
+          //                         ),
+          //                         child: Container(
+          //                           color: AppColors.primaryColor,
+          //                           width: double.infinity,
+          //                           height: 200,
+          //                           child: campaignMidia.midiaType == "video"
+          //                               ? VideoThumbnail(
+          //                                   videoUrl: campaignMidia.midiaUrl!,
+          //                                 )
+          //                               : CachedNetworkImage(
+          //                                   width: double.infinity,
+          //                                   height: 200,
+          //                                   fit: BoxFit.cover,
+          //                                   imageUrl: campaignMidia.midiaUrl!,
+          //                                 ),
+          //                         ),
+          //                       );
+          //                     },
+          //                 options: CarouselOptions(
+          //                   height: 200,
+          //                   aspectRatio: 16 / 9,
+          //                   viewportFraction: 0.95,
+          //                   initialPage: 0,
+          //                   enableInfiniteScroll: true,
+          //                   animateToClosest: true,
+          //                   autoPlay: false,
+          //                   scrollDirection: Axis.horizontal,
+          //                 ),
+          //               ),
+          //       ),
+          //       Padding(
+          //         padding: const EdgeInsets.all(16.0),
+          //         child: Column(
+          //           crossAxisAlignment: CrossAxisAlignment.start,
+          //           children: [
+          //             ListTile(
+          //               contentPadding: EdgeInsets.zero,
+          //               title: Text(
+          //                 widget.campaign.title!,
+          //                 style: Theme.of(context).textTheme.titleMedium,
+          //               ),
+          //               subtitle: RichText(
+          //                 text: TextSpan(
+          //                   style: Theme.of(context).textTheme.bodyMedium,
+          //                   children: [
+          //                     TextSpan(
+          //                       text:
+          //                           (widget.campaign.campaignType ==
+          //                               "Um Individuo")
+          //                           ? "Beneficiário: "
+          //                           : "Intsituicao: ",
+          //                     ),
+          //                     TextSpan(
+          //                       text: (widget.campaign.beneficiaryName == null)
+          //                           ? "Não especificado"
+          //                           : widget.campaign.beneficiaryName!,
+          //                       style: TextStyle(fontWeight: FontWeight.bold),
+          //                     ),
+          //                   ],
+          //                 ),
+          //               ),
+          //             ),
+          //             const SizedBox(height: 10),
+          //             Text(
+          //               widget.campaign.description!,
+          //               style: const TextStyle(color: Colors.black87),
+          //             ),
+          //           ],
+          //         ),
+          //       ),
+          //     ],
+          //   ),
+          // ),
+        ],
       ),
     );
   }
@@ -935,10 +1340,8 @@ class _AboutWidgetState extends State<AboutWidget> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => FullScreenPreview(
-          mediaType: mediaType,
-          mediaUrl: mediaUrl,
-        ),
+        builder: (context) =>
+            FullScreenPreview(mediaType: mediaType, mediaUrl: mediaUrl),
       ),
     );
   }
@@ -1032,11 +1435,11 @@ class _FullScreenPreviewState extends State<FullScreenPreview> {
       body: Center(
         child: widget.mediaType == 'video'
             ? _videoController != null && _videoController!.value.isInitialized
-                ? AspectRatio(
-                    aspectRatio: _videoController!.value.aspectRatio,
-                    child: VideoPlayer(_videoController!),
-                  )
-                : const Center(child: CircularProgressIndicator())
+                  ? AspectRatio(
+                      aspectRatio: _videoController!.value.aspectRatio,
+                      child: VideoPlayer(_videoController!),
+                    )
+                  : const Center(child: CircularProgressIndicator())
             : CachedNetworkImage(
                 width: double.infinity,
                 height: double.infinity,
@@ -1069,7 +1472,6 @@ class HelpWidget extends StatelessWidget {
                   final comment = campaign.comments![index];
                   return ListTile(
                     // titleAlignment: ListTileTitleAlignment.center,
-
                     leading: ClipRRect(
                       borderRadius: BorderRadius.circular(50),
                       child: Container(
@@ -1081,23 +1483,26 @@ class HelpWidget extends StatelessWidget {
                           progressIndicatorBuilder:
                               (context, url, downloadProgress) =>
                                   CircularProgressIndicator(
-                                      value: downloadProgress.progress),
+                                    value: downloadProgress.progress,
+                                  ),
                           errorWidget: (context, url, error) =>
                               Icon(Icons.error),
                         ),
                       ),
                     ),
-                    title: Text(comment.user!.fullName!,
-                        style: TextStyle(color: Colors.black87)),
+                    title: Text(
+                      comment.user!.fullName!,
+                      style: TextStyle(color: Colors.black87),
+                    ),
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           AppDateUtilsHelper.formatDate(
-                              data: comment.user!.createdAt!, showTime: true),
-                          style: TextStyle(
-                            fontSize: 14,
+                            data: comment.user!.createdAt!,
+                            showTime: true,
                           ),
+                          style: TextStyle(fontSize: 14),
                         ),
                         Text(
                           comment.description!,
@@ -1109,7 +1514,7 @@ class HelpWidget extends StatelessWidget {
                   );
                 },
               ),
-            )
+            ),
           ],
         ),
         ExpansionTile(
@@ -1122,45 +1527,65 @@ class HelpWidget extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('1. Qual é o objetivo desta campanha?',
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black)),
                     Text(
-                        '- Nosso objetivo é arrecadar fundos e itens para ajudar pessoas em situação de vulnerabilidade.'),
+                      '1. Qual é o objetivo desta campanha?',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                    Text(
+                      '- Nosso objetivo é arrecadar fundos e itens para ajudar pessoas em situação de vulnerabilidade.',
+                    ),
                     SizedBox(height: 8),
-                    Text('2. Quem está organizando esta campanha?',
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black)),
                     Text(
-                        '- A campanha é organizada por um grupo de voluntários e apoiadores.'),
+                      '2. Quem está organizando esta campanha?',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                    Text(
+                      '- A campanha é organizada por um grupo de voluntários e apoiadores.',
+                    ),
                     SizedBox(height: 8),
-                    Text('3. Para onde vai o dinheiro ou os itens arrecadados?',
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black)),
                     Text(
-                        '- Todas as doações serão direcionadas para comunidades carentes e instituições beneficentes.'),
+                      '3. Para onde vai o dinheiro ou os itens arrecadados?',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                    Text(
+                      '- Todas as doações serão direcionadas para comunidades carentes e instituições beneficentes.',
+                    ),
                     SizedBox(height: 8),
-                    Text('4. Como posso contribuir?',
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black)),
                     Text(
-                        '- Você pode doar dinheiro, alimentos, roupas ou se voluntariar para ajudar na distribuição.'),
+                      '4. Como posso contribuir?',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                    Text(
+                      '- Você pode doar dinheiro, alimentos, roupas ou se voluntariar para ajudar na distribuição.',
+                    ),
                     SizedBox(height: 8),
-                    Text('5. Há um valor mínimo para doação?',
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black)),
                     Text(
-                        '- Não, qualquer contribuição é bem-vinda e fará a diferença!'),
+                      '5. Há um valor mínimo para doação?',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                    Text(
+                      '- Não, qualquer contribuição é bem-vinda e fará a diferença!',
+                    ),
                   ],
                 ),
               ),
@@ -1175,36 +1600,42 @@ class HelpWidget extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Selecione um motivo:',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  Text(
+                    'Selecione um motivo:',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
                   SizedBox(height: 8),
                   DropdownButtonFormField<String>(
                     items: [
                       DropdownMenuItem(value: 'Fraude', child: Text('Fraude')),
                       DropdownMenuItem(
-                          value: 'Informações falsas',
-                          child: Text('Informações falsas')),
+                        value: 'Informações falsas',
+                        child: Text('Informações falsas'),
+                      ),
                       DropdownMenuItem(
-                          value: 'Uso indevido',
-                          child: Text('Uso indevido dos fundos')),
+                        value: 'Uso indevido',
+                        child: Text('Uso indevido dos fundos'),
+                      ),
                       DropdownMenuItem(value: 'Outro', child: Text('Outro')),
                     ],
                     onChanged: (value) {},
                     decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: 'Escolha um motivo'),
+                      border: OutlineInputBorder(),
+                      hintText: 'Escolha um motivo',
+                    ),
                   ),
                   SizedBox(height: 12),
-                  Text('Descreva o problema:',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  Text(
+                    'Descreva o problema:',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
                   SizedBox(height: 8),
                   TextField(
                     maxLines: 3,
                     decoration: InputDecoration(
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10)),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                       hintText: 'Descreva o motivo do seu relatório...',
                     ),
                   ),

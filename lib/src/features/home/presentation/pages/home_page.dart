@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:sliver_snap/widgets/sliver_snap.dart';
 
 import 'package:utueji/src/features/categories/data/models/category_model.dart';
 import 'package:utueji/src/features/events/presentation/widgets/event_skeleton_widget.dart';
