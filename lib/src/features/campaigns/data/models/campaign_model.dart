@@ -91,31 +91,37 @@ class CampaignModel extends CampaignEntity {
           : null,
       ong: map['ong'] != null ? OngModel.fromMap(map['ong']) : null,
       user: map['user'] != null ? UserModel.fromJson(map['user']) : null,
-      contributors: map['contributors'] != null
+      contributors: map['campaignContributors'] != null
           ? List<CampaignContributorModel>.from(
-              map['contributors'].map(
+              map['campaignContributors'].map(
                 (x) => CampaignContributorModel.fromJson(x),
               ),
             )
           : [],
-      documents: map['documents'] != null
+      documents: map['campaignDocuments'] != null
           ? List<CampaignDocumentModel>.from(
-              map['documents'].map((x) => CampaignDocumentModel.fromJson(x)),
+              map['campaignDocuments'].map(
+                (x) => CampaignDocumentModel.fromJson(x),
+              ),
             )
           : [],
-      updates: map['updates'] != null
+      updates: map['campaignUpdates'] != null
           ? List<CampaignUpdateModel>.from(
-              map['updates'].map((x) => CampaignUpdateModel.fromJson(x)),
+              map['campaignUpdates'].map(
+                (x) => CampaignUpdateModel.fromJson(x),
+              ),
             )
           : [],
-      comments: map['comments'] != null
+      comments: map['campaignComments'] != null
           ? List<CampaignCommentModel>.from(
-              map['comments'].map((x) => CampaignCommentModel.fromJson(x)),
+              map['campaignComments'].map(
+                (x) => CampaignCommentModel.fromJson(x),
+              ),
             )
           : [],
-      midias: map['midias'] != null
+      midias: map['campaignMidias'] != null
           ? List<CampaignMidiaModel>.from(
-              map['midias'].map((x) => CampaignMidiaModel.fromJson(x)),
+              map['campaignMidias'].map((x) => CampaignMidiaModel.fromJson(x)),
             )
           : [],
     );

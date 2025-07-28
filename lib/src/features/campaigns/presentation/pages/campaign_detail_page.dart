@@ -12,6 +12,7 @@ import 'package:readmore/readmore.dart';
 import 'package:sliver_snap/widgets/sliver_snap.dart';
 import 'package:utueji/core/gen/assets.gen.dart';
 import 'package:utueji/src/config/routes/app_routes.dart';
+import 'package:utueji/src/core/utils/image_helper.dart';
 
 import 'package:video_player/video_player.dart';
 import '../../../../config/themes/app_colors.dart';
@@ -49,7 +50,11 @@ class _CampaignDetailPageState extends State<CampaignDetailPage> {
   Widget build(BuildContext context) {
     return BlocBuilder<CampaignDetailCubit, CampaignDetailState>(
       builder: (context, state) {
-        if (state is CampaignDetailLoaded) {
+        if (state is CampaignDetailLoading) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (state is CampaignDetailError) {
+          return Center(child: Text(state.message));
+        } else if (state is CampaignDetailLoaded) {
           final campaign = state.campaign;
           return Scaffold(
             bottomNavigationBar: SafeArea(
@@ -173,7 +178,9 @@ class _CampaignDetailPageState extends State<CampaignDetailPage> {
                 ),
                 expandedContentHeight: 200,
                 expandedContent: CachedNetworkImage(
-                  imageUrl: widget.campaign.imageCoverUrl!,
+                  imageUrl: ImageHelper.buildImageUrl(
+                    widget.campaign.imageCoverUrl!,
+                  ),
                   fit: BoxFit.cover,
                   progressIndicatorBuilder: (context, url, downloadProgress) =>
                       CircularProgressIndicator(
@@ -201,446 +208,6 @@ class _CampaignDetailPageState extends State<CampaignDetailPage> {
                 //     HelpWidget(campaign: campaign),
                 //   ],
                 // ),
-              ),
-            ),
-          );
-
-          return NestedScrollView(
-            headerSliverBuilder:
-                (BuildContext context, bool innerBoxIsScrolled) {
-                  if (innerBoxIsScrolled) {
-                    color.value = Colors.black;
-                  }
-                  return [
-                    ValueListenableBuilder(
-                      valueListenable: color,
-                      builder: (context, value, _) {
-                        return SliverAppBar(
-                          expandedHeight: 300.0,
-                          floating: false,
-                          pinned: true,
-                          leading: IconButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            icon: Icon(Icons.arrow_back, color: value),
-                          ),
-                          actions: [
-                            IconButton(
-                              onPressed: () {},
-                              icon: Icon(Icons.share, color: value),
-                            ),
-                          ],
-                          flexibleSpace: FlexibleSpaceBar(
-                            // title: Text(widget.campaign.title!),
-                            background: (widget.campaign.imageCoverUrl == null)
-                                ? Image.asset(
-                                    AppImages.coverBackground,
-                                    fit: BoxFit.cover,
-                                  )
-                                : CachedNetworkImage(
-                                    imageUrl: campaign.imageCoverUrl!,
-                                    fit: BoxFit.cover,
-                                  ),
-                          ),
-                          bottom: PreferredSize(
-                            preferredSize: const Size.fromHeight(150.0),
-                            child: Container(
-                              width: double.infinity,
-                              padding: const EdgeInsets.symmetric(vertical: 10),
-                              decoration: BoxDecoration(
-                                color: Theme.of(
-                                  context,
-                                ).scaffoldBackgroundColor,
-                                borderRadius: const BorderRadius.only(
-                                  topLeft: Radius.circular(20.0),
-                                  topRight: Radius.circular(20.0),
-                                ),
-                              ),
-                              child: Column(
-                                children: [
-                                  ListTile(
-                                    title: Text(
-                                      campaign.title!,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleLarge!
-                                          .copyWith(
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    trailing: ClipRRect(
-                                      borderRadius: BorderRadius.circular(50),
-                                      child: AppUtils.favoriteWidget(
-                                        context: context,
-                                        itemId: widget.campaign.id!,
-                                        itemType: "campaign",
-                                      ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 10,
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        Expanded(
-                                          child: Row(
-                                            children: [
-                                              const Icon(
-                                                Icons.location_on,
-                                                size: 20,
-                                              ),
-                                              const SizedBox(width: 8),
-                                              Expanded(
-                                                child: Text(
-                                                  campaign.location!,
-                                                  style: const TextStyle(
-                                                    fontSize: 14,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        const SizedBox(width: 10),
-                                        Expanded(
-                                          child: Row(
-                                            children: [
-                                              Icon(Icons.category, size: 20),
-                                              SizedBox(width: 8),
-                                              Expanded(
-                                                child: Text(
-                                                  state.campaign.category!.name
-                                                      .toString(),
-                                                  style: TextStyle(
-                                                    fontSize: 14,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ];
-                },
-            body: Container(
-              decoration: BoxDecoration(
-                color: Theme.of(context).scaffoldBackgroundColor,
-              ),
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Divider(),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: ListTile(
-                        contentPadding: const EdgeInsets.all(0),
-                        leading: ClipRRect(
-                          borderRadius: BorderRadius.circular(50),
-                          child: Container(
-                            width: 50,
-                            height: 50,
-                            child: (widget.campaign.imageCoverUrl == null)
-                                ? Image.asset(
-                                    AppImages.coverBackground,
-                                    fit: BoxFit.cover,
-                                  )
-                                : CachedNetworkImage(
-                                    imageUrl: campaign.ong!.coverImageUrl!,
-                                    fit: BoxFit.cover,
-                                    progressIndicatorBuilder:
-                                        (context, url, downloadProgress) =>
-                                            CircularProgressIndicator(
-                                              value: downloadProgress.progress,
-                                            ),
-                                    errorWidget: (context, url, error) =>
-                                        const Icon(Icons.error),
-                                  ),
-                          ),
-                        ),
-                        title: Text(
-                          "Criado por",
-                          style: Theme.of(context).textTheme.bodyMedium,
-                        ),
-                        subtitle: Row(
-                          children: [
-                            Text(
-                              campaign.ong!.name!,
-                              style: Theme.of(context).textTheme.titleMedium!
-                                  .copyWith(fontWeight: FontWeight.bold),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            const SizedBox(width: 5),
-                            SvgPicture.asset(
-                              width: 16,
-                              AppIcons.shieldTrust,
-                              color: AppColors.blueColor,
-                            ),
-                          ],
-                        ),
-                        trailing: Container(
-                          padding: const EdgeInsets.all(5),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(50),
-                            border: Border.all(color: AppColors.grey),
-                          ),
-                          child: const Icon(Icons.call),
-                        ),
-                      ),
-                    ),
-                    const Divider(),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 20,
-                        horizontal: 10,
-                      ),
-                      child: Text(
-                        "Valores a ser arrecadado",
-                        style: Theme.of(context).textTheme.titleMedium!
-                            .copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black54,
-                            ),
-                      ),
-                    ),
-                    ListTile(
-                      leading: Container(
-                        width: 50,
-                        height: 50,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: Colors.black12),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Image.asset(AppImages.healthcare, width: 10),
-                        ),
-                      ),
-                      title: Text(
-                        "Proxmo de 70% do fundo já foram colectados. A sua modesta doação pode impactar a urgência do necessitado.",
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.all(10),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(height: 20),
-                          RichText(
-                            text: TextSpan(
-                              style: DefaultTextStyle.of(context).style,
-                              children: [
-                                TextSpan(
-                                  text: AppUtils.formatFullCurrency(
-                                    widget.campaign.fundsRaised!,
-                                  ),
-                                  style: Theme.of(context).textTheme.titleSmall!
-                                      .copyWith(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 18,
-                                      ),
-                                ),
-                                const TextSpan(text: " / "),
-                                TextSpan(
-                                  text: AppUtils.formatFullCurrency(
-                                    widget.campaign.fundraisingGoal!,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          Stack(
-                            children: [
-                              Container(
-                                width: double.infinity,
-                                height: 15,
-                                decoration: BoxDecoration(
-                                  color: AppColors.strokeColor,
-                                  borderRadius: BorderRadius.circular(100),
-                                ),
-                              ),
-                              Positioned(
-                                child: FAProgressBar(
-                                  currentValue:
-                                      AppFuncionsUtilsHelper.calculateFundraisingPercentage(
-                                        campaign.fundsRaised,
-                                        campaign.fundraisingGoal,
-                                      ),
-                                  backgroundColor: AppColors.strokeColor,
-                                  progressColor: Colors.black,
-                                  changeProgressColor: Colors.red,
-                                  size: 15,
-                                  displayTextStyle: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 10,
-                                    color: Colors.white,
-                                  ),
-                                  displayText: '%',
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 10),
-                          Container(
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: InkWell(
-                                    onTap: () {
-                                      AppUtils.contributorUsers(
-                                        context,
-                                        widget.campaign.contributors!,
-                                      );
-                                    },
-                                    child: Row(
-                                      children: [
-                                        AppUtils.contributores(
-                                          widget.campaign.contributors!,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                const Icon(Icons.timelapse_rounded, size: 16),
-                                const SizedBox(width: 5),
-                                (AppDateUtilsHelper.daysRemainingUntil(
-                                          campaign.endDate!,
-                                        ) ==
-                                        0)
-                                    ? Text(
-                                        "Está acontecer",
-                                        style: const TextStyle(fontSize: 12),
-                                      )
-                                    : (AppDateUtilsHelper.daysRemainingUntil(
-                                            campaign.endDate!,
-                                          ) <
-                                          0)
-                                    ? Text(
-                                        AppDateUtilsHelper.formatDate(
-                                          data: campaign.endDate!,
-                                        ),
-                                        style: const TextStyle(fontSize: 12),
-                                      )
-                                    : Text(
-                                        "Faltando ${AppDateUtilsHelper.daysRemainingUntil(campaign.endDate!)} dias",
-                                        style: const TextStyle(fontSize: 12),
-                                      ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        child: ElevatedButton(
-                          style: ButtonStyle(
-                            shape:
-                                MaterialStateProperty.all<
-                                  RoundedRectangleBorder
-                                >(
-                                  RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(
-                                      AppValues.s10,
-                                    ), // Define o raio da borda aqui
-                                  ),
-                                ),
-                          ),
-                          onPressed: () {
-                            Get.toNamed(
-                              AppRoutes.paymentRoute,
-                              arguments: widget.campaign,
-                            );
-                          },
-                          child: const Text("Doar"),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 15),
-                    const Divider(),
-                    Container(
-                      width: double.infinity,
-                      height: 45,
-                      decoration: BoxDecoration(
-                        // border: Border(
-                        //   bottom: BorderSide(
-                        //     width: 2,
-                        //     color: Colors.black12,
-                        //   ),
-                        // ),
-                      ),
-                      child: ListView.separated(
-                        physics: const ClampingScrollPhysics(),
-                        shrinkWrap: true,
-                        scrollDirection: Axis.horizontal,
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        itemBuilder: (context, index) {
-                          return InkWell(
-                            onTap: () {
-                              setState(() {
-                                selected = index;
-                              });
-                            },
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                              ),
-                              decoration: BoxDecoration(
-                                border: (index == selected)
-                                    ? const Border(
-                                        bottom: BorderSide(
-                                          width: 2,
-                                          color: Colors.black,
-                                        ),
-                                      )
-                                    : Border.all(
-                                        width: 0,
-                                        color: Colors.transparent,
-                                      ),
-                              ),
-                              child: Center(
-                                child: Text(
-                                  menuList[index].toString(),
-                                  style: (index != selected)
-                                      ? Theme.of(context).textTheme.bodyMedium
-                                      : Theme.of(
-                                          context,
-                                        ).textTheme.bodyMedium!.copyWith(
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black,
-                                        ),
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                        separatorBuilder: (context, index) {
-                          return const SizedBox(width: 10);
-                        },
-                        itemCount: menuList.length,
-                      ),
-                    ),
-                    _menuWidget(state.campaign),
-                  ],
-                ),
               ),
             ),
           );
@@ -750,6 +317,7 @@ class _DocumentWidgetState extends State<DocumentWidget> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          const SizedBox(height: 20),
           (widget.campaign.documents!.isEmpty)
               ? SizedBox.shrink()
               : Container(
@@ -978,7 +546,7 @@ class _AboutWidgetState extends State<AboutWidget> {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Text(
-                  widget.campaign.category!.name!,
+                  widget.campaign.category!.name,
                   style: TextStyle(
                     color: AppColors.primaryColor,
                     fontWeight: FontWeight.bold,
@@ -1029,7 +597,7 @@ class _AboutWidgetState extends State<AboutWidget> {
                     children: [
                       TextSpan(
                         text: AppUtils.formatFullCurrency(
-                          widget.campaign.fundsRaised!,
+                          widget.campaign.fundsRaised ?? 0,
                         ),
                         style: Theme.of(context).textTheme.titleSmall!.copyWith(
                           fontWeight: FontWeight.bold,
@@ -1127,6 +695,7 @@ class _AboutWidgetState extends State<AboutWidget> {
               ],
             ),
           ),
+          const SizedBox(height: 15),
           (widget.campaign.ong == null)
               ? ListTile(
                   contentPadding: const EdgeInsets.all(0),
@@ -1158,12 +727,19 @@ class _AboutWidgetState extends State<AboutWidget> {
                   ),
                   subtitle: Row(
                     children: [
-                      Text(
-                        widget.campaign.ong!.name!,
-                        style: Theme.of(context).textTheme.titleMedium!
-                            .copyWith(fontWeight: FontWeight.bold),
-                        overflow: TextOverflow.ellipsis,
-                      ),
+                      (widget.campaign.ong == null)
+                          ? Text(
+                              widget.campaign.user!.fullName!,
+                              style: Theme.of(context).textTheme.titleMedium!
+                                  .copyWith(fontWeight: FontWeight.bold),
+                              overflow: TextOverflow.ellipsis,
+                            )
+                          : Text(
+                              widget.campaign.ong!.name!,
+                              style: Theme.of(context).textTheme.titleMedium!
+                                  .copyWith(fontWeight: FontWeight.bold),
+                              overflow: TextOverflow.ellipsis,
+                            ),
                       const SizedBox(width: 5),
                       SvgPicture.asset(
                         width: 16,
@@ -1235,7 +811,53 @@ class _AboutWidgetState extends State<AboutWidget> {
                     child: const Icon(Icons.call),
                   ),
                 ),
+          const SizedBox(height: 15),
+          Text(
+            "Imagen(s) associadas a causa",
+            style: TextStyle(fontWeight: FontWeight.w600, color: Colors.black),
+          ),
           const SizedBox(height: 10),
+
+          SizedBox(
+            height: 100,
+            width: double.infinity,
+
+            child: ListView.separated(
+              physics: const ClampingScrollPhysics(),
+              shrinkWrap: true,
+              padding: EdgeInsets.zero,
+              scrollDirection: Axis.horizontal,
+              itemBuilder: (context, index) {
+                final images = widget.campaign.midias;
+                return ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: Container(
+                    width: 100,
+                    height: 50,
+                    color: Colors.amber,
+                    child: CachedNetworkImage(
+                      width: 50,
+                      imageUrl: ImageHelper.buildImageUrl(
+                        images![index].midiaUrl!,
+                      ),
+                      fit: BoxFit.cover,
+                      placeholder: (context, url) =>
+                          const CircularProgressIndicator(),
+                      errorWidget: (context, url, error) {
+                        return Icon(Icons.error);
+                      },
+                    ),
+                  ),
+                );
+              },
+              separatorBuilder: (context, index) {
+                return SizedBox(width: 10);
+              },
+              itemCount: widget.campaign.midias!.length,
+            ),
+          ),
+
+          const SizedBox(height: 15),
           ReadMoreText(
             widget.campaign.description!,
             trimMode: TrimMode.Line,

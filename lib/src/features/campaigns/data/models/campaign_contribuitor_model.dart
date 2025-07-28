@@ -18,17 +18,17 @@ class CampaignContributorModel extends CampaignContributorEntity {
   factory CampaignContributorModel.fromJson(Map<String, dynamic> json) {
     return CampaignContributorModel(
       id: json['id'],
-      campaignId: json['campaign_id'],
-      userId: json['user_id'],
+      campaignId: json['campaignId'],
+      userId: json['userId'],
       money: json['money'],
-      isAnonymous: json['is_anonymous'],
+      isAnonymous: json['isAnonymous'],
       user: (json['user'] == null) ? null : UserModel.fromJson(json['user']),
       campaign: json['campaign'],
-      updatedAt: json['updated_at'] != null
-          ? DateTime.parse(json['updated_at'])
+      updatedAt: json['updatedAt'] != null
+          ? DateTime.parse(json['updatedAt'])
           : null,
-      createdAt: json['created_at'] != null
-          ? DateTime.parse(json['created_at'])
+      createdAt: json['createdAt'] != null
+          ? DateTime.parse(json['createdAt'])
           : null,
     );
   }

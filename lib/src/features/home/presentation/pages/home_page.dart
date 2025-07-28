@@ -50,7 +50,7 @@ class _HomePageState extends State<HomePage> {
     // getUserData();
     context.read<FavoriteCubit>().getAllFavorites();
     context.read<HomeCampaignCubit>().getLatestUrgentCampaigns();
-    context.read<EventCubit>().getLatestEvents();
+    // context.read<EventCubit>().getLatestEvents();
     context.read<OngCubit>().getLatestOngs();
   }
 

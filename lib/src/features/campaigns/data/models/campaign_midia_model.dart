@@ -1,39 +1,40 @@
 import '../../domain/entities/campaign_midia_entity.dart';
 
 class CampaignMidiaModel extends CampaignMidiaEntity {
-  CampaignMidiaModel(
-      {super.id,
-      super.createdAt,
-      super.updatedAt,
-      super.midiaUrl,
-      super.campaignId,
-      super.userId,
-      super.midiaType});
+  CampaignMidiaModel({
+    super.id,
+    super.createdAt,
+    super.updatedAt,
+    super.midiaUrl,
+    super.campaignId,
+    super.userId,
+    super.midiaType,
+  });
 
   factory CampaignMidiaModel.fromJson(Map<String, dynamic> json) {
     return CampaignMidiaModel(
       id: json['id'] as String?,
-      createdAt: json['created_at'] != null
-          ? DateTime.parse(json['created_at'])
+      createdAt: json['createdAt'] != null
+          ? DateTime.parse(json['createdAt'])
           : null,
-      updatedAt: json['updated_at'] != null
-          ? DateTime.parse(json['updated_at'])
+      updatedAt: json['updatedAt'] != null
+          ? DateTime.parse(json['updatedAt'])
           : null,
-      campaignId: json['campaign_id'] as String?,
-      userId: json['user_id'] as String?,
-      midiaUrl: json['midia_url'] as String?,
-      midiaType: json['midia_type'] as String?,
+      campaignId: json['campaignId'] as String?,
+      userId: json['userId'] as String?,
+      midiaUrl: json['midiaUrl'] as String?,
+      midiaType: json['midiaType'] as String?,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'created_at': createdAt?.toIso8601String(),
-      'updated_at': updatedAt?.toIso8601String(),
-      'campaign_id': campaignId,
-      'midia_url': midiaUrl,
-      'midia_type': midiaType,
-      'user_id': userId,
+      'createdAt': createdAt?.toIso8601String(),
+      'updatedAt': updatedAt?.toIso8601String(),
+      'campaignId': campaignId,
+      'midiaUrl': midiaUrl,
+      'midiaType': midiaType,
+      'userId': userId,
     };
   }
 }

@@ -68,10 +68,12 @@ class CampaignRepository implements ICampaignRepository {
 
   @override
   Future<Either<Failure, CampaignEntity>> getCampaignById(String id) async {
-    if (await networkInfo.isConnected == true) {
+    if (await networkInfo.isConnected) {
       try {
         final response = await datasource.getCampaignById(id);
         return right(response);
+      } on DioException catch (e) {
+        return left(ServerFailure.fromDioException(e));
       } catch (e) {
         return left(ServerFailure(errorMessage: e.toString()));
       }
@@ -84,17 +86,13 @@ class CampaignRepository implements ICampaignRepository {
   Future<Either<Failure, List<CampaignEntity>>> getLatestUrgentCampaigns(
     CampaignParams params,
   ) async {
-    if (await networkInfo.isConnected == true) {
+    if (await networkInfo.isConnected) {
       try {
         final response = await datasource.getLatestUrgentCampaigns();
         return right(response);
-      } on DioException catch (e, s) {
-        print(e);
-        print(s);
+      } on DioException catch (e) {
         return left(ServerFailure.fromDioException(e));
-      } catch (e, s) {
-        print(e);
-        print(s);
+      } catch (e) {
         return left(ServerFailure(errorMessage: e.toString()));
       }
     } else {

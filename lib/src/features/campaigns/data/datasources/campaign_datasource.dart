@@ -474,28 +474,9 @@ class CampaignRemoteDataSource extends ICampaignRemoteDataSource {
 
   @override
   Future<CampaignEntity> getCampaignById(String id) async {
-    final userId = supabase.auth.currentUser!.id;
-    final response = await supabase
-        .from(SupabaseConsts.campaigns)
-        .select('''
-      *, 
-      user:profiles(*), 
-      ong:ongs(*), 
-      category:categories(*), 
-      contributors:campaign_contributors(*, user:profiles(*)), 
-      documents:campaign_documents(*), 
-      updates:campaign_updates(*), 
-      comments:campaign_comments(*, user:profiles(*)),
-      midias:campaign_midias(*)
-    ''')
-        .eq('id', id)
-        .eq('is_activate', true)
-        .eq('user_id', userId)
-        .order('created_at')
-        .limit(10)
-        .single();
-
-    return CampaignModel.fromJson(response);
+    final response = await dio.get('/campaigns/$id');
+    final json = response.data as dynamic;
+    return CampaignModel.fromJson(json);
   }
 
   @override

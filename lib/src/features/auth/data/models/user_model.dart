@@ -18,7 +18,6 @@ class UserModel extends UserEntity {
     super.userFcmTokenEntity,
   });
   factory UserModel.fromJson(Map<String, dynamic> json) {
-    print("CREATED AT ${json['createdAt']}");
     return UserModel(
       id: json['id'],
       fullName: json['fullName'],
@@ -28,8 +27,12 @@ class UserModel extends UserEntity {
       avatarUrl: json['avatarUrl'],
       phoneNumber: json['phone'],
       bio: json['bio'],
-      createdAt: DateTime.parse(json['createdAt']),
-      updatedAt: DateTime.parse(json['updatedAt']),
+      createdAt: (json['createdAt'] == null)
+          ? null
+          : DateTime.parse(json['createdAt']),
+      updatedAt: (json['updatedAt'] == null)
+          ? null
+          : DateTime.parse(json['updatedAt']),
       location: json['location'],
       isVerified: json['isVerified'],
       role: json['roleName'],

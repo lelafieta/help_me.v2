@@ -13,16 +13,16 @@ class CampaignUpdateModel extends CampaignUpdateEntity {
 
   factory CampaignUpdateModel.fromJson(Map<String, dynamic> json) {
     return CampaignUpdateModel(
-      createdAt: json['created_at'] != null
-          ? DateTime.parse(json['created_at'])
+      createdAt: json['createdAt'] != null
+          ? DateTime.parse(json['createdAt'])
           : null,
-      updatedAt: json['updated_at'] != null
-          ? DateTime.parse(json['updated_at'])
+      updatedAt: json['updatedAt'] != null
+          ? DateTime.parse(json['updatedAt'])
           : null,
       title: json['title'] as String?,
       description: json['description'] as String?,
-      campaignId: json['campaign_id'] as String?,
-      userId: json['user_id'] as String?,
+      campaignId: json['campaignId'] as String?,
+      userId: json['userId'] as String?,
     );
   }
 
