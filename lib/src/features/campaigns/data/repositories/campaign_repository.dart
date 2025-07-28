@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:dio/dio.dart';
 
 import 'package:utueji/src/core/errors/failures.dart';
 
@@ -83,21 +84,21 @@ class CampaignRepository implements ICampaignRepository {
   Future<Either<Failure, List<CampaignEntity>>> getLatestUrgentCampaigns(
     CampaignParams params,
   ) async {
-    // if (await networkInfo.isConnected == true) {
-    //   try {
-    //     final response = await datasource.getLatestUrgentCampaigns();
-    //     return right(response);
-    //   } catch (e) {
-    //     return left(ServerFailure(errorMessage: e.toString()));
-    //   }
-    // } else {
-    //   return left(ServerFailure(errorMessage: "Sem conexão de internet"));
-    // }
-    try {
-      final response = await datasource.getLatestUrgentCampaigns(params);
-      return right(response);
-    } catch (e) {
-      return left(ServerFailure(errorMessage: e.toString()));
+    if (await networkInfo.isConnected == true) {
+      try {
+        final response = await datasource.getLatestUrgentCampaigns();
+        return right(response);
+      } on DioException catch (e, s) {
+        print(e);
+        print(s);
+        return left(ServerFailure.fromDioException(e));
+      } catch (e, s) {
+        print(e);
+        print(s);
+        return left(ServerFailure(errorMessage: e.toString()));
+      }
+    } else {
+      return left(ServerFailure(errorMessage: "Sem conexão de internet"));
     }
   }
 

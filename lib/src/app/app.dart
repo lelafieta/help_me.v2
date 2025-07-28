@@ -18,6 +18,7 @@ import '../features/campaigns/presentation/cubit/category_campaign_cubit/categor
 import '../features/campaigns/presentation/cubit/my_campaign_cubit/my_campaign_cubit.dart';
 import '../features/campaigns/presentation/cubit/my_campaign_detail_cubit/my_campaign_detail_cubit.dart';
 import '../features/campaigns/presentation/cubit/update_action_cubit/update_action_cubit.dart';
+import '../features/categories/presentation/cubit/category_cubit.dart';
 import '../features/events/presentation/cubit/event_cubit.dart';
 import '../features/favorites/presentation/cubit/favorite_cubit.dart';
 import '../features/feeds/presentation/cubit/feed_cubit.dart';
@@ -27,6 +28,7 @@ import '../features/ongs/presentation/cubit/ong_cubit.dart';
 import '../features/profile/presentation/cubit/count_donation_cubit/count_donation_cubit.dart';
 import '../features/profile/presentation/cubit/profile_cubit.dart';
 import '../features/solidary/cubit/solidary_cubit.dart';
+import '../features/solidary/cubit/user_local_data/user_local_data_cubit.dart';
 
 class UtuejiApp extends StatelessWidget {
   const UtuejiApp({super.key});
@@ -59,6 +61,8 @@ class UtuejiApp extends StatelessWidget {
         BlocProvider(create: (_) => di.sl<SolidaryCubit>()..getUserData()),
         BlocProvider(create: (_) => di.sl<AuthDataCubit>()..getUserData()),
         BlocProvider(create: (_) => di.sl<OngActionCubit>()),
+        BlocProvider(create: (_) => di.sl<CategoryCubit>()..getAllCategories()),
+        BlocProvider(create: (_) => di.sl<UserLocalDataCubit>()..loadUser()),
       ],
       child: GetMaterialApp(
         theme: AppTheme.lightTheme,

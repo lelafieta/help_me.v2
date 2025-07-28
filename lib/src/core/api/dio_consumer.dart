@@ -4,11 +4,11 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 Dio createDio() {
   final dio = Dio();
-  const storage = FlutterSecureStorage();  
+  const storage = FlutterSecureStorage();
   dio.options
     ..baseUrl = dotenv.env['API_URL'] ?? 'https://fallback-url.com'
-    ..connectTimeout = const Duration(seconds: 10)
-    ..receiveTimeout = const Duration(seconds: 10);
+    ..connectTimeout = const Duration(seconds: 30)
+    ..receiveTimeout = const Duration(seconds: 30);
 
   dio.interceptors.add(
     InterceptorsWrapper(

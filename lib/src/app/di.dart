@@ -9,6 +9,7 @@ import 'package:internet_connection_checker_plus/internet_connection_checker_plu
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:utueji/src/core/api/dio_consumer.dart';
+import 'package:utueji/src/features/solidary/cubit/user_local_data/user_local_data_cubit.dart';
 
 import '../core/cache/secure_storage.dart';
 import '../core/network/i_network_info.dart';
@@ -71,6 +72,12 @@ import '../features/campaigns/presentation/cubit/category_campaign_cubit/categor
 import '../features/campaigns/presentation/cubit/my_campaign_cubit/my_campaign_cubit.dart';
 import '../features/campaigns/presentation/cubit/my_campaign_detail_cubit/my_campaign_detail_cubit.dart';
 import '../features/campaigns/presentation/cubit/update_action_cubit/update_action_cubit.dart';
+import '../features/categories/data/datasources/category_datasource.dart';
+import '../features/categories/data/datasources/i_category_datasource.dart';
+import '../features/categories/data/repositories/category_repository.dart';
+import '../features/categories/domain/repositories/i_category_repository.dart';
+import '../features/categories/domain/usecases/get_all_categories_usecase.dart';
+import '../features/categories/presentation/cubit/category_cubit.dart';
 import '../features/events/data/datasources/event_datasource.dart';
 import '../features/events/data/datasources/i_event_datasource.dart';
 import '../features/events/data/repositories/event_repository.dart';
@@ -210,6 +217,9 @@ void _setUpCubits() {
   sl.registerFactory(() => SolidaryCubit(getAuthUserUseCase: sl()));
   sl.registerFactory(() => AuthDataCubit(getAuthUserUseCase: sl()));
   sl.registerFactory(() => OngActionCubit(createOngUseCase: sl()));
+
+  sl.registerFactory(() => CategoryCubit(getAllCategoriesUsecase: sl()));
+  sl.registerFactory(() => UserLocalDataCubit(authLocalDataSource: sl()));
 }
 
 void _setUpUsecases() {
@@ -315,6 +325,10 @@ void _setUpUsecases() {
   sl.registerLazySingleton<CreateOngUseCase>(
     () => CreateOngUseCase(repository: sl()),
   );
+
+  sl.registerLazySingleton<GetAllCategoriesUsecase>(
+    () => GetAllCategoriesUsecase(repository: sl()),
+  );
 }
 
 void _setUpRepositories() {
@@ -354,6 +368,10 @@ void _setUpRepositories() {
   sl.registerLazySingleton<IDonationRepository>(
     () => DonationRepository(datasource: sl()),
   );
+
+  sl.registerLazySingleton<ICategoryRepository>(
+    () => CategoryRepository(netWorkInfo: sl(), categoryDataSource: sl()),
+  );
 }
 
 void _setUpDatasources() {
@@ -361,7 +379,7 @@ void _setUpDatasources() {
     () => AuthDataSource(supabase: sl(), dio: sl()),
   );
   sl.registerLazySingleton<ICampaignRemoteDataSource>(
-    () => CampaignRemoteDataSource(supabase: sl()),
+    () => CampaignRemoteDataSource(supabase: sl(), dio: sl()),
   );
   sl.registerLazySingleton<IEventDataSource>(
     () => EventDataSource(supabase: sl()),
@@ -389,5 +407,9 @@ void _setUpDatasources() {
 
   sl.registerLazySingleton<IAuthLocalDataSource>(
     () => AuthLocalDataSource(secureStorage: sl()),
+  );
+
+  sl.registerLazySingleton<ICategoryDataSource>(
+    () => CategoryDataSource(dio: sl()),
   );
 }

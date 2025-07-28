@@ -3,36 +3,38 @@ import '../../../ongs/data/models/ong_model.dart';
 import '../../domain/entities/event_entity.dart';
 
 class EventModel extends EventEntity {
-  EventModel(
-      {super.id,
-      super.createdAt,
-      super.updatedAt,
-      super.ongId,
-      super.userId,
-      super.title,
-      super.location,
-      super.description,
-      super.backgroundImageUrl,
-      super.startDate,
-      super.endDate,
-      super.ong,
-      super.user});
+  EventModel({
+    super.id,
+    super.createdAt,
+    super.updatedAt,
+    super.ongId,
+    super.userId,
+    super.title,
+    super.location,
+    super.description,
+    super.backgroundImageUrl,
+    super.startDate,
+    super.endDate,
+    super.ong,
+    super.user,
+  });
 
   // Factory para criar uma instância de EventModel a partir de um Map
   factory EventModel.fromMap(Map<String, dynamic> map) {
     return EventModel(
       id: map['id'],
-      createdAt: DateTime.parse(map['created_at']),
-      updatedAt:
-          map['updated_at'] != null ? DateTime.parse(map['updated_at']) : null,
-      ongId: map['ong_id'],
-      userId: map['user_id'],
+      createdAt: DateTime.parse(map['createdAt']),
+      updatedAt: map['updatedAt'] != null
+          ? DateTime.parse(map['updatedAt'])
+          : null,
+      ongId: map['ongId'],
+      userId: map['userId'],
       title: map['title'],
       location: map['location'],
       description: map['description'],
-      backgroundImageUrl: map['background_image_url'],
-      startDate: DateTime.parse(map['start_date']),
-      endDate: DateTime.parse(map['end_date']),
+      backgroundImageUrl: map['backgroundImageUrl'],
+      startDate: DateTime.parse(map['startDate']),
+      endDate: DateTime.parse(map['endDate']),
       ong: (map['ong'] != null) ? OngModel.fromMap(map['ong']) : null,
       user: (map['user'] != null) ? UserModel.fromJson(map['user']) : null,
     );
@@ -42,16 +44,16 @@ class EventModel extends EventEntity {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'ong_id': ongId,
-      'user_id': userId,
+      'ongId': ongId,
+      'userId': userId,
       'title': title,
       'location': location,
       'description': description,
-      'background_image_url': backgroundImageUrl,
-      'start_date': startDate?.toIso8601String(),
-      'end_date': endDate?.toIso8601String(),
-      'created_at': createdAt?.toIso8601String(),
-      'updated_at': updatedAt?.toIso8601String(),
+      'backgroundImageUrl': backgroundImageUrl,
+      'startDate': startDate?.toIso8601String(),
+      'endDate': endDate?.toIso8601String(),
+      'createdAt': createdAt?.toIso8601String(),
+      'updatedAt': updatedAt?.toIso8601String(),
     };
   }
 }

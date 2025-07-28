@@ -67,7 +67,7 @@ class _CreateCampaignPageState extends State<CreateCampaignPage> {
     "Instituição ONG",
     "Comunitária(Coletiva)",
     "Projecto Específico",
-    "Outro"
+    "Outro",
   ];
   Set<int> reachedSteps = <int>{0, 2, 4, 5};
   final dashImages = [
@@ -202,7 +202,10 @@ class _CreateCampaignPageState extends State<CreateCampaignPage> {
         for (var file in midias) {
           if (file is PlatformFile) {
             final midia = CampaignMidiaEntity(
-                midiaType: "midia", userId: AppEntity.uid, midiaUrl: file.path);
+              midiaType: "midia",
+              userId: AppEntity.uid,
+              midiaUrl: file.path,
+            );
             mids.add(midia);
             // uploadedImages.add({
             //   'name': file.name,
@@ -219,9 +222,10 @@ class _CreateCampaignPageState extends State<CreateCampaignPage> {
         for (var file in documents) {
           if (file is PlatformFile) {
             final doc = CampaignDocumentEntity(
-                isApproved: false,
-                userId: AppEntity.uid,
-                documentPath: file.path);
+              isApproved: false,
+              userId: AppEntity.uid,
+              documentPath: file.path,
+            );
 
             docs.add(doc);
             // uploadedDocuments.add({
@@ -259,32 +263,34 @@ class _CreateCampaignPageState extends State<CreateCampaignPage> {
       print(birthDateString);
 
       final campaign = CampaignEntity(
-          title: titulo,
-          description: descricao,
-          fundraisingGoal: double.parse(objetivo),
-          fundsRaised: 0.0,
-          currency: moeda,
-          imageCoverUrl:
-              (selectedCoverImage.isEmpty) ? null : selectedCoverImage[0].path,
-          categoryId: _selectedOptionCategory!.id,
-          ongId: "32ca60fa-9c02-4d58-a5b8-8e8968141965",
-          location: localizacao,
-          userId: AppEntity.uid,
-          campaignType: beneficiaryType,
-          phoneNumber: phoneNumber,
-          priority: 0,
-          isUrgent: isUrgent,
-          // isUrgent: true,
-          isActivate: true,
-          numberOfContributions: 0,
-          beneficiaryName: beneficiaryName,
-          birth: birthDateString != null
-              ? DateFormat("dd-MM-yyyy").parse(birthDateString)
-              : null,
-          endDate: dataFim != null ? DateTime.parse(dataFim) : null,
-          startDate: dataInicio != null ? DateTime.parse(dataInicio) : null,
-          documents: docs,
-          midias: mids);
+        title: titulo,
+        description: descricao,
+        fundraisingGoal: double.parse(objetivo),
+        fundsRaised: 0.0,
+        currency: moeda,
+        imageCoverUrl: (selectedCoverImage.isEmpty)
+            ? null
+            : selectedCoverImage[0].path,
+        categoryId: _selectedOptionCategory!.id,
+        ongId: "32ca60fa-9c02-4d58-a5b8-8e8968141965",
+        location: localizacao,
+        userId: AppEntity.uid,
+        campaignType: beneficiaryType,
+        phoneNumber: phoneNumber,
+        priority: 0,
+        isUrgent: isUrgent,
+        // isUrgent: true,
+        isActivate: true,
+        numberOfContributions: 0,
+        beneficiaryName: beneficiaryName,
+        birth: birthDateString != null
+            ? DateFormat("dd-MM-yyyy").parse(birthDateString)
+            : null,
+        endDate: dataFim != null ? DateTime.parse(dataFim) : null,
+        startDate: dataInicio != null ? DateTime.parse(dataInicio) : null,
+        documents: docs,
+        midias: mids,
+      );
       context.read<CampaignActionCubit>().create(campaign);
     } else {
       print("Formulário inválido");
@@ -319,9 +325,11 @@ class _CreateCampaignPageState extends State<CreateCampaignPage> {
                     } else {
                       if (_selectedOptionCategory == null) {
                         final category = CategoryEntity(
-                            id: "empty",
-                            name: "Empty",
-                            createdAt: DateTime.now());
+                          id: "empty",
+                          name: "Empty",
+                          description: "empty",
+                          createdAt: DateTime.now(),
+                        );
                         setState(() {
                           _selectedOptionCategory = category;
                         });
@@ -349,8 +357,9 @@ class _CreateCampaignPageState extends State<CreateCampaignPage> {
                     _submitStepThreeForm();
                   }
                 },
-                child:
-                    Text(activeStep < 2 ? "Guardar & Continuar" : "Finalizar"),
+                child: Text(
+                  activeStep < 2 ? "Guardar & Continuar" : "Finalizar",
+                ),
               ),
             ),
           ],
@@ -361,8 +370,9 @@ class _CreateCampaignPageState extends State<CreateCampaignPage> {
           EasyLoading.dismiss();
           if (state is CampaignActionLoading) {
             EasyLoading.show(
-                status: "Criando uma campanha",
-                maskType: EasyLoadingMaskType.black);
+              status: "Criando uma campanha",
+              maskType: EasyLoadingMaskType.black,
+            );
           } else if (state is CampaignActionError) {
             EasyLoading.showError(state.message);
           } else if (state is CampaignActionSuccess) {
@@ -398,20 +408,18 @@ class _CreateCampaignPageState extends State<CreateCampaignPage> {
                         activeStep == 0
                             ? "Informações da Campanha"
                             : activeStep == 1
-                                ? "Beneficiário e Organização"
-                                : "Mídias e Documentos",
+                            ? "Beneficiário e Organização"
+                            : "Mídias e Documentos",
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),
               const SizedBox(height: 20),
               Expanded(
-                child: SingleChildScrollView(
-                  child: getStepContent(activeStep),
-                ),
-              )
+                child: SingleChildScrollView(child: getStepContent(activeStep)),
+              ),
             ],
           );
         },
@@ -429,27 +437,26 @@ class _CreateCampaignPageState extends State<CreateCampaignPage> {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
             child: RichText(
               text: TextSpan(
-                style: DefaultTextStyle.of(context)
-                    .style
-                    .copyWith(color: Colors.black),
+                style: DefaultTextStyle.of(
+                  context,
+                ).style.copyWith(color: Colors.black),
                 children: [
-                  TextSpan(
-                    text: "Mídia",
-                  ),
+                  TextSpan(text: "Mídia"),
                   TextSpan(
                     text: " (Opcional)",
-                    style: TextStyle(
-                      color: Colors.black45,
-                      fontSize: 14,
-                    ),
-                  )
+                    style: TextStyle(color: Colors.black45, fontSize: 14),
+                  ),
                 ],
               ),
             ),
           ),
           Padding(
-            padding:
-                const EdgeInsets.only(left: 16, right: 16, top: 10, bottom: 20),
+            padding: const EdgeInsets.only(
+              left: 16,
+              right: 16,
+              top: 10,
+              bottom: 20,
+            ),
             child: RichText(
               text: TextSpan(
                 style: DefaultTextStyle.of(context).style,
@@ -511,29 +518,29 @@ class _CreateCampaignPageState extends State<CreateCampaignPage> {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
             child: RichText(
               text: TextSpan(
-                style: DefaultTextStyle.of(context)
-                    .style
-                    .copyWith(color: Colors.black),
+                style: DefaultTextStyle.of(
+                  context,
+                ).style.copyWith(color: Colors.black),
                 children: [
-                  TextSpan(
-                    text: "Documentos relacionado a causa",
-                  ),
+                  TextSpan(text: "Documentos relacionado a causa"),
                   TextSpan(
                     text: " (Opcional)",
-                    style: TextStyle(
-                      color: Colors.black45,
-                      fontSize: 14,
-                    ),
-                  )
+                    style: TextStyle(color: Colors.black45, fontSize: 14),
+                  ),
                 ],
               ),
             ),
           ),
           Padding(
-            padding:
-                const EdgeInsets.only(left: 16, right: 16, top: 10, bottom: 20),
+            padding: const EdgeInsets.only(
+              left: 16,
+              right: 16,
+              top: 10,
+              bottom: 20,
+            ),
             child: Text(
-                "Carregue os documentos de suporte para se conectar diretamente com os doadores até 5MB"),
+              "Carregue os documentos de suporte para se conectar diretamente com os doadores até 5MB",
+            ),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -595,16 +602,15 @@ class _CreateCampaignPageState extends State<CreateCampaignPage> {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
             child: RichText(
               text: TextSpan(
-                style: DefaultTextStyle.of(context)
-                    .style
-                    .copyWith(color: Colors.black),
+                style: DefaultTextStyle.of(
+                  context,
+                ).style.copyWith(color: Colors.black),
                 children: [
+                  TextSpan(text: "Quem será beneficiado? "),
                   TextSpan(
-                    text: "Quem será beneficiado? ",
+                    text: "*",
+                    style: TextStyle(color: Colors.red, fontSize: 16),
                   ),
-                  TextSpan(
-                      text: "*",
-                      style: TextStyle(color: Colors.red, fontSize: 16))
                 ],
               ),
             ),
@@ -646,7 +652,8 @@ class _CreateCampaignPageState extends State<CreateCampaignPage> {
                     child: Text(
                       types[index],
                       style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                          color: isSelected ? Colors.white : Colors.black),
+                        color: isSelected ? Colors.white : Colors.black,
+                      ),
                     ),
                   ),
                 );
@@ -657,16 +664,15 @@ class _CreateCampaignPageState extends State<CreateCampaignPage> {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
             child: RichText(
               text: TextSpan(
-                style: DefaultTextStyle.of(context)
-                    .style
-                    .copyWith(color: Colors.black),
+                style: DefaultTextStyle.of(
+                  context,
+                ).style.copyWith(color: Colors.black),
                 children: [
+                  TextSpan(text: "Nome do beneficiário "),
                   TextSpan(
-                    text: "Nome do beneficiário ",
+                    text: "*",
+                    style: TextStyle(color: Colors.red, fontSize: 16),
                   ),
-                  TextSpan(
-                      text: "*",
-                      style: TextStyle(color: Colors.red, fontSize: 16))
                 ],
               ),
             ),
@@ -680,25 +686,22 @@ class _CreateCampaignPageState extends State<CreateCampaignPage> {
               validator: FormBuilderValidators.required(
                 errorText: 'Nome do beneficiário',
               ),
-              decoration: InputDecoration(
-                label: Text("Nome do Beneficiário"),
-              ),
+              decoration: InputDecoration(label: Text("Nome do Beneficiário")),
             ),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
             child: RichText(
               text: TextSpan(
-                style: DefaultTextStyle.of(context)
-                    .style
-                    .copyWith(color: Colors.black),
+                style: DefaultTextStyle.of(
+                  context,
+                ).style.copyWith(color: Colors.black),
                 children: [
+                  TextSpan(text: "Contacto do beneficiário "),
                   TextSpan(
-                    text: "Contacto do beneficiário ",
+                    text: "*",
+                    style: TextStyle(color: Colors.red, fontSize: 16),
                   ),
-                  TextSpan(
-                      text: "*",
-                      style: TextStyle(color: Colors.red, fontSize: 16))
                 ],
               ),
             ),
@@ -712,9 +715,7 @@ class _CreateCampaignPageState extends State<CreateCampaignPage> {
               validator: FormBuilderValidators.required(
                 errorText: 'Número para entrar em contacto',
               ),
-              decoration: InputDecoration(
-                label: Text("Contacto"),
-              ),
+              decoration: InputDecoration(label: Text("Contacto")),
             ),
           ),
           (_selectedOptionType == "Um Individuo")
@@ -723,27 +724,29 @@ class _CreateCampaignPageState extends State<CreateCampaignPage> {
                   children: [
                     Padding(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 4),
+                        horizontal: 16,
+                        vertical: 4,
+                      ),
                       child: RichText(
                         text: TextSpan(
-                          style: DefaultTextStyle.of(context)
-                              .style
-                              .copyWith(color: Colors.black),
+                          style: DefaultTextStyle.of(
+                            context,
+                          ).style.copyWith(color: Colors.black),
                           children: [
+                            TextSpan(text: "Data de nascimento "),
                             TextSpan(
-                              text: "Data de nascimento ",
+                              text: "*",
+                              style: TextStyle(color: Colors.red, fontSize: 16),
                             ),
-                            TextSpan(
-                                text: "*",
-                                style:
-                                    TextStyle(color: Colors.red, fontSize: 16))
                           ],
                         ),
                       ),
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 8),
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
                       child: FormBuilderDateTimePicker(
                         name: "birth",
                         inputType: InputType.date,
@@ -776,16 +779,15 @@ class _CreateCampaignPageState extends State<CreateCampaignPage> {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
             child: RichText(
               text: TextSpan(
-                style: DefaultTextStyle.of(context)
-                    .style
-                    .copyWith(color: Colors.black),
+                style: DefaultTextStyle.of(
+                  context,
+                ).style.copyWith(color: Colors.black),
                 children: [
+                  TextSpan(text: "Tem urgência?"),
                   TextSpan(
-                    text: "Tem urgência?",
+                    text: "*",
+                    style: TextStyle(color: Colors.red, fontSize: 16),
                   ),
-                  TextSpan(
-                      text: "*",
-                      style: TextStyle(color: Colors.red, fontSize: 16))
                 ],
               ),
             ),
@@ -828,8 +830,8 @@ class _CreateCampaignPageState extends State<CreateCampaignPage> {
                     child: Text(
                       options[index],
                       style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                            color: isSelected ? Colors.white : Colors.black,
-                          ),
+                        color: isSelected ? Colors.white : Colors.black,
+                      ),
                     ),
                   ),
                 );
@@ -887,79 +889,81 @@ class _CreateCampaignPageState extends State<CreateCampaignPage> {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
             child: RichText(
               text: TextSpan(
-                style: DefaultTextStyle.of(context)
-                    .style
-                    .copyWith(color: Colors.black),
+                style: DefaultTextStyle.of(
+                  context,
+                ).style.copyWith(color: Colors.black),
                 children: [
+                  TextSpan(text: "Objetivo de arrecadar fundos "),
                   TextSpan(
-                    text: "Objetivo de arrecadar fundos ",
+                    text: "*",
+                    style: TextStyle(color: Colors.red, fontSize: 16),
                   ),
-                  TextSpan(
-                      text: "*",
-                      style: TextStyle(color: Colors.red, fontSize: 16))
                 ],
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: GridView.builder(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
-                childAspectRatio: 4,
-              ),
-              itemCount: categories.length,
-              itemBuilder: (context, index) {
-                bool isSelected = _selectedOptionCategory == categories[index];
 
-                return GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      _selectedOptionCategory = categories[index];
-                    });
-                  },
-                  child: Container(
-                    padding: EdgeInsets.all(5),
-                    decoration: BoxDecoration(
-                      color: isSelected ? AppColors.primaryColor : Colors.white,
-                      border: Border.all(
-                        color: ((_selectedOptionCategory != null) &&
-                                _selectedOptionCategory!.id == "empty")
-                            ? Colors.red
-                            : AppColors.primaryColor,
-                        width: 1,
-                      ),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    alignment: Alignment.center,
-                    child: Text(
-                      categories[index].name!,
-                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                          color: isSelected ? Colors.white : Colors.black),
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
+          ///////////////////// CATEGORIUA
+          // Padding(
+          //   padding: const EdgeInsets.all(16.0),
+          //   child: GridView.builder(
+          //     shrinkWrap: true,
+          //     physics: NeverScrollableScrollPhysics(),
+          //     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          //       crossAxisCount: 2,
+          //       crossAxisSpacing: 10,
+          //       mainAxisSpacing: 10,
+          //       childAspectRatio: 4,
+          //     ),
+          //     itemCount: categories.length,
+          //     itemBuilder: (context, index) {
+          //       bool isSelected = _selectedOptionCategory == categories[index];
+
+          //       return GestureDetector(
+          //         onTap: () {
+          //           setState(() {
+          //             _selectedOptionCategory = categories[index];
+          //           });
+          //         },
+          //         child: Container(
+          //           padding: EdgeInsets.all(5),
+          //           decoration: BoxDecoration(
+          //             color: isSelected ? AppColors.primaryColor : Colors.white,
+          //             border: Border.all(
+          //               color:
+          //                   ((_selectedOptionCategory != null) &&
+          //                       _selectedOptionCategory!.id == "empty")
+          //                   ? Colors.red
+          //                   : AppColors.primaryColor,
+          //               width: 1,
+          //             ),
+          //             borderRadius: BorderRadius.circular(8),
+          //           ),
+          //           alignment: Alignment.center,
+          //           child: Text(
+          //             categories[index].name!,
+          //             style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+          //               color: isSelected ? Colors.white : Colors.black,
+          //             ),
+          //           ),
+          //         ),
+          //       );
+          //     },
+          //   ),
+          // ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
             child: RichText(
               text: TextSpan(
-                style: DefaultTextStyle.of(context)
-                    .style
-                    .copyWith(color: Colors.black),
+                style: DefaultTextStyle.of(
+                  context,
+                ).style.copyWith(color: Colors.black),
                 children: [
+                  TextSpan(text: "Informe o titulo da campanha "),
                   TextSpan(
-                    text: "Informe o titulo da campanha ",
+                    text: "*",
+                    style: TextStyle(color: Colors.red, fontSize: 16),
                   ),
-                  TextSpan(
-                      text: "*",
-                      style: TextStyle(color: Colors.red, fontSize: 16))
                 ],
               ),
             ),
@@ -973,23 +977,17 @@ class _CreateCampaignPageState extends State<CreateCampaignPage> {
               validator: FormBuilderValidators.required(
                 errorText: 'Título da campanha',
               ),
-              decoration: InputDecoration(
-                label: Text("Título"),
-              ),
+              decoration: InputDecoration(label: Text("Título")),
             ),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
             child: RichText(
               text: TextSpan(
-                style: DefaultTextStyle.of(context)
-                    .style
-                    .copyWith(color: Colors.black),
-                children: [
-                  TextSpan(
-                    text: "Adicione um descrição",
-                  ),
-                ],
+                style: DefaultTextStyle.of(
+                  context,
+                ).style.copyWith(color: Colors.black),
+                children: [TextSpan(text: "Adicione um descrição")],
               ),
             ),
           ),
@@ -1013,20 +1011,15 @@ class _CreateCampaignPageState extends State<CreateCampaignPage> {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
             child: RichText(
               text: TextSpan(
-                style: DefaultTextStyle.of(context)
-                    .style
-                    .copyWith(color: Colors.black),
+                style: DefaultTextStyle.of(
+                  context,
+                ).style.copyWith(color: Colors.black),
                 children: [
-                  TextSpan(
-                    text: "Carregar imagem de capa",
-                  ),
+                  TextSpan(text: "Carregar imagem de capa"),
                   TextSpan(
                     text: " (Opcional)",
-                    style: TextStyle(
-                      color: Colors.black45,
-                      fontSize: 14,
-                    ),
-                  )
+                    style: TextStyle(color: Colors.black45, fontSize: 14),
+                  ),
                 ],
               ),
             ),
@@ -1043,10 +1036,7 @@ class _CreateCampaignPageState extends State<CreateCampaignPage> {
               decoration: InputDecoration(labelText: "Imagem"),
               maxFiles: 1,
               initialValue: selectedCoverImage,
-              allowedExtensions: [
-                'jpeg',
-                "jpg",
-              ],
+              allowedExtensions: ['jpeg', "jpg"],
               previewImages: true,
               typeSelectors: [
                 TypeSelector(
@@ -1071,16 +1061,15 @@ class _CreateCampaignPageState extends State<CreateCampaignPage> {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
             child: RichText(
               text: TextSpan(
-                style: DefaultTextStyle.of(context)
-                    .style
-                    .copyWith(color: Colors.black),
+                style: DefaultTextStyle.of(
+                  context,
+                ).style.copyWith(color: Colors.black),
                 children: [
+                  TextSpan(text: "Meta de Arrecadação"),
                   TextSpan(
-                    text: "Meta de Arrecadação",
+                    text: "*",
+                    style: TextStyle(color: Colors.red, fontSize: 16),
                   ),
-                  TextSpan(
-                      text: "*",
-                      style: TextStyle(color: Colors.red, fontSize: 16))
                 ],
               ),
             ),
@@ -1104,13 +1093,17 @@ class _CreateCampaignPageState extends State<CreateCampaignPage> {
                     ),
                     decoration: InputDecoration(
                       label: Text("Moeda"),
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 4,
+                      ),
                     ),
                     items: ['AOA', 'EUR', 'USD']
                         .map(
                           (member) => DropdownMenuItem(
-                              value: member, child: Text("$member")),
+                            value: member,
+                            child: Text("$member"),
+                          ),
                         )
                         .toList(),
                   ),
@@ -1129,16 +1122,18 @@ class _CreateCampaignPageState extends State<CreateCampaignPage> {
                         validator: FormBuilderValidators.compose([
                           FormBuilderValidators.required(),
                           FormBuilderValidators.numeric(
-                              errorText: 'Apenas números são permitidos'),
-                          FormBuilderValidators.max(100000000,
-                              errorText:
-                                  'O valor deve ser no máximo 100.000.000'),
+                            errorText: 'Apenas números são permitidos',
+                          ),
+                          FormBuilderValidators.max(
+                            100000000,
+                            errorText: 'O valor deve ser no máximo 100.000.000',
+                          ),
                         ]),
                         decoration: InputDecoration(
                           labelText: "Entra com montante",
                         ),
                       ),
-                      Text("Deveria ser mínimo 1.000.000Kz")
+                      Text("Deveria ser mínimo 1.000.000Kz"),
                     ],
                   ),
                 ),
@@ -1149,16 +1144,15 @@ class _CreateCampaignPageState extends State<CreateCampaignPage> {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
             child: RichText(
               text: TextSpan(
-                style: DefaultTextStyle.of(context)
-                    .style
-                    .copyWith(color: Colors.black),
+                style: DefaultTextStyle.of(
+                  context,
+                ).style.copyWith(color: Colors.black),
                 children: [
+                  TextSpan(text: "Data do início"),
                   TextSpan(
-                    text: "Data do início",
+                    text: "*",
+                    style: TextStyle(color: Colors.red, fontSize: 16),
                   ),
-                  TextSpan(
-                      text: "*",
-                      style: TextStyle(color: Colors.red, fontSize: 16))
                 ],
               ),
             ),
@@ -1192,16 +1186,15 @@ class _CreateCampaignPageState extends State<CreateCampaignPage> {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
             child: RichText(
               text: TextSpan(
-                style: DefaultTextStyle.of(context)
-                    .style
-                    .copyWith(color: Colors.black),
+                style: DefaultTextStyle.of(
+                  context,
+                ).style.copyWith(color: Colors.black),
                 children: [
+                  TextSpan(text: "Data do fim"),
                   TextSpan(
-                    text: "Data do fim",
+                    text: "*",
+                    style: TextStyle(color: Colors.red, fontSize: 16),
                   ),
-                  TextSpan(
-                      text: "*",
-                      style: TextStyle(color: Colors.red, fontSize: 16))
                 ],
               ),
             ),
@@ -1235,16 +1228,15 @@ class _CreateCampaignPageState extends State<CreateCampaignPage> {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
             child: RichText(
               text: TextSpan(
-                style: DefaultTextStyle.of(context)
-                    .style
-                    .copyWith(color: Colors.black),
+                style: DefaultTextStyle.of(
+                  context,
+                ).style.copyWith(color: Colors.black),
                 children: [
+                  TextSpan(text: "Localização "),
                   TextSpan(
-                    text: "Localização ",
+                    text: "*",
+                    style: TextStyle(color: Colors.red, fontSize: 16),
                   ),
-                  TextSpan(
-                      text: "*",
-                      style: TextStyle(color: Colors.red, fontSize: 16))
                 ],
               ),
             ),
@@ -1301,9 +1293,7 @@ class _CreateCampaignPageState extends State<CreateCampaignPage> {
                           child: Center(
                             child: Text(
                               "Utilizador",
-                              style: TextStyle(
-                                color: Colors.white,
-                              ),
+                              style: TextStyle(color: Colors.white),
                             ),
                           ),
                         ),
@@ -1320,9 +1310,7 @@ class _CreateCampaignPageState extends State<CreateCampaignPage> {
                           child: Center(
                             child: Text(
                               "Utilizador",
-                              style: TextStyle(
-                                color: Colors.white,
-                              ),
+                              style: TextStyle(color: Colors.white),
                             ),
                           ),
                         ),
@@ -1330,11 +1318,7 @@ class _CreateCampaignPageState extends State<CreateCampaignPage> {
                     ],
                   ),
                 ),
-                Expanded(
-                  child: Column(
-                    children: [],
-                  ),
-                ),
+                Expanded(child: Column(children: [])),
               ],
             ),
           ),

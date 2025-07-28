@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:utueji/src/config/routes/app_routes.dart';
 import 'package:utueji/src/features/home/presentation/pages/home_page.dart';
 import 'package:utueji/src/features/profile/presentation/cubit/profile_cubit.dart';
+import 'package:utueji/src/features/solidary/cubit/user_local_data/user_local_data_cubit.dart';
 import '../../../../../core/gen/assets.gen.dart';
 import '../../../../config/themes/app_colors.dart';
 import '../../../../core/resources/icons/app_icons.dart';
@@ -15,6 +16,7 @@ import '../../../../core/resources/images/app_images.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
 import '../../../auth/presentation/cubit/auth_state.dart';
 import '../../../campaigns/presentation/pages/my_campaign_page.dart';
+import '../../../categories/presentation/cubit/category_cubit.dart';
 import '../../../chat/presentation/pages/chat_page.dart';
 import '../../../explore/presentation/pages/explore_page.dart';
 import '../../../home/presentation/cubit/home_profile_data_cubit/home_profile_data_cubit.dart';
@@ -82,9 +84,11 @@ class _SolidaryPageState extends State<SolidaryPage> {
     if (widget.currentIndex != null) {
       _currentIndex = widget.currentIndex!;
     }
+    context.read<CountDonationCubit>().counter();
+    context.read<ProfileCubit>().getProfile();
+    // context.read<CategoryCubit>().getAllCategories();
     super.initState();
-    context.read<CountDonationCubit>()..counter();
-    context.read<ProfileCubit>()..getProfile();
+
     // context.read<SolidaryCubit>()..getUserData();
   }
 
@@ -133,23 +137,32 @@ class _SolidaryPageState extends State<SolidaryPage> {
                                 ),
                               ),
 
-                              InkWell(
-                                onTap: () {
-                                  Get.toNamed(AppRoutes.profileRoute);
+                              BlocBuilder<
+                                UserLocalDataCubit,
+                                UserLocalDataState
+                              >(
+                                builder: (context, state) {
+                                  return InkWell(
+                                    onTap: () {
+                                      Get.toNamed(AppRoutes.profileRoute);
+                                    },
+                                    child: (state is UserLocalDataLoaded)
+                                        ? (state.avatarUrl!.isEmpty)
+                                              ? Image.asset(AppImages.avatar)
+                                              : Container(
+                                                  margin: EdgeInsets.only(
+                                                    left: 16,
+                                                  ),
+                                                  child: CircleAvatar(
+                                                    backgroundImage:
+                                                        CachedNetworkImageProvider(
+                                                          state.avatarUrl!,
+                                                        ),
+                                                  ),
+                                                )
+                                        : SizedBox.shrink(),
+                                  );
                                 },
-                                child: (state is GetUserDataSuccessState)
-                                    ? (state.user.avatarUrl!.isEmpty)
-                                          ? Image.asset(AppImages.avatar)
-                                          : Container(
-                                              margin: EdgeInsets.only(left: 16),
-                                              child: CircleAvatar(
-                                                backgroundImage:
-                                                    CachedNetworkImageProvider(
-                                                      state.user.avatarUrl!,
-                                                    ),
-                                              ),
-                                            )
-                                    : SizedBox.shrink(),
                               ),
                               SizedBox(width: 16),
                             ],

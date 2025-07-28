@@ -2,7 +2,7 @@ class ErrorMessages {
   // Mensagens gerais
   static const String erroCarregarPerfil =
       'Erro ao carregar o perfil. Tente novamente.';
-  static const String semConexao =
+  static const String notInternetConnection =
       'Sem conexão com a internet. Verifique sua conexão.';
   static const String erroInesperado =
       'Ocorreu um erro inesperado. Tente novamente mais tarde.';

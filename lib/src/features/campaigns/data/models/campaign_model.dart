@@ -11,101 +11,112 @@ import 'campaign_midia_model.dart';
 import 'campaign_update_model.dart';
 
 class CampaignModel extends CampaignEntity {
-  CampaignModel(
-      {super.id,
-      super.createdAt,
-      super.updatedAt,
-      super.categoryId,
-      super.description,
-      super.fundraisingGoal,
-      super.fundsRaised,
-      super.imageCoverUrl,
-      super.institution,
-      super.location,
-      super.numberOfContributions,
-      super.ongId,
-      super.beneficiaryName,
-      super.birth,
-      super.campaignType,
-      super.currency,
-      super.isActivate,
-      super.phoneNumber,
-      super.priority = 0,
-      super.isUrgent,
-      super.endDate,
-      super.title,
-      super.isFavorited,
-      super.userId,
-      super.status,
-      super.startDate,
-      super.category,
-      super.ong,
-      super.user,
-      super.contributors,
-      super.documents,
-      super.updates,
-      super.comments,
-      super.midias});
+  CampaignModel({
+    super.id,
+    super.createdAt,
+    super.updatedAt,
+    super.categoryId,
+    super.description,
+    super.fundraisingGoal,
+    super.fundsRaised,
+    super.imageCoverUrl,
+    super.institution,
+    super.location,
+    super.numberOfContributions,
+    super.ongId,
+    super.beneficiaryName,
+    super.birth,
+    super.campaignType,
+    super.currency,
+    super.isActivate,
+    super.phoneNumber,
+    super.priority = 0,
+    super.isUrgent,
+    super.endDate,
+    super.title,
+    super.isFavorited,
+    super.userId,
+    super.status,
+    super.startDate,
+    super.category,
+    super.ong,
+    super.user,
+    super.contributors,
+    super.documents,
+    super.updates,
+    super.comments,
+    super.midias,
+  });
 
   factory CampaignModel.fromJson(Map<String, dynamic> map) {
-    print(map['campaign_type']);
     return CampaignModel(
       id: map['id'],
-      createdAt:
-          map['created_at'] != null ? DateTime.parse(map['created_at']) : null,
-      updatedAt:
-          map['updated_at'] != null ? DateTime.parse(map['updated_at']) : null,
-      categoryId: map['category_id'],
-      description: map['description'],
-      fundraisingGoal: (map['fundraising_goal'] != null)
-          ? map['fundraising_goal'].toDouble()
+      createdAt: map['createdAt'] != null
+          ? DateTime.parse(map['createdAt'])
           : null,
-      fundsRaised:
-          (map['funds_raised'] != null) ? map['funds_raised'].toDouble() : null,
-      imageCoverUrl: map['image_cover_url'],
+      updatedAt: map['updatedAt'] != null
+          ? DateTime.parse(map['updatedAt'])
+          : null,
+      categoryId: map['categoryId'],
+      description: map['description'],
+      fundraisingGoal: (map['fundraisingGoal'] != null)
+          ? map['fundraisingGoal'].toDouble()
+          : null,
+      fundsRaised: (map['fundsRaised'] != null)
+          ? map['fundsRaised'].toDouble()
+          : null,
+      imageCoverUrl: map['imageCoverUrl'],
       institution: map['institution'],
       location: map['location'],
-      isActivate: map['is_activate'],
-      numberOfContributions: map['number_of_contributions'],
-      ongId: map['ong_id'],
+      isActivate: map['isActivate'],
+      numberOfContributions: map['numberOfContributions'],
+      ongId: map['ongId'],
       // isFavorited: map['is_favorited'],
-      phoneNumber: map['phone_number'],
+      phoneNumber: map['phoneNumber'],
       priority: map['priority'] ?? 0,
-      isUrgent: map['is_urgent'],
-      endDate: map['end_date'] != null ? DateTime.parse(map['end_date']) : null,
+      isUrgent: map['isUrgent'],
+      endDate: map['endDate'] != null ? DateTime.parse(map['endDate']) : null,
       title: map['title'],
-      userId: map['user_id'],
+      userId: map['userId'],
       status: CampaignStatusExtension.fromString(map['status'] as String),
       birth: map['birth'] != null ? DateTime.parse(map['birth']) : null,
       currency: map["currency"],
-      beneficiaryName: map["beneficiary_name"],
-      campaignType: map["campaign_type"],
-      startDate:
-          map['start_date'] != null ? DateTime.parse(map['start_date']) : null,
+      beneficiaryName: map["beneficiaryName"],
+      campaignType: map["campaignType"],
+      startDate: map['startDate'] != null
+          ? DateTime.parse(map['startDate'])
+          : null,
       category: map['category'] != null
-          ? CategoryModel.fromMap(map['category'])
+          ? CategoryModel.fromJson(map['category'])
           : null,
       ong: map['ong'] != null ? OngModel.fromMap(map['ong']) : null,
       user: map['user'] != null ? UserModel.fromJson(map['user']) : null,
       contributors: map['contributors'] != null
-          ? List<CampaignContributorModel>.from(map['contributors']
-              .map((x) => CampaignContributorModel.fromJson(x)))
+          ? List<CampaignContributorModel>.from(
+              map['contributors'].map(
+                (x) => CampaignContributorModel.fromJson(x),
+              ),
+            )
           : [],
       documents: map['documents'] != null
           ? List<CampaignDocumentModel>.from(
-              map['documents'].map((x) => CampaignDocumentModel.fromJson(x)))
+              map['documents'].map((x) => CampaignDocumentModel.fromJson(x)),
+            )
           : [],
       updates: map['updates'] != null
           ? List<CampaignUpdateModel>.from(
-              map['updates'].map((x) => CampaignUpdateModel.fromJson(x)))
+              map['updates'].map((x) => CampaignUpdateModel.fromJson(x)),
+            )
           : [],
       comments: map['comments'] != null
           ? List<CampaignCommentModel>.from(
-              map['comments'].map((x) => CampaignCommentModel.fromJson(x)))
+              map['comments'].map((x) => CampaignCommentModel.fromJson(x)),
+            )
           : [],
       midias: map['midias'] != null
           ? List<CampaignMidiaModel>.from(
-              map['midias'].map((x) => CampaignMidiaModel.fromJson(x)))
+              map['midias'].map((x) => CampaignMidiaModel.fromJson(x)),
+            )
           : [],
     );
   }
@@ -167,30 +178,30 @@ class CampaignModel extends CampaignEntity {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'created_at': createdAt?.toIso8601String(),
-      'updated_at': updatedAt?.toIso8601String(),
-      'category_id': categoryId,
+      'createdAt': createdAt?.toIso8601String(),
+      'updatedAt': updatedAt?.toIso8601String(),
+      'categoryId': categoryId,
       'description': description,
-      'fundraising_goal': fundraisingGoal,
-      'funds_raised': fundsRaised,
-      'image_cover_url': imageCoverUrl,
+      'fundraisingGoal': fundraisingGoal,
+      'fundsRaised': fundsRaised,
+      'imageCoverUrl': imageCoverUrl,
       'institution': institution,
       'location': location,
       'status': status,
-      'number_of_contributions': numberOfContributions,
-      'ong_id': ongId,
-      'phone_number': phoneNumber,
+      'numberOfContributions': numberOfContributions,
+      'ongId': ongId,
+      'phoneNumber': phoneNumber,
       'priority': priority,
-      'is_urgent': isUrgent,
-      'is_activate': isActivate,
-      'end_date': endDate?.toIso8601String(),
+      'isUrgent': isUrgent,
+      'isActivate': isActivate,
+      'endDate': endDate?.toIso8601String(),
       'birth': birth?.toIso8601String(),
       'currency': currency,
-      'campaign_type': campaignType,
-      'beneficiary_name': beneficiaryName,
+      'campaignType': campaignType,
+      'beneficiaryName': beneficiaryName,
       'title': title,
-      'user_id': userId,
-      'start_date': startDate?.toIso8601String(),
+      'userId': userId,
+      'startDate': startDate?.toIso8601String(),
     };
   }
 }

@@ -1,37 +1,39 @@
 import '../../domain/entities/user_entity.dart';
 
 class UserModel extends UserEntity {
-  const UserModel(
-      {super.id,
-      super.fullName,
-      super.email,
-      super.avatarUrl,
-      super.phoneNumber,
-      super.bio,
-      super.createdAt,
-      super.updatedAt,
-      super.location,
-      super.isVerified,
-      super.role,
-      super.firstName,
-      super.lastName,
-      super.userFcmTokenEntity});
+  const UserModel({
+    super.id,
+    super.fullName,
+    super.email,
+    super.avatarUrl,
+    super.phoneNumber,
+    super.bio,
+    super.createdAt,
+    super.updatedAt,
+    super.location,
+    super.isVerified,
+    super.role,
+    super.firstName,
+    super.lastName,
+    super.userFcmTokenEntity,
+  });
   factory UserModel.fromJson(Map<String, dynamic> json) {
+    print("CREATED AT ${json['createdAt']}");
     return UserModel(
       id: json['id'],
-      fullName: json['full_name'],
-      firstName: json['first_name'],
-      lastName: json['last_name'],
+      fullName: json['fullName'],
+      firstName: json['firstName'],
+      lastName: json['lastName'],
       email: json['email'],
-      avatarUrl: json['avatar_url'],
-      phoneNumber: json['phone_number'],
+      avatarUrl: json['avatarUrl'],
+      phoneNumber: json['phone'],
       bio: json['bio'],
-      createdAt: DateTime.parse(json['created_at']),
-      updatedAt: DateTime.parse(json['updated_at']),
+      createdAt: DateTime.parse(json['createdAt']),
+      updatedAt: DateTime.parse(json['updatedAt']),
       location: json['location'],
-      isVerified: json['is_verified'],
-      role: json['role'],
-      userFcmTokenEntity: json['user_fcm'],
+      isVerified: json['isVerified'],
+      role: json['roleName'],
+      userFcmTokenEntity: json['userFcm'],
     );
   }
 
@@ -66,17 +68,18 @@ class UserModel extends UserEntity {
     String? role,
   }) {
     return UserModel(
-        id: id ?? this.id,
-        fullName: fullName ?? this.fullName,
-        email: email ?? this.email,
-        avatarUrl: avatarUrl ?? this.avatarUrl,
-        phoneNumber: phoneNumber ?? this.phoneNumber,
-        bio: bio ?? this.bio,
-        createdAt: createdAt ?? this.createdAt,
-        updatedAt: updatedAt ?? this.updatedAt,
-        location: location ?? this.location,
-        isVerified: isVerified ?? this.isVerified,
-        role: role ?? this.role,
-        userFcmTokenEntity: userFcmTokenEntity ?? this.userFcmTokenEntity);
+      id: id ?? this.id,
+      fullName: fullName ?? this.fullName,
+      email: email ?? this.email,
+      avatarUrl: avatarUrl ?? this.avatarUrl,
+      phoneNumber: phoneNumber ?? this.phoneNumber,
+      bio: bio ?? this.bio,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      location: location ?? this.location,
+      isVerified: isVerified ?? this.isVerified,
+      role: role ?? this.role,
+      userFcmTokenEntity: userFcmTokenEntity ?? this.userFcmTokenEntity,
+    );
   }
 }

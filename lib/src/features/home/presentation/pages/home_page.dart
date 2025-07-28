@@ -13,6 +13,7 @@ import 'package:utueji/src/features/categories/data/models/category_model.dart';
 import 'package:utueji/src/features/events/presentation/widgets/event_skeleton_widget.dart';
 import 'package:utueji/src/features/home/presentation/cubit/home_campaign_cubit/home_campaign_cubit.dart';
 import 'package:utueji/src/features/ongs/presentation/widgets/ong_skeleton_widget.dart';
+import 'package:utueji/src/features/solidary/cubit/user_local_data/user_local_data_cubit.dart';
 
 import '../../../../config/routes/app_routes.dart';
 import '../../../../config/themes/app_colors.dart';
@@ -21,6 +22,7 @@ import '../../../../core/resources/icons/app_icons.dart';
 import '../../../../core/resources/images/app_images.dart';
 import '../../../campaigns/presentation/widgets/campaign_skeleton_widget.dart';
 import '../../../campaigns/presentation/widgets/campaign_widget.dart';
+import '../../../categories/presentation/cubit/category_cubit.dart';
 import '../../../events/presentation/cubit/event_cubit.dart';
 import '../../../events/presentation/cubit/event_state.dart';
 import '../../../events/presentation/widgets/event_widget.dart';
@@ -52,48 +54,61 @@ class _HomePageState extends State<HomePage> {
     context.read<OngCubit>().getLatestOngs();
   }
 
-  final List<Map<String, Color>> colorPairs = [
+  final List<Map<String, dynamic>> colorPairs = [
     {
-      'background': const Color.fromRGBO(255, 0, 0, 0.2), // vermelho vivo opaco
-      'color': const Color(0xFFFF0000), // vermelho vivo
+      'background': const Color.fromRGBO(
+        255,
+        59,
+        48,
+        0.12,
+      ), // vermelho claro opaco
+      'color': const Color(0xFFFF3B30), // vermelho suave vivo
+      'icon': Assets.icons.medicineBottleOne,
     },
     {
-      'background': const Color.fromRGBO(0, 122, 255, 0.2), // azul vivo opaco
-      'color': const Color(0xFF007AFF), // azul vivo
+      'background': const Color.fromRGBO(10, 132, 255, 0.12), // azul opaco
+      'color': const Color(0xFF0A84FF), // azul suave vivo
+      'icon': Assets.icons.oldMan,
+    },
+    {
+      'background': const Color.fromRGBO(255, 214, 10, 0.12), // amarelo opaco
+      'color': Colors.orange, // amarelo suave
+      'icon': Assets.icons.education,
+    },
+    {
+      'background': const Color.fromRGBO(48, 209, 88, 0.12), // verde opaco
+      'color': const Color(0xFF30D158), // verde suave vivo
+      'icon': Assets.icons.group,
+    },
+    {
+      'background': const Color.fromRGBO(191, 90, 242, 0.12), // roxo opaco
+      'color': const Color(0xFFBF5AF2), // roxo vivo suave
+      'icon': Assets.icons.animalShelter,
     },
     {
       'background': const Color.fromRGBO(
         255,
-        204,
-        0,
-        0.2,
-      ), // amarelo ouro opaco
-      'color': const Color(0xFFFFCC00), // amarelo ouro
-    },
-    {
-      'background': const Color.fromRGBO(52, 199, 89, 0.2), // verde limão opaco
-      'color': const Color(0xFF34C759), // verde limão
-    },
-    {
-      'background': const Color.fromRGBO(175, 82, 222, 0.2), // roxo opaco
-      'color': const Color(0xFFAF52DE), // roxo
-    },
-    {
-      'background': const Color.fromRGBO(255, 45, 85, 0.2), // rosa choque opaco
-      'color': const Color(0xFFFF2D55), // rosa choque
-    },
-    {
-      'background': const Color.fromRGBO(90, 200, 250, 0.2), // azul claro opaco
-      'color': const Color(0xFF5AC8FA), // azul claro
+        69,
+        58,
+        0.12,
+      ), // rosa avermelhado opaco
+      'color': const Color(0xFFFF453A), // rosa avermelhado suave
+      'icon': Assets.icons.alert,
     },
     {
       'background': const Color.fromRGBO(
+        100,
+        210,
         255,
-        159,
-        10,
-        0.2,
-      ), // laranja queimado opaco
-      'color': const Color(0xFFFF9F0A), // laranja queimado
+        0.12,
+      ), // azul claro opaco
+      'color': const Color(0xFF64D2FF), // azul claro vivo
+      'icon': Assets.icons.handHoldingHeart,
+    },
+    {
+      'background': const Color.fromRGBO(255, 179, 64, 0.12), // laranja opaco
+      'color': const Color(0xFFFFB340), // laranja suave
+      'icon': Assets.icons.handHoldingHeart,
     },
   ];
 
@@ -130,17 +145,21 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(height: 10),
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 16, vertical: 5),
-                child: Row(
-                  children: [
-                    (state is GetUserDataSuccessState)
-                        ? Text(
-                            "Olá! ${state.user.fullName}",
-                            style: Theme.of(context).textTheme.titleLarge,
-                          )
-                        : Text("Olá! Ajuda-me"),
-                    const SizedBox(width: 5),
-                    Image.asset(AppImages.wave, width: 16),
-                  ],
+                child: BlocBuilder<UserLocalDataCubit, UserLocalDataState>(
+                  builder: (context, state) {
+                    return Row(
+                      children: [
+                        (state is UserLocalDataLoaded)
+                            ? Text(
+                                "Olá! ${state.firstName} ${state.lastName}",
+                                style: Theme.of(context).textTheme.titleLarge,
+                              )
+                            : Text("Olá! Ajuda-me"),
+                        const SizedBox(width: 5),
+                        Image.asset(AppImages.wave, width: 16),
+                      ],
+                    );
+                  },
                 ),
               ),
               Container(
@@ -266,49 +285,68 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(height: 15),
               SizedBox(
                 height: 90,
-                child: ListView.separated(
-                  shrinkWrap: true,
-                  physics: const ClampingScrollPhysics(),
-                  scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  itemBuilder: (context, index) {
-                    return InkWell(
-                      onTap: () {
-                        Get.toNamed(
-                          AppRoutes.categoryCampaignsRoute,
-                          arguments: categories[index],
-                        );
-                      },
-                      child: Column(
-                        children: [
-                          Container(
-                            width: 60,
-                            height: 60,
-                            padding: const EdgeInsets.all(18),
-                            decoration: BoxDecoration(
-                              color:
-                                  colorPairs[index %
-                                      colorPairs.length]['background'],
-                              borderRadius: BorderRadius.circular(10),
+                child: BlocBuilder<CategoryCubit, CategoryState>(
+                  builder: (context, state) {
+                    print(state);
+                    if (state is CategoryLoading) {
+                      return Center(child: CircularProgressIndicator());
+                    } else if (state is CategoryError) {
+                      return Center(child: Text(state.error));
+                    } else if (state is CategoryLoaded) {
+                      final categories = state.categories;
+                      return ListView.separated(
+                        shrinkWrap: true,
+                        physics: const ClampingScrollPhysics(),
+                        scrollDirection: Axis.horizontal,
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        itemBuilder: (context, index) {
+                          return InkWell(
+                            onTap: () {
+                              Get.toNamed(
+                                AppRoutes.categoryCampaignsRoute,
+                                arguments: categories[index],
+                              );
+                            },
+                            child: Column(
+                              children: [
+                                Container(
+                                  width: 60,
+                                  height: 60,
+                                  padding: const EdgeInsets.all(18),
+                                  decoration: BoxDecoration(
+                                    color:
+                                        ((colorPairs[index %
+                                                    colorPairs
+                                                        .length]['background'])
+                                                as Color)
+                                            .withOpacity(.1),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: SvgPicture.asset(
+                                    colorPairs[index %
+                                        colorPairs.length]['icon'],
+                                    width: 12,
+                                    color:
+                                        ((colorPairs[index %
+                                                colorPairs.length]['color'])
+                                            as Color),
+                                  ),
+                                ),
+                                SizedBox(height: 5),
+                                Text(categories[index].name.toString()),
+                              ],
                             ),
-                            child: SvgPicture.asset(
-                              categories[index].iconPath!,
-                              width: 12,
-                              color:
-                                  colorPairs[index %
-                                      colorPairs.length]['color'],
-                            ),
-                          ),
-                          SizedBox(height: 5),
-                          Text(categories[index].name.toString()),
-                        ],
-                      ),
-                    );
+                          );
+                        },
+                        separatorBuilder: (context, index) {
+                          return const SizedBox(width: 10);
+                        },
+                        itemCount: categories.length,
+                      );
+                    } else {
+                      return SizedBox.shrink();
+                    }
                   },
-                  separatorBuilder: (context, index) {
-                    return const SizedBox(width: 10);
-                  },
-                  itemCount: categories.length,
                 ),
               ),
               Container(

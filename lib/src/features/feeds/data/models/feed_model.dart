@@ -28,10 +28,11 @@ class FeedModel extends FeedEntity {
   factory FeedModel.fromMap(Map<String, dynamic> map) {
     return FeedModel(
       id: map['id'] ?? '',
-      createdAt:
-          DateTime.parse(map['created_at'] ?? DateTime.now().toIso8601String()),
-      userId: map['user_id'] ?? '',
-      ongId: map['ong_id'] ?? '',
+      createdAt: DateTime.parse(
+        map['createdAt'] ?? DateTime.now().toIso8601String(),
+      ),
+      userId: map['userId'] ?? '',
+      ongId: map['ongId'] ?? '',
       image: map['image'] ?? '',
       description: map['description'] ?? '',
       user: (map['user'] == null) ? null : UserModel.fromJson(map['user']),

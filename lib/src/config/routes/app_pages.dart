@@ -5,6 +5,7 @@ import 'package:utueji/src/features/campaigns/presentation/pages/category_campai
 import 'package:utueji/src/features/campaigns/presentation/pages/my_campaign_settings_page.dart';
 import 'package:utueji/src/features/ongs/presentation/pages/create_ong_page.dart';
 import 'package:utueji/src/features/payment/presentation/pages/payment_page.dart';
+import 'package:utueji/src/features/splash&onboarding/presentation/pages/splash_page.dart';
 import '../../features/auth/presentation/cubit/initial_cubit/initial_cubit.dart';
 import '../../features/auth/presentation/cubit/initial_cubit/initial_state.dart';
 import '../../features/auth/presentation/pages/login_page.dart';
@@ -55,6 +56,7 @@ class RouteManager {
       case AppRoutes.rootRoute:
         return PageRouteBuilder(
           pageBuilder: (context, animation, secondaryAnimation) {
+            return SplashPage();
             return BlocBuilder<InitialCubit, InitialState>(
               builder: (context, authState) {
                 final map = routeSettings.arguments == null
@@ -64,9 +66,7 @@ class RouteManager {
                 int? currentIndex = map?['currentIndex'];
 
                 if (authState is Initialized) {
-                  return SolidaryPage(
-                    currentIndex: currentIndex,
-                  );
+                  return SolidaryPage(currentIndex: currentIndex);
                 } else {
                   return const OnBoardingPage();
                 }

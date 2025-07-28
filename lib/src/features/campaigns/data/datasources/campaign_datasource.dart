@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:path/path.dart' as path;
 import 'package:utueji/src/features/campaigns/domain/enums/campaign_status.dart';
@@ -12,10 +13,9 @@ import 'i_campaign_datasource.dart';
 
 class CampaignRemoteDataSource extends ICampaignRemoteDataSource {
   final SupabaseClient supabase;
+  final Dio dio;
 
-  CampaignRemoteDataSource({
-    required this.supabase,
-  });
+  CampaignRemoteDataSource({required this.supabase, required this.dio});
 
   @override
   Future<void> createCampaign(CampaignEntity campaign) async {
@@ -60,7 +60,7 @@ class CampaignRemoteDataSource extends ICampaignRemoteDataSource {
         "userId": supabase.auth.currentUser!.id,
         "isActivate": true,
         "numberOfContributions": 0,
-        "ongId": campaign.ongId
+        "ongId": campaign.ongId,
       };
 
       // Processamento e Upload de Mídias (Imagens e Vídeos)
@@ -69,14 +69,15 @@ class CampaignRemoteDataSource extends ICampaignRemoteDataSource {
         for (var media in campaign.midias!) {
           final uuid = Uuid().v4();
           final mediaFile = File(media.midiaUrl!);
-          final fileExtension =
-              path.extension(mediaFile.path).replaceFirst('.', '');
+          final fileExtension = path
+              .extension(mediaFile.path)
+              .replaceFirst('.', '');
 
           // Identificando o tipo da mídia (imagem ou vídeo)
           String midiaType =
               (['jpg', 'jpeg', 'png'].contains(fileExtension.toLowerCase()))
-                  ? "image"
-                  : "video";
+              ? "image"
+              : "video";
 
           final fileName = "${DateTime.now()}${uuid}.$fileExtension";
           final storageResponse = await supabase.storage
@@ -103,8 +104,9 @@ class CampaignRemoteDataSource extends ICampaignRemoteDataSource {
         for (var doc in campaign.documents!) {
           final uuid = Uuid().v4();
           final documentFile = File(doc.documentPath!);
-          final fileExtension =
-              path.extension(documentFile.path).replaceFirst('.', '');
+          final fileExtension = path
+              .extension(documentFile.path)
+              .replaceFirst('.', '');
 
           final fileName = "${DateTime.now()}${uuid}.$fileExtension";
           final storageResponse = await supabase.storage
@@ -116,10 +118,7 @@ class CampaignRemoteDataSource extends ICampaignRemoteDataSource {
                 .from(SupabaseStorageConsts.documents)
                 .getPublicUrl(fileName);
 
-            documentList.add({
-              "id": uuid,
-              "documentPath": documentPath,
-            });
+            documentList.add({"id": uuid, "documentPath": documentPath});
           }
         }
       }
@@ -279,7 +278,9 @@ class CampaignRemoteDataSource extends ICampaignRemoteDataSource {
     final semanaFutura = agora.add(Duration(days: 7));
     final umaSemanaAtras = agora.subtract(Duration(days: 7));
 
-    var query = supabase.from('campaigns_with_contributors').select('''
+    var query = supabase
+        .from('campaigns_with_contributors')
+        .select('''
       *, 
       user:profiles(*), 
       ong:ongs(*), 
@@ -289,7 +290,8 @@ class CampaignRemoteDataSource extends ICampaignRemoteDataSource {
       updates:campaign_updates(*), 
       comments:campaign_comments(*, user:profiles(*)),
       midias:campaign_midias(*)
-    ''').eq('is_activate', true);
+    ''')
+        .eq('is_activate', true);
 
     if (params.categoryId != null) {
       query = query.eq('category_id', params.categoryId.toString());
@@ -343,8 +345,10 @@ class CampaignRemoteDataSource extends ICampaignRemoteDataSource {
     if (params.filter == "3") {
       // query = query.order('contributors_count', ascending: false);
       final response = await query
-          .range((params.page! - 1) * params.limit!,
-              params.page! * params.limit! - 1)
+          .range(
+            (params.page! - 1) * params.limit!,
+            params.page! * params.limit! - 1,
+          )
           .order('contributors_count', ascending: false);
       ;
 
@@ -362,10 +366,11 @@ class CampaignRemoteDataSource extends ICampaignRemoteDataSource {
       //   return CampaignModel.fromJson(event);
       // }).toList();
 
-      query = query
-          .gte('end_date', agora.toIso8601String())
-          .lte('end_date', semanaFutura.toIso8601String())
-        ..order('created_at', ascending: true);
+      query =
+          query
+              .gte('end_date', agora.toIso8601String())
+              .lte('end_date', semanaFutura.toIso8601String())
+            ..order('created_at', ascending: true);
     } else if (params.filter == "4") {
       // final response = await query
       //     .range((params.page! - 1) * params.limit!,
@@ -376,15 +381,20 @@ class CampaignRemoteDataSource extends ICampaignRemoteDataSource {
       //   return CampaignModel.fromJson(event);
       // }).toList();
 
-      query = query
-          .gte('created_at',
-              umaSemanaAtras.toIso8601String()) // Criadas há no máximo 7 dias
-          .lte('created_at', agora.toIso8601String()) // Até hoje
-        ..order('created_at', ascending: false);
+      query =
+          query
+              .gte(
+                'created_at',
+                umaSemanaAtras.toIso8601String(),
+              ) // Criadas há no máximo 7 dias
+              .lte('created_at', agora.toIso8601String()) // Até hoje
+            ..order('created_at', ascending: false);
     }
 
     final response = await query.range(
-        (params.page! - 1) * params.limit!, params.page! * params.limit! - 1);
+      (params.page! - 1) * params.limit!,
+      params.page! * params.limit! - 1,
+    );
 
     return response.map((event) {
       return CampaignModel.fromJson(event);
@@ -393,10 +403,13 @@ class CampaignRemoteDataSource extends ICampaignRemoteDataSource {
 
   @override
   Future<List<CampaignEntity>> getAllUrgentCampaigns(
-      CampaignParams params) async {
+    CampaignParams params,
+  ) async {
     final userId = supabase.auth.currentUser!.id;
 
-    var query = supabase.from(SupabaseConsts.campaigns).select('''
+    var query = supabase
+        .from(SupabaseConsts.campaigns)
+        .select('''
       *, 
       user:profiles(*), 
       ong:ongs(*), 
@@ -406,7 +419,10 @@ class CampaignRemoteDataSource extends ICampaignRemoteDataSource {
       updates:campaign_updates(*), 
       comments:campaign_comments(*, user:profiles(*)),
       midias:campaign_midias(*)
-    ''').eq('is_urgent', true).eq('is_activate', true).eq('user_id', userId);
+    ''')
+        .eq('is_urgent', true)
+        .eq('is_activate', true)
+        .eq('user_id', userId);
 
     if (params.categoryId != null) {
       query = query.eq('category_id', params.categoryId.toString());
@@ -445,8 +461,10 @@ class CampaignRemoteDataSource extends ICampaignRemoteDataSource {
     }
 
     final response = await query
-        .range((params.page! - 1) * params.limit!,
-            params.page! * params.limit! - 1)
+        .range(
+          (params.page! - 1) * params.limit!,
+          params.page! * params.limit! - 1,
+        )
         .order("created_at", ascending: false);
 
     return response.map((event) {
@@ -481,30 +499,11 @@ class CampaignRemoteDataSource extends ICampaignRemoteDataSource {
   }
 
   @override
-  Future<List<CampaignEntity>> getLatestUrgentCampaigns(
-      CampaignParams params) async {
-    final userId = supabase.auth.currentUser!.id;
-
-    final response = await supabase
-        .from(SupabaseConsts.campaigns)
-        .select('''
-      *, 
-      user:profiles(*), 
-      ong:ongs(*), 
-      category:categories(*), 
-      contributors:campaign_contributors(*, user:profiles(*)), 
-      documents:campaign_documents(*), 
-      updates:campaign_updates(*), 
-      comments:campaign_comments(*, user:profiles(*)),
-      midias:campaign_midias(*)
-    ''')
-        .eq('is_urgent', true)
-        .eq('is_activate', true)
-        .eq('user_id', userId)
-        .order('created_at', ascending: false)
-        .limit(10);
-
-    return response.map((event) => CampaignModel.fromJson(event)).toList();
+  Future<List<CampaignEntity>> getLatestUrgentCampaigns() async {
+    final response = await dio.get('/campaigns/smart-urgent');
+    return (response.data as List)
+        .map((json) => CampaignModel.fromJson(json))
+        .toList();
   }
 
   @override
@@ -516,7 +515,9 @@ class CampaignRemoteDataSource extends ICampaignRemoteDataSource {
   Future<List<CampaignEntity>> getAllMyCampaigns(CampaignParams params) async {
     final userId = supabase.auth.currentUser!.id;
 
-    var query = supabase.from(SupabaseConsts.campaigns).select('''
+    var query = supabase
+        .from(SupabaseConsts.campaigns)
+        .select('''
         *, 
         user:profiles(*), 
         ong:ongs(*), 
@@ -526,7 +527,8 @@ class CampaignRemoteDataSource extends ICampaignRemoteDataSource {
         updates:campaign_updates(*), 
         comments:campaign_comments(*, user:profiles(*)),
         midias:campaign_midias(*)
-      ''').eq('user_id', userId);
+      ''')
+        .eq('user_id', userId);
 
     if (params.categoryId != null) {
       query = query.eq('category_id', params.categoryId.toString());
@@ -561,7 +563,9 @@ class CampaignRemoteDataSource extends ICampaignRemoteDataSource {
     }
 
     final response = await query.range(
-        (params.page! - 1) * params.limit!, params.page! * params.limit! - 1);
+      (params.page! - 1) * params.limit!,
+      params.page! * params.limit! - 1,
+    );
 
     return response.map((event) => CampaignModel.fromJson(event)).toList();
   }

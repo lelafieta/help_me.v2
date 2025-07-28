@@ -1,9 +1,6 @@
 import 'package:dashed_circular_progress_bar/dashed_circular_progress_bar.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
-import 'package:simple_circular_progress_bar/simple_circular_progress_bar.dart';
 import 'package:utueji/src/config/routes/app_routes.dart';
 import 'package:utueji/src/core/resources/images/app_images.dart';
 
@@ -83,11 +80,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
               padding: EdgeInsets.all(16),
               child: Row(
                 children: [
-                  Expanded(
-                    child: Container(
-                      child: _dotController(),
-                    ),
-                  ),
+                  Expanded(child: Container(child: _dotController())),
                   ValueListenableBuilder<double>(
                     builder: (context, value, _) {
                       return InkWell(
@@ -96,8 +89,9 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                             Get.toNamed(AppRoutes.loginRoute);
                           } else {
                             _controller.nextPage(
-                                duration: const Duration(seconds: 1),
-                                curve: Curves.ease);
+                              duration: const Duration(seconds: 1),
+                              curve: Curves.ease,
+                            );
                           }
                         },
                         child: Container(
@@ -149,14 +143,12 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                 children: [
                   Text(
                     pages[paginateIndex]['title']!,
-                    style: Theme.of(context)
-                        .textTheme
-                        .headlineLarge!
-                        .copyWith(height: 1.2, color: AppColors.whiteColor),
+                    style: Theme.of(context).textTheme.headlineLarge!.copyWith(
+                      height: 1.2,
+                      color: AppColors.whiteColor,
+                    ),
                   ),
-                  const SizedBox(
-                    height: 10,
-                  ),
+                  const SizedBox(height: 10),
                   Text(
                     pages[paginateIndex]['description']!,
                     style: const TextStyle(color: Colors.white70),
@@ -187,9 +179,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
             borderRadius: BorderRadius.circular(50),
           ),
         ),
-        const SizedBox(
-          width: 5,
-        ),
+        const SizedBox(width: 5),
         Container(
           width: (paginateIndex == 1) ? selectedWidth : unSelectedWidth,
           height: (paginateIndex == 1) ? selectedHeight : unSelectedHeight,
@@ -198,9 +188,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
             borderRadius: BorderRadius.circular(50),
           ),
         ),
-        const SizedBox(
-          width: 5,
-        ),
+        const SizedBox(width: 5),
         Container(
           width: (paginateIndex == 2) ? selectedWidth : unSelectedWidth,
           height: (paginateIndex == 2) ? selectedHeight : unSelectedHeight,
@@ -213,29 +201,26 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
     );
   }
 
-  Widget _buildPage(BuildContext context,
-      {required String title,
-      required String description,
-      required String imagePath}) {
+  Widget _buildPage(
+    BuildContext context, {
+    required String title,
+    required String description,
+    required String imagePath,
+  }) {
     return Stack(
       children: [
         Positioned(
           child: SizedBox(
             width: double.infinity,
             height: double.infinity,
-            child: Image.asset(
-              imagePath,
-              fit: BoxFit.cover,
-            ),
+            child: Image.asset(imagePath, fit: BoxFit.cover),
           ),
         ),
         Positioned(
           child: Container(
             width: double.infinity,
             height: double.infinity,
-            decoration: const BoxDecoration(
-              color: Colors.black54,
-            ),
+            decoration: const BoxDecoration(color: Colors.black54),
           ),
         ),
         Positioned(

@@ -25,6 +25,12 @@ class $AssetsIconsGen {
   /// File path: assets/icons/add-friends-filled.svg
   String get addFriendsFilled => 'assets/icons/add-friends-filled.svg';
 
+  /// File path: assets/icons/alert.svg
+  String get alert => 'assets/icons/alert.svg';
+
+  /// File path: assets/icons/animal-shelter.svg
+  String get animalShelter => 'assets/icons/animal-shelter.svg';
+
   /// File path: assets/icons/bell.svg
   String get bell => 'assets/icons/bell.svg';
 
@@ -58,6 +64,9 @@ class $AssetsIconsGen {
   /// File path: assets/icons/doctor.svg
   String get doctor => 'assets/icons/doctor.svg';
 
+  /// File path: assets/icons/education.svg
+  String get education => 'assets/icons/education.svg';
+
   /// File path: assets/icons/email-2.svg
   String get email2 => 'assets/icons/email-2.svg';
 
@@ -87,6 +96,9 @@ class $AssetsIconsGen {
 
   /// File path: assets/icons/graduation-cap.svg
   String get graduationCap => 'assets/icons/graduation-cap.svg';
+
+  /// File path: assets/icons/group.svg
+  String get group => 'assets/icons/group.svg';
 
   /// File path: assets/icons/hand-holding-heart.svg
   String get handHoldingHeart => 'assets/icons/hand-holding-heart.svg';
@@ -144,6 +156,9 @@ class $AssetsIconsGen {
   /// File path: assets/icons/lock-password-locked.svg
   String get lockPasswordLocked => 'assets/icons/lock-password-locked.svg';
 
+  /// File path: assets/icons/medicine-bottle-one.svg
+  String get medicineBottleOne => 'assets/icons/medicine-bottle-one.svg';
+
   /// File path: assets/icons/menu-dots.svg
   String get menuDots => 'assets/icons/menu-dots.svg';
 
@@ -162,6 +177,9 @@ class $AssetsIconsGen {
   /// File path: assets/icons/notification-bell-outline.svg
   String get notificationBellOutline =>
       'assets/icons/notification-bell-outline.svg';
+
+  /// File path: assets/icons/old-man.svg
+  String get oldMan => 'assets/icons/old-man.svg';
 
   /// File path: assets/icons/old-people.svg
   String get oldPeople => 'assets/icons/old-people.svg';
@@ -216,6 +234,8 @@ class $AssetsIconsGen {
   List<String> get values => [
         aarrowLeftLg,
         addFriendsFilled,
+        alert,
+        animalShelter,
         bell,
         bullseyeArrow,
         calendar2,
@@ -227,6 +247,7 @@ class $AssetsIconsGen {
         compassAltBold,
         compassAlt,
         doctor,
+        education,
         email2,
         email,
         envelope,
@@ -237,6 +258,7 @@ class $AssetsIconsGen {
         googleIcon,
         google,
         graduationCap,
+        group,
         handHoldingHeart,
         handsHeartBold,
         handsHeart,
@@ -255,12 +277,14 @@ class $AssetsIconsGen {
         liveHelpoutline,
         location,
         lockPasswordLocked,
+        medicineBottleOne,
         menuDots,
         menu,
         microphone,
         mobile3,
         note04,
         notificationBellOutline,
+        oldMan,
         oldPeople,
         padlock,
         paperPlane,

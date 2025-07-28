@@ -5,7 +5,7 @@ abstract class ICampaignRemoteDataSource {
   Future<List<CampaignEntity>> getAllCampaigns(CampaignParams params);
   Future<List<CampaignEntity>> getAllMyCampaigns(CampaignParams params);
   Future<List<CampaignEntity>> getAllUrgentCampaigns(CampaignParams params);
-  Future<List<CampaignEntity>> getLatestUrgentCampaigns(CampaignParams params);
+  Future<List<CampaignEntity>> getLatestUrgentCampaigns();
   Future<CampaignEntity> getCampaignById(String id);
   Future<void> createCampaign(CampaignEntity campaign);
   Future<void> updateCampaign(CampaignEntity campaign);
