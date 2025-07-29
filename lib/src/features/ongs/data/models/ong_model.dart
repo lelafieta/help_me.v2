@@ -28,47 +28,48 @@ class OngModel extends OngEntity {
   factory OngModel.fromMap(Map<String, dynamic> map) {
     return OngModel(
       id: map['id'],
-      createdAt: DateTime.parse(map['created_at']),
-      updatedAt:
-          map['updated_at'] != null ? DateTime.parse(map['updated_at']) : null,
+      createdAt: DateTime.parse(map['createdAt']),
+      updatedAt: map['updatedAt'] != null
+          ? DateTime.parse(map['updatedAt'])
+          : null,
       about: map['about'],
       bio: map['bio'],
-      coverImageUrl: map['cover_image_url'],
-      isVerified: map['is_verified'] == true,
+      coverImageUrl: map['coverImageUrl'],
+      isVerified: map['isVerified'] == true,
       mission: map['mission'],
       name: map['name'],
       email: map['email'],
       status: map['status'],
       website: map['website'],
-      phoneNumber: map['phone_number'],
-      profileImageUrl: map['profile_image_url'],
-      servicesNumber: map['services_number'],
-      supportsNumber: map['supports_number']?.toDouble(),
-      userId: map['user_id'],
+      phoneNumber: map['phoneNumber'],
+      profileImageUrl: map['profileImageUrl'],
+      servicesNumber: map['servicesNumber'],
+      supportsNumber: map['supportsNumber']?.toDouble(),
+      userId: map['userId'],
       vision: map['vision'],
-      ongDocument: (map['ong_document'] != null)
-          ? OngDocumentModel.fromMap(map['ong_document'])
-          : map['ong_document'],
+      ongDocument: (map['ongDocument'] != null)
+          ? OngDocumentModel.fromMap(map['ongDocument'])
+          : map['ongDocument'],
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'created_at': createdAt?.toIso8601String(),
-      'updated_at': updatedAt?.toIso8601String(),
+      'createdAt': createdAt?.toIso8601String(),
+      'updatedAt': updatedAt?.toIso8601String(),
       'about': about,
       'bio': bio,
-      'cover_image_url': coverImageUrl,
-      'is_verified': isVerified,
+      'coverImageUrl': coverImageUrl,
+      'isVerified': isVerified,
       'mission': mission,
       'name': name,
       'email': email,
-      'phone_number': phoneNumber,
-      'profile_image_url': profileImageUrl,
-      'services_number': servicesNumber,
-      'supports_number': supportsNumber,
-      'user_id': userId,
+      'phoneNumber': phoneNumber,
+      'profileImageUrl': profileImageUrl,
+      'servicesNumber': servicesNumber,
+      'supportsNumber': supportsNumber,
+      'userId': userId,
       'status': status,
       'vision': vision,
     };

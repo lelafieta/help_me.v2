@@ -84,7 +84,7 @@ class _SolidaryPageState extends State<SolidaryPage> {
     if (widget.currentIndex != null) {
       _currentIndex = widget.currentIndex!;
     }
-    context.read<CountDonationCubit>().counter();
+    // context.read<CountDonationCubit>().counter();
     context.read<ProfileCubit>().getProfile();
     // context.read<CategoryCubit>().getAllCategories();
     super.initState();

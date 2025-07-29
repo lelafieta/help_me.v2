@@ -1,5 +1,6 @@
 import '../models/event_model.dart';
 
 abstract class IEventDataSource {
-  Stream<List<EventModel>> fetchLatestEvents();
+  Future<List<EventModel>> fetchNearbyEvents();
+  Future<EventModel?> getEventById(String id);
 }

@@ -13,6 +13,7 @@ class EventEntity {
   final DateTime? startDate;
   final DateTime? endDate;
   final DateTime? updatedAt;
+  final num? distanceKm;
   final OngEntity? ong;
   final UserEntity? user;
 
@@ -30,5 +31,6 @@ class EventEntity {
     this.endDate,
     this.ong,
     this.user,
+    this.distanceKm,
   });
 }

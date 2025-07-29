@@ -21,24 +21,25 @@ class OngEntity {
   final DateTime? updatedAt;
   final OngDocumentEntity? ongDocument;
 
-  OngEntity(
-      {this.id,
-      this.createdAt,
-      this.updatedAt,
-      this.about,
-      this.bio,
-      this.email,
-      this.website,
-      this.coverImageUrl,
-      this.status,
-      this.isVerified = false,
-      this.mission,
-      this.name,
-      this.phoneNumber,
-      this.profileImageUrl,
-      this.servicesNumber,
-      this.supportsNumber,
-      this.userId,
-      this.vision,
-      this.ongDocument});
+  OngEntity({
+    this.id,
+    this.createdAt,
+    this.updatedAt,
+    this.about,
+    this.bio,
+    this.email,
+    this.website,
+    this.coverImageUrl,
+    this.status,
+    this.isVerified = false,
+    this.mission,
+    this.name,
+    this.phoneNumber,
+    this.profileImageUrl,
+    this.servicesNumber,
+    this.supportsNumber,
+    this.userId,
+    this.vision,
+    this.ongDocument,
+  });
 }

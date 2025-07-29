@@ -17,10 +17,11 @@ class EventModel extends EventEntity {
     super.endDate,
     super.ong,
     super.user,
+    super.distanceKm,
   });
 
   // Factory para criar uma instância de EventModel a partir de um Map
-  factory EventModel.fromMap(Map<String, dynamic> map) {
+  factory EventModel.fromJson(Map<String, dynamic> map) {
     return EventModel(
       id: map['id'],
       createdAt: DateTime.parse(map['createdAt']),
@@ -35,6 +36,7 @@ class EventModel extends EventEntity {
       backgroundImageUrl: map['backgroundImageUrl'],
       startDate: DateTime.parse(map['startDate']),
       endDate: DateTime.parse(map['endDate']),
+      distanceKm: (map['distanceKm'] as num),
       ong: (map['ong'] != null) ? OngModel.fromMap(map['ong']) : null,
       user: (map['user'] != null) ? UserModel.fromJson(map['user']) : null,
     );

@@ -519,7 +519,49 @@ class AppUtils {
                       },
                     );
                   }
-                  return Text("DATA");
+                  /////// editar ao verificar se possua nos favoritos
+                  return RoundCheckBox(
+                    uncheckedColor: Colors.transparent,
+                    checkedColor: Colors.transparent,
+                    borderColor: Colors.transparent,
+                    isChecked: false,
+                    checkedWidget: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: SvgPicture.asset(
+                        AppIcons.heartBold,
+                        color: Colors.red,
+                      ),
+                    ),
+                    uncheckedWidget: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: SvgPicture.asset(AppIcons.heartBold),
+                    ),
+                    onTap: (selected) {
+                      isMyFavorite.value = selected!;
+                      // setState(() {
+                      //   isMyFavorite = isMyFavorite;
+
+                      if (selected) {
+                        context.read<CampaignStoreFavoriteCubit>().addFavorite(
+                          FavoriteEntity(
+                            itemId: itemId,
+                            userId: AppEntity.uid,
+                            itemType: itemType,
+                          ),
+                        );
+                      } else {
+                        context
+                            .read<CampaignStoreFavoriteCubit>()
+                            .removeFavorite(
+                              FavoriteEntity(
+                                itemId: itemId,
+                                userId: AppEntity.uid,
+                                itemType: itemType,
+                              ),
+                            );
+                      }
+                    },
+                  );
                 },
               );
             },

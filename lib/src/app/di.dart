@@ -9,6 +9,7 @@ import 'package:internet_connection_checker_plus/internet_connection_checker_plu
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:utueji/src/core/api/dio_consumer.dart';
+import 'package:utueji/src/features/events/domain/usecases/get_event_by_id_usecase.dart';
 import 'package:utueji/src/features/solidary/cubit/user_local_data/user_local_data_cubit.dart';
 
 import '../core/cache/secure_storage.dart';
@@ -82,7 +83,7 @@ import '../features/events/data/datasources/event_datasource.dart';
 import '../features/events/data/datasources/i_event_datasource.dart';
 import '../features/events/data/repositories/event_repository.dart';
 import '../features/events/domain/repositories/i_event_repository.dart';
-import '../features/events/domain/usecases/fetch_latest_events_usecase.dart';
+import '../features/events/domain/usecases/fetch_nearby_events_usecase.dart';
 import '../features/events/presentation/cubit/event_cubit.dart';
 import '../features/favorites/data/datasources/favorite_datasource.dart';
 import '../features/favorites/data/datasources/i_favorite_datasource.dart';
@@ -172,7 +173,7 @@ void _setUpCubits() {
     () => CampaignUrgentCubit(getUrgentCampaignsUseCase: sl()),
   );
 
-  sl.registerFactory(() => EventCubit(fetchLatestEventsUsecase: sl()));
+  sl.registerFactory(() => EventCubit(getNearbyEventsUsecase: sl()));
   sl.registerFactory(() => OngCubit(fetchLatestOngsUsecase: sl()));
   sl.registerFactory(() => FeedCubit(fetchFeedsUseCase: sl()));
   sl.registerFactory(
@@ -266,9 +267,14 @@ void _setUpUsecases() {
   sl.registerLazySingleton<GetLatestUrgentCampaignsUseCase>(
     () => GetLatestUrgentCampaignsUseCase(repository: sl()),
   );
-  sl.registerLazySingleton<FetchLatestEventsUsecase>(
-    () => FetchLatestEventsUsecase(repository: sl()),
+  sl.registerLazySingleton<GetNearbyEventsUsecase>(
+    () => GetNearbyEventsUsecase(repository: sl()),
   );
+
+  sl.registerLazySingleton<GetEventByUsecase>(
+    () => GetEventByUsecase(repository: sl()),
+  );
+
   sl.registerLazySingleton<FetchLatestOngsUsecase>(
     () => FetchLatestOngsUsecase(repository: sl()),
   );
@@ -343,7 +349,7 @@ void _setUpRepositories() {
     () => CampaignRepository(datasource: sl(), networkInfo: sl()),
   );
   sl.registerLazySingleton<IEventRepository>(
-    () => EventRepository(datasource: sl()),
+    () => EventRepository(netWorkInfo: sl(), eventDataSource: sl()),
   );
   sl.registerLazySingleton<IOngRepository>(
     () => OngRepository(datasource: sl()),
@@ -381,9 +387,7 @@ void _setUpDatasources() {
   sl.registerLazySingleton<ICampaignRemoteDataSource>(
     () => CampaignRemoteDataSource(supabase: sl(), dio: sl()),
   );
-  sl.registerLazySingleton<IEventDataSource>(
-    () => EventDataSource(supabase: sl()),
-  );
+  sl.registerLazySingleton<IEventDataSource>(() => EventDataSource(dio: sl()));
   sl.registerLazySingleton<IOngDataSource>(() => OngDataSource(supabase: sl()));
   sl.registerLazySingleton<IFeedDataSource>(
     () => FeedDataSource(supabase: sl()),

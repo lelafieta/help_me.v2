@@ -48,10 +48,10 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     // getUserData();
-    context.read<FavoriteCubit>().getAllFavorites();
+    // context.read<FavoriteCubit>().getAllFavorites();
     context.read<HomeCampaignCubit>().getLatestUrgentCampaigns();
-    // context.read<EventCubit>().getLatestEvents();
-    context.read<OngCubit>().getLatestOngs();
+    context.read<EventCubit>().getNearbyEvents();
+    // context.read<OngCubit>().getLatestOngs();
   }
 
   final List<Map<String, dynamic>> colorPairs = [

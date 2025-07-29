@@ -1,6 +1,5 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:carousel_slider_plus/carousel_slider_plus.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_animation_progress_bar/flutter_animation_progress_bar.dart';
@@ -171,7 +170,7 @@ class _CampaignDetailPageState extends State<CampaignDetailPage> {
                       tabs: [
                         Tab(text: "Sumário"),
                         Tab(text: "Documentos"),
-                        Tab(text: "Images"),
+                        Tab(text: "Galeria"),
                         Tab(text: "Actualizações"),
                         Tab(text: "Ajuda"),
                       ],
@@ -197,7 +196,7 @@ class _CampaignDetailPageState extends State<CampaignDetailPage> {
                   child: switch (pageSelectedIndex) {
                     0 => FadeIn(child: AboutWidget(campaign: campaign)),
                     1 => FadeIn(child: DocumentWidget(campaign: campaign)),
-                    2 => FadeIn(child: ImageWidget(campaign: campaign)),
+                    2 => FadeIn(child: GalleryWidget(campaign: campaign)),
                     3 => FadeIn(child: UpdateWidget(campaign: campaign)),
                     4 => FadeIn(child: HelpWidget(campaign: campaign)),
                     _ => Container(),
@@ -236,14 +235,83 @@ class _CampaignDetailPageState extends State<CampaignDetailPage> {
   }
 }
 
-class ImageWidget extends StatelessWidget {
-  const ImageWidget({super.key, required this.campaign});
+class GalleryWidget extends StatelessWidget {
+  const GalleryWidget({super.key, required this.campaign});
 
   final CampaignEntity campaign;
 
   @override
   Widget build(BuildContext context) {
-    return DocumentWidget(campaign: campaign);
+    return GridView.builder(
+      padding: const EdgeInsets.all(8),
+      shrinkWrap: true,
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        mainAxisSpacing: 8,
+        crossAxisSpacing: 8,
+      ),
+      itemCount: campaign.midias!.length,
+      itemBuilder: (context, index) {
+        final item = campaign.midias![index];
+        print(ImageHelper.buildImageUrl(item.midiaUrl!));
+        return ClipRRect(
+          borderRadius: BorderRadius.circular(12),
+          child: item.midiaType == "image"
+              ? CachedNetworkImage(
+                  imageUrl: ImageHelper.buildImageUrl(item.midiaUrl!),
+                  fit: BoxFit.cover,
+                  placeholder: (context, url) =>
+                      const Center(child: CircularProgressIndicator()),
+                  errorWidget: (context, url, error) => const Icon(Icons.error),
+                )
+              : VideoItem(url: item.midiaUrl!),
+        );
+      },
+    );
+  }
+}
+
+class VideoItem extends StatefulWidget {
+  final String url;
+
+  const VideoItem({super.key, required this.url});
+
+  @override
+  State<VideoItem> createState() => _VideoItemState();
+}
+
+class _VideoItemState extends State<VideoItem> {
+  late VideoPlayerController _controller;
+  bool _initialized = false;
+
+  @override
+  void initState() {
+    super.initState();
+    print(FileHelper.buildFileUrl(widget.url));
+    _controller =
+        VideoPlayerController.network(FileHelper.buildFileUrl(widget.url))
+          ..initialize().then((_) {
+            setState(() => _initialized = true);
+            _controller.setLooping(true);
+            _controller.setVolume(0);
+            _controller.play();
+          });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _initialized
+        ? AspectRatio(
+            aspectRatio: _controller.value.aspectRatio,
+            child: VideoPlayer(_controller),
+          )
+        : const Center(child: CircularProgressIndicator());
   }
 }
 
@@ -257,7 +325,10 @@ class UpdateWidget extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: (campaign.updates!.isEmpty)
-          ? Center(child: Text("Sem actualizações"))
+          ? Align(
+              alignment: Alignment.topCenter,
+              child: Text("Sem actualizações"),
+            )
           : FadeIn(
               child: ListView.separated(
                 physics: ClampingScrollPhysics(),

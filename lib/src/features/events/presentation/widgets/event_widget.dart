@@ -5,9 +5,9 @@ import 'package:get/get.dart';
 import 'package:utueji/core/gen/assets.gen.dart';
 import '../../../../config/routes/app_routes.dart';
 import '../../../../config/themes/app_colors.dart';
-import '../../../../core/resources/icons/app_icons.dart';
 import '../../../../core/utils/app_date_utils_helper.dart';
 import '../../../../core/utils/app_utils.dart';
+import '../../../../core/utils/image_helper.dart';
 import '../../domain/entities/event_entity.dart';
 
 class EventWidget extends StatefulWidget {
@@ -44,7 +44,9 @@ class _EventWidgetState extends State<EventWidget> {
                     width: double.infinity,
                     height: 190,
                     child: CachedNetworkImage(
-                      imageUrl: widget.event.backgroundImageUrl!,
+                      imageUrl: ImageHelper.buildImageUrl(
+                        widget.event.backgroundImageUrl!,
+                      ),
                       fit: BoxFit.cover,
                       placeholder: (context, url) => const Center(
                         child: SizedBox(
@@ -155,7 +157,7 @@ class _EventWidgetState extends State<EventWidget> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 5),
                   Row(
                     children: [
                       Expanded(
@@ -204,6 +206,8 @@ class _EventWidgetState extends State<EventWidget> {
                           ),
                         ),
                       ),
+
+                      Text("${widget.event.distanceKm!.toStringAsFixed(1)} km"),
                     ],
                   ),
                 ],

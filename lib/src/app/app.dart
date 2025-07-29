@@ -37,7 +37,7 @@ class UtuejiApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (_) => di.sl<InitialCubit>()..appStarted()),
+        BlocProvider(create: (_) => di.sl<InitialCubit>()),
         BlocProvider(create: (_) => di.sl<AuthCubit>()),
         BlocProvider(create: (_) => di.sl<EventCubit>()),
         BlocProvider(create: (_) => di.sl<OngCubit>()),
@@ -58,8 +58,8 @@ class UtuejiApp extends StatelessWidget {
         ),
         BlocProvider(create: (_) => di.sl<ProfileCubit>()..getProfile()),
         BlocProvider(create: (_) => di.sl<CountDonationCubit>()),
-        BlocProvider(create: (_) => di.sl<SolidaryCubit>()..getUserData()),
-        BlocProvider(create: (_) => di.sl<AuthDataCubit>()..getUserData()),
+        BlocProvider(create: (_) => di.sl<SolidaryCubit>()),
+        BlocProvider(create: (_) => di.sl<AuthDataCubit>()),
         BlocProvider(create: (_) => di.sl<OngActionCubit>()),
         BlocProvider(create: (_) => di.sl<CategoryCubit>()..getAllCategories()),
         BlocProvider(create: (_) => di.sl<UserLocalDataCubit>()..loadUser()),
