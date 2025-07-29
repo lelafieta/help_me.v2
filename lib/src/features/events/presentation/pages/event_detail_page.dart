@@ -7,6 +7,7 @@ import 'package:readmore/readmore.dart';
 import 'package:sliver_snap/widgets/sliver_snap.dart';
 import 'package:utueji/core/gen/assets.gen.dart';
 import 'package:utueji/src/core/resources/images/app_images.dart';
+import 'package:utueji/src/core/utils/image_helper.dart';
 import '../../../../config/themes/app_colors.dart';
 import '../../../../core/resources/icons/app_icons.dart';
 import '../../../../core/utils/app_date_utils_helper.dart';
@@ -102,7 +103,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
 
         expandedContentHeight: 200,
         expandedContent: CachedNetworkImage(
-          imageUrl: widget.event.backgroundImageUrl!,
+          imageUrl: ImageHelper.buildImageUrl(widget.event.backgroundImageUrl!),
           fit: BoxFit.cover,
           progressIndicatorBuilder: (context, url, downloadProgress) =>
               CircularProgressIndicator(value: downloadProgress.progress),
@@ -405,7 +406,9 @@ class SummaryWidget extends StatelessWidget {
                               fit: BoxFit.cover,
                             )
                           : CachedNetworkImage(
-                              imageUrl: event.user!.avatarUrl!,
+                              imageUrl: ImageHelper.buildImageUrl(
+                                event.user!.avatarUrl!,
+                              ),
                               fit: BoxFit.cover,
                               progressIndicatorBuilder:
                                   (context, url, downloadProgress) =>
