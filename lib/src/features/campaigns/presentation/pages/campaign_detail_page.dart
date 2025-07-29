@@ -12,6 +12,7 @@ import 'package:readmore/readmore.dart';
 import 'package:sliver_snap/widgets/sliver_snap.dart';
 import 'package:utueji/core/gen/assets.gen.dart';
 import 'package:utueji/src/config/routes/app_routes.dart';
+import 'package:utueji/src/core/utils/file_helper.dart';
 import 'package:utueji/src/core/utils/image_helper.dart';
 
 import 'package:video_player/video_player.dart';
@@ -82,7 +83,7 @@ class _CampaignDetailPageState extends State<CampaignDetailPage> {
             ),
 
             body: DefaultTabController(
-              length: 4,
+              length: 5,
               child: SliverSnap(
                 onCollapseStateChanged:
                     (isCollapsed, scrollingOffset, maxExtent) {},
@@ -170,6 +171,7 @@ class _CampaignDetailPageState extends State<CampaignDetailPage> {
                       tabs: [
                         Tab(text: "Sumário"),
                         Tab(text: "Documentos"),
+                        Tab(text: "Images"),
                         Tab(text: "Actualizações"),
                         Tab(text: "Ajuda"),
                       ],
@@ -195,8 +197,9 @@ class _CampaignDetailPageState extends State<CampaignDetailPage> {
                   child: switch (pageSelectedIndex) {
                     0 => FadeIn(child: AboutWidget(campaign: campaign)),
                     1 => FadeIn(child: DocumentWidget(campaign: campaign)),
-                    2 => FadeIn(child: UpdateWidget(campaign: campaign)),
-                    3 => FadeIn(child: HelpWidget(campaign: campaign)),
+                    2 => FadeIn(child: ImageWidget(campaign: campaign)),
+                    3 => FadeIn(child: UpdateWidget(campaign: campaign)),
+                    4 => FadeIn(child: HelpWidget(campaign: campaign)),
                     _ => Container(),
                   },
                 ),
@@ -233,6 +236,17 @@ class _CampaignDetailPageState extends State<CampaignDetailPage> {
   }
 }
 
+class ImageWidget extends StatelessWidget {
+  const ImageWidget({super.key, required this.campaign});
+
+  final CampaignEntity campaign;
+
+  @override
+  Widget build(BuildContext context) {
+    return DocumentWidget(campaign: campaign);
+  }
+}
+
 class UpdateWidget extends StatelessWidget {
   const UpdateWidget({super.key, required this.campaign});
 
@@ -244,46 +258,53 @@ class UpdateWidget extends StatelessWidget {
       padding: const EdgeInsets.all(10.0),
       child: (campaign.updates!.isEmpty)
           ? Center(child: Text("Sem actualizações"))
-          : ListView.separated(
-              physics: ClampingScrollPhysics(),
-              shrinkWrap: true,
-              padding: EdgeInsets.zero,
-              itemBuilder: (context, index) {
-                final update = campaign.updates![index];
-                return Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text("Update #${index + 1}"),
-                            Text(
-                              "${AppDateUtilsHelper.formatDate(data: update.createdAt!)}",
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 10),
-                        Text(
-                          update.title!,
-                          style: Theme.of(context).textTheme.titleMedium,
-                        ),
-                        const SizedBox(height: 20),
-                        Text(update.description!),
-                      ],
+          : FadeIn(
+              child: ListView.separated(
+                physics: ClampingScrollPhysics(),
+                shrinkWrap: true,
+                padding: EdgeInsets.zero,
+                itemBuilder: (context, index) {
+                  final update = campaign.updates![index];
+                  return Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: Colors.grey.shade300),
                     ),
-                  ),
-                );
-              },
-              separatorBuilder: (context, index) {
-                return const SizedBox(height: 10);
-              },
-              itemCount: campaign.updates!.length,
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text("Update #${index + 1}"),
+                              Text(
+                                AppDateUtilsHelper.formatDate(
+                                  data: update.createdAt!,
+                                  showTime: true,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 10),
+                          Text(
+                            update.title!,
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
+                          const SizedBox(height: 20),
+                          Text(update.description!),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+                separatorBuilder: (context, index) {
+                  return const SizedBox(height: 10);
+                },
+                itemCount: campaign.updates!.length,
+              ),
             ),
     );
   }
@@ -369,26 +390,40 @@ class _DocumentWidgetState extends State<DocumentWidget> {
               ),
               child: (widget.campaign.documents!.isEmpty)
                   ? Center(child: Text("Vazio"))
-                  : PDF(
-                      enableSwipe: false,
-                      swipeHorizontal: false,
-                      autoSpacing: false,
-                      pageFling: false,
-                      fitEachPage: false,
-                      fitPolicy: FitPolicy.HEIGHT,
-                      pageSnap: false,
-                      backgroundColor: Colors.grey,
-                      preventLinkNavigation: true,
-                      onError: (error) {
-                        print(error.toString());
+                  : InkWell(
+                      onTap: () async {
+                        // await FileHelper.openFile(
+                        //   widget.campaign.documents![0].documentPath!,
+                        // );
                       },
-                      onPageError: (page, error) {
-                        print('$page: ${error.toString()}');
-                      },
-                      onPageChanged: ((int? page, int? total) {
-                        print('page change: $page/$total');
-                      }),
-                    ).fromUrl(widget.campaign.documents![0].documentPath!),
+                      child: FileHelper.buildPreview(
+                        widget.campaign.documents![0].documentPath!,
+                      ),
+                      // PDF(
+                      //   enableSwipe: false,
+                      //   swipeHorizontal: false,
+                      //   autoSpacing: false,
+                      //   pageFling: false,
+                      //   fitEachPage: false,
+                      //   fitPolicy: FitPolicy.HEIGHT,
+                      //   pageSnap: false,
+                      //   backgroundColor: Colors.grey,
+                      //   preventLinkNavigation: true,
+                      //   onError: (error) {
+                      //     print(error.toString());
+                      //   },
+                      //   onPageError: (page, error) {
+                      //     print('$page: ${error.toString()}');
+                      //   },
+                      //   onPageChanged: ((int? page, int? total) {
+                      //     print('page change: $page/$total');
+                      //   }),
+                      // ).fromUrl(
+                      //   ImageHelper.buildImageUrl(
+                      //     widget.campaign.documents![0].documentPath!,
+                      //   ),
+                      // ),
+                    ),
             ),
           ),
           const SizedBox(height: 10),
@@ -811,53 +846,52 @@ class _AboutWidgetState extends State<AboutWidget> {
                     child: const Icon(Icons.call),
                   ),
                 ),
-          const SizedBox(height: 15),
-          Text(
-            "Imagen(s) associadas a causa",
-            style: TextStyle(fontWeight: FontWeight.w600, color: Colors.black),
-          ),
+
+          // Text(
+          //   "Imagen(s) associadas a causa",
+          //   style: TextStyle(fontWeight: FontWeight.w600, color: Colors.black),
+          // ),
+          // const SizedBox(height: 10),
+
+          // SizedBox(
+          //   height: 100,
+          //   width: double.infinity,
+
+          //   child: ListView.separated(
+          //     physics: const ClampingScrollPhysics(),
+          //     shrinkWrap: true,
+          //     padding: EdgeInsets.zero,
+          //     scrollDirection: Axis.horizontal,
+          //     itemBuilder: (context, index) {
+          //       final images = widget.campaign.midias;
+          //       return ClipRRect(
+          //         borderRadius: BorderRadius.circular(10),
+          //         child: Container(
+          //           width: 100,
+          //           height: 50,
+          //           color: Colors.amber,
+          //           child: CachedNetworkImage(
+          //             width: 50,
+          //             imageUrl: ImageHelper.buildImageUrl(
+          //               images![index].midiaUrl!,
+          //             ),
+          //             fit: BoxFit.cover,
+          //             placeholder: (context, url) =>
+          //                 const CircularProgressIndicator(),
+          //             errorWidget: (context, url, error) {
+          //               return Icon(Icons.error);
+          //             },
+          //           ),
+          //         ),
+          //       );
+          //     },
+          //     separatorBuilder: (context, index) {
+          //       return SizedBox(width: 10);
+          //     },
+          //     itemCount: widget.campaign.midias!.length,
+          //   ),
+          // ),
           const SizedBox(height: 10),
-
-          SizedBox(
-            height: 100,
-            width: double.infinity,
-
-            child: ListView.separated(
-              physics: const ClampingScrollPhysics(),
-              shrinkWrap: true,
-              padding: EdgeInsets.zero,
-              scrollDirection: Axis.horizontal,
-              itemBuilder: (context, index) {
-                final images = widget.campaign.midias;
-                return ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: Container(
-                    width: 100,
-                    height: 50,
-                    color: Colors.amber,
-                    child: CachedNetworkImage(
-                      width: 50,
-                      imageUrl: ImageHelper.buildImageUrl(
-                        images![index].midiaUrl!,
-                      ),
-                      fit: BoxFit.cover,
-                      placeholder: (context, url) =>
-                          const CircularProgressIndicator(),
-                      errorWidget: (context, url, error) {
-                        return Icon(Icons.error);
-                      },
-                    ),
-                  ),
-                );
-              },
-              separatorBuilder: (context, index) {
-                return SizedBox(width: 10);
-              },
-              itemCount: widget.campaign.midias!.length,
-            ),
-          ),
-
-          const SizedBox(height: 15),
           ReadMoreText(
             widget.campaign.description!,
             trimMode: TrimMode.Line,

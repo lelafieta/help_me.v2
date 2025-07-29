@@ -21,7 +21,7 @@ class _SplashPageState extends State<SplashPage> {
   Future<void> _checkAuth() async {
     await Future.delayed(const Duration(seconds: 3));
 
-    final token = await storage.read(key: 'access_tokenn');
+    final token = await storage.read(key: 'access_token');
 
     if (mounted) {
       if (token != null && token.isNotEmpty) {

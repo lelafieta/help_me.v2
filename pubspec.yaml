@@ -132,6 +132,8 @@ dependencies:
   webview_flutter: ^4.13.0
   appinio_social_share: ^0.3.2
   readmore: ^3.0.0
+  open_filex: ^4.7.0
+  syncfusion_flutter_pdfviewer: ^30.1.42
 
 flutter_gen:
   output: lib/core/gen 
