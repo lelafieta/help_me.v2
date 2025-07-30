@@ -89,7 +89,7 @@ class CampaignModel extends CampaignEntity {
       category: map['category'] != null
           ? CategoryModel.fromJson(map['category'])
           : null,
-      ong: map['ong'] != null ? OngModel.fromMap(map['ong']) : null,
+      ong: map['ong'] != null ? OngModel.fromJson(map['ong']) : null,
       user: map['user'] != null ? UserModel.fromJson(map['user']) : null,
       contributors: map['campaignContributors'] != null
           ? List<CampaignContributorModel>.from(

@@ -39,7 +39,7 @@ class EventModel extends EventEntity {
       startDate: DateTime.parse(map['startDate']),
       endDate: DateTime.parse(map['endDate']),
       distanceKm: (map['distanceKm'] as num),
-      ong: (map['ong'] != null) ? OngModel.fromMap(map['ong']) : null,
+      ong: (map['ong'] != null) ? OngModel.fromJson(map['ong']) : null,
       user: (map['user'] != null) ? UserModel.fromJson(map['user']) : null,
     );
   }

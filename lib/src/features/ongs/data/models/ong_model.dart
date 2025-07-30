@@ -25,7 +25,7 @@ class OngModel extends OngEntity {
     super.ongDocument,
   });
 
-  factory OngModel.fromMap(Map<String, dynamic> map) {
+  factory OngModel.fromJson(Map<String, dynamic> map) {
     return OngModel(
       id: map['id'],
       createdAt: DateTime.parse(map['createdAt']),

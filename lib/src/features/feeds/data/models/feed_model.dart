@@ -36,7 +36,7 @@ class FeedModel extends FeedEntity {
       image: map['image'] ?? '',
       description: map['description'] ?? '',
       user: (map['user'] == null) ? null : UserModel.fromJson(map['user']),
-      ong: (map['ong'] == null) ? null : OngModel.fromMap(map['ong']),
+      ong: (map['ong'] == null) ? null : OngModel.fromJson(map['ong']),
     );
   }
 }

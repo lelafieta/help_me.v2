@@ -14,14 +14,14 @@ class CollaborationModel extends CollaborationEntity {
     OngModel? ongEntity,
     UserModel? userEntity,
   }) : super(
-          id: id,
-          campaignId: campaignId,
-          userId: userId,
-          ongId: ongId,
-          createdAt: createdAt,
-          ongEntity: ongEntity,
-          userEntity: userEntity,
-        );
+         id: id,
+         campaignId: campaignId,
+         userId: userId,
+         ongId: ongId,
+         createdAt: createdAt,
+         ongEntity: ongEntity,
+         userEntity: userEntity,
+       );
 
   factory CollaborationModel.fromJson(Map<String, dynamic> json) {
     return CollaborationModel(
@@ -33,7 +33,7 @@ class CollaborationModel extends CollaborationEntity {
           ? DateTime.parse(json['createdAt'] as String)
           : null,
       ongEntity: json['ongEntity'] != null
-          ? OngModel.fromMap(json['ongEntity'] as Map<String, dynamic>)
+          ? OngModel.fromJson(json['ongEntity'] as Map<String, dynamic>)
           : null,
       userEntity: json['userEntity'] != null
           ? UserModel.fromJson(json['userEntity'] as Map<String, dynamic>)

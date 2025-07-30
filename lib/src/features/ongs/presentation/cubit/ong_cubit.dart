@@ -1,20 +1,20 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:utueji/src/core/entities/no_params.dart';
 
-import '../../domain/usecases/fetch_latest_ongs_usecase.dart';
+import '../../domain/usecases/get_populares_ongs_usecase.dart';
 import 'ong_state.dart';
 
 class OngCubit extends Cubit<OngState> {
-  final FetchLatestOngsUsecase fetchLatestOngsUsecase;
-  OngCubit({required this.fetchLatestOngsUsecase}) : super(OngInitial());
+  final GetPopularesOngsUsecase getPopularesOngsUseCase;
+  OngCubit({required this.getPopularesOngsUseCase}) : super(OngInitial());
 
   Future<void> getLatestOngs() async {
     emit(OngLoading());
 
-    final events = fetchLatestOngsUsecase.call(const NoParams());
-
-    events.listen((event) {
-      emit(OngLoaded(ongs: event));
-    });
+    final result = await getPopularesOngsUseCase(const NoParams());
+    result.fold(
+      (failure) => emit(OngFailure(failure: failure.errorMessage.toString())),
+      (ongs) => emit(OngLoaded(ongs: ongs)),
+    );
   }
 }

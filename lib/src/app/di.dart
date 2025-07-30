@@ -11,6 +11,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:utueji/src/core/api/dio_consumer.dart';
 import 'package:utueji/src/features/events/domain/usecases/get_event_by_id_usecase.dart';
 import 'package:utueji/src/features/favorites/domain/usecases/get_favorites_by_type_usecase.dart';
+import 'package:utueji/src/features/ongs/domain/usecases/get_ong_by_id_usecase.dart';
 import 'package:utueji/src/features/solidary/cubit/user_local_data/user_local_data_cubit.dart';
 
 import '../core/cache/secure_storage.dart';
@@ -108,7 +109,7 @@ import '../features/ongs/data/datasources/ong_datasource.dart';
 import '../features/ongs/data/repositories/ong_repository.dart';
 import '../features/ongs/domain/respositories/i_ong_repository.dart';
 import '../features/ongs/domain/usecases/create_ong_usecase.dart';
-import '../features/ongs/domain/usecases/fetch_latest_ongs_usecase.dart';
+import '../features/ongs/domain/usecases/get_populares_ongs_usecase.dart';
 import '../features/ongs/presentation/cubit/ong_action_cubit/ong_action_cubit.dart';
 import '../features/ongs/presentation/cubit/ong_cubit.dart';
 import '../features/profile/presentation/cubit/count_donation_cubit/count_donation_cubit.dart';
@@ -175,7 +176,7 @@ void _setUpCubits() {
   );
 
   sl.registerFactory(() => EventCubit(getNearbyEventsUsecase: sl()));
-  sl.registerFactory(() => OngCubit(fetchLatestOngsUsecase: sl()));
+  sl.registerFactory(() => OngCubit(getPopularesOngsUseCase: sl()));
   sl.registerFactory(() => FeedCubit(fetchFeedsUseCase: sl()));
   sl.registerFactory(
     () => BlogCubit(fetchBlogUseCase: sl(), fetchLatestBlogUseCase: sl()),
@@ -287,9 +288,8 @@ void _setUpUsecases() {
     () => GetEventByUsecase(repository: sl()),
   );
 
-  sl.registerLazySingleton<FetchLatestOngsUsecase>(
-    () => FetchLatestOngsUsecase(repository: sl()),
-  );
+  sl.registerLazySingleton(() => GetPopularesOngsUsecase(repository: sl()));
+  sl.registerLazySingleton(() => GetOngByIdUsecase(repository: sl()));
   sl.registerLazySingleton<FetchFeedsUseCase>(
     () => FetchFeedsUseCase(repository: sl()),
   );
@@ -356,7 +356,7 @@ void _setUpRepositories() {
     () => EventRepository(netWorkInfo: sl(), eventDataSource: sl()),
   );
   sl.registerLazySingleton<IOngRepository>(
-    () => OngRepository(datasource: sl()),
+    () => OngRepository(ongDataSource: sl(), netWorkInfo: sl()),
   );
   sl.registerLazySingleton<IFeedRepository>(
     () => FeedRepository(datasource: sl()),
@@ -392,7 +392,7 @@ void _setUpDatasources() {
     () => CampaignRemoteDataSource(supabase: sl(), dio: sl()),
   );
   sl.registerLazySingleton<IEventDataSource>(() => EventDataSource(dio: sl()));
-  sl.registerLazySingleton<IOngDataSource>(() => OngDataSource(supabase: sl()));
+  sl.registerLazySingleton<IOngDataSource>(() => OngDataSource(dio: sl()));
   sl.registerLazySingleton<IFeedDataSource>(
     () => FeedDataSource(supabase: sl()),
   );

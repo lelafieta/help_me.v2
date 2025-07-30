@@ -3,17 +3,18 @@ import '../../../ongs/data/models/ong_model.dart';
 import '../../domain/entities/blog_entity.dart';
 
 class BlogModel extends BlogEntity {
-  BlogModel(
-      {required super.id,
-      required super.createdAt,
-      super.updatedAt,
-      required super.title,
-      required super.description,
-      required super.userId,
-      required super.ondId,
-      super.image,
-      super.user,
-      super.ong});
+  BlogModel({
+    required super.id,
+    required super.createdAt,
+    super.updatedAt,
+    required super.title,
+    required super.description,
+    required super.userId,
+    required super.ondId,
+    super.image,
+    super.user,
+    super.ong,
+  });
 
   // Serializa para JSON
   Map<String, dynamic> toJson() {
@@ -42,16 +43,8 @@ class BlogModel extends BlogEntity {
       userId: json['user_id'],
       ondId: json['ond_id'],
       image: json['image'],
-      user: (json['user'] == null)
-          ? null
-          : UserModel.fromJson(
-              json['user'],
-            ),
-      ong: (json['ong'] == null)
-          ? null
-          : OngModel.fromMap(
-              json['ong'],
-            ),
+      user: (json['user'] == null) ? null : UserModel.fromJson(json['user']),
+      ong: (json['ong'] == null) ? null : OngModel.fromJson(json['ong']),
     );
   }
 }

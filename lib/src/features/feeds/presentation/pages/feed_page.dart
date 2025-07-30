@@ -12,9 +12,7 @@ import '../cubit/feed_cubit.dart';
 import '../cubit/feed_state.dart';
 
 class FeedPage extends StatefulWidget {
-  const FeedPage({
-    super.key,
-  });
+  const FeedPage({super.key});
 
   @override
   State<FeedPage> createState() => _FeedPageState();
@@ -24,7 +22,7 @@ class _FeedPageState extends State<FeedPage> {
   @override
   void initState() {
     super.initState();
-    context.read<FeedCubit>().getFeeds();
+    // context.read<FeedCubit>().getFeeds();
   }
 
   @override
@@ -32,9 +30,7 @@ class _FeedPageState extends State<FeedPage> {
     return BlocBuilder<FeedCubit, FeedState>(
       builder: (context, state) {
         if (state is FeedLoading) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
+          return const Center(child: CircularProgressIndicator());
         } else if (state is FeedLoaded) {
           return ListView.separated(
             padding: const EdgeInsets.all(16),
@@ -45,8 +41,11 @@ class _FeedPageState extends State<FeedPage> {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Padding(
-                  padding:
-                      const EdgeInsets.only(left: 10, right: 10, bottom: 10),
+                  padding: const EdgeInsets.only(
+                    left: 10,
+                    right: 10,
+                    bottom: 10,
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -64,16 +63,22 @@ class _FeedPageState extends State<FeedPage> {
                               progressIndicatorBuilder:
                                   (context, url, downloadProgress) =>
                                       CircularProgressIndicator(
-                                          value: downloadProgress.progress),
+                                        value: downloadProgress.progress,
+                                      ),
                               errorWidget: (context, url, error) =>
                                   Icon(Icons.error),
                             ),
                           ),
                         ),
                         title: Text(
-                            "${feed.user!.firstName} ${feed.user!.lastName}"),
-                        subtitle: Text(AppDateUtilsHelper.formatDate(
-                            data: feed.createdAt!, showTime: true)),
+                          "${feed.user!.firstName} ${feed.user!.lastName}",
+                        ),
+                        subtitle: Text(
+                          AppDateUtilsHelper.formatDate(
+                            data: feed.createdAt!,
+                            showTime: true,
+                          ),
+                        ),
                         trailing: const Icon(Icons.more_vert),
                       ),
                       Text("${feed.description}"),
@@ -93,12 +98,12 @@ class _FeedPageState extends State<FeedPage> {
                                   progressIndicatorBuilder:
                                       (context, url, downloadProgress) =>
                                           SizedBox(
-                                    width: 40,
-                                    height: 40,
-                                    child: CircularProgressIndicator(
-                                      value: downloadProgress.progress,
-                                    ),
-                                  ),
+                                            width: 40,
+                                            height: 40,
+                                            child: CircularProgressIndicator(
+                                              value: downloadProgress.progress,
+                                            ),
+                                          ),
                                   errorWidget: (context, url, error) =>
                                       Icon(Icons.error),
                                 ),
@@ -111,8 +116,9 @@ class _FeedPageState extends State<FeedPage> {
                               child: Container(
                                 height: 45,
                                 color: AppColors.primaryColor,
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 10),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                ),
                                 child: const Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
@@ -128,7 +134,7 @@ class _FeedPageState extends State<FeedPage> {
                                       Icons.arrow_forward_ios_rounded,
                                       size: 20,
                                       color: Colors.white,
-                                    )
+                                    ),
                                   ],
                                 ),
                               ),
@@ -155,7 +161,7 @@ class _FeedPageState extends State<FeedPage> {
                                   const Text(
                                     "55",
                                     style: TextStyle(color: Colors.black),
-                                  )
+                                  ),
                                 ],
                               ),
                               const SizedBox(width: 20),
@@ -172,7 +178,7 @@ class _FeedPageState extends State<FeedPage> {
                                   const Text(
                                     "58",
                                     style: TextStyle(color: Colors.black),
-                                  )
+                                  ),
                                 ],
                               ),
                               const SizedBox(width: 20),
@@ -189,9 +195,9 @@ class _FeedPageState extends State<FeedPage> {
                                   const Text(
                                     "1.2M",
                                     style: TextStyle(color: Colors.black),
-                                  )
+                                  ),
                                 ],
-                              )
+                              ),
                             ],
                           ),
                           SvgPicture.asset(
@@ -200,16 +206,14 @@ class _FeedPageState extends State<FeedPage> {
                             width: 16,
                           ),
                         ],
-                      )
+                      ),
                     ],
                   ),
                 ),
               );
             },
             separatorBuilder: (context, index) {
-              return const Divider(
-                height: 20,
-              );
+              return const Divider(height: 20);
             },
             itemCount: 10,
           );
