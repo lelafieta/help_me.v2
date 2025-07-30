@@ -16,6 +16,7 @@ class EventEntity {
   final num? distanceKm;
   final OngEntity? ong;
   final UserEntity? user;
+  final bool? isFavorite;
 
   EventEntity({
     this.id,
@@ -32,5 +33,6 @@ class EventEntity {
     this.ong,
     this.user,
     this.distanceKm,
+    this.isFavorite,
   });
 }

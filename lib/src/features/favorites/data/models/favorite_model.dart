@@ -2,45 +2,40 @@ import '../../domain/entities/favorite_entity.dart';
 
 class FavoriteModel extends FavoriteEntity {
   FavoriteModel({
-    super.id,
-    super.itemId,
-    super.itemType,
-    super.userId,
-    super.createdAt,
-    super.updatedAt,
+    required super.id,
+    required super.itemId,
+    required super.itemType,
+    required super.userId,
+    required super.createdAt,
+    required super.updatedAt,
   });
-  Map<String, dynamic> toMap() {
-    return {
-      'item_id': itemId,
-      'user_id': userId,
-      'item_type': itemType,
-      'created_at': createdAt?.toIso8601String(),
-      'updated_at': updatedAt?.toIso8601String(),
-    };
-  }
 
-  /// Construtor para criar um objeto a partir de um Map
   factory FavoriteModel.fromJson(Map<String, dynamic> map) {
     return FavoriteModel(
       id: map['id'],
-      itemId: map['item_id'],
-      userId: map['useri_d'],
-      itemType: map['item_type'],
-      createdAt:
-          map['created_at'] != null ? DateTime.parse(map['created_at']) : null,
-      updatedAt:
-          map['updated_at'] != null ? DateTime.parse(map['updated_at']) : null,
+      itemId: map['itemId'],
+      userId: map['userId'],
+      itemType: map['itemType'],
+      createdAt: DateTime.parse(map['createdAt']),
+      updatedAt: DateTime.parse(map['updatedAt']),
     );
   }
 
-  factory FavoriteModel.fromEntity(FavoriteEntity entity) {
+  FavoriteModel copyWith({
+    String? id,
+    String? itemId,
+    String? userId,
+    String? itemType,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) {
     return FavoriteModel(
-      id: entity.id,
-      itemId: entity.itemId,
-      userId: entity.userId,
-      itemType: entity.itemType,
-      createdAt: entity.createdAt,
-      updatedAt: entity.updatedAt,
+      id: id ?? this.id,
+      itemId: itemId ?? this.itemId,
+      userId: userId ?? this.userId,
+      itemType: itemType ?? this.itemType,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 }

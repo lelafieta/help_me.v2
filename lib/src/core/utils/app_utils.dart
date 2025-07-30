@@ -15,9 +15,7 @@ import '../../features/campaigns/domain/entities/campaign_contributor_entity.dar
 import '../../features/campaigns/presentation/cubit/campaign_store_favorite_cubit/campaign_store_favorite_cubit.dart';
 import '../../features/favorites/domain/entities/favorite_entity.dart';
 import '../../features/favorites/presentation/cubit/favorite_cubit.dart';
-import '../../features/favorites/presentation/cubit/favorite_state.dart';
 import '../resources/icons/app_icons.dart';
-import '../resources/images/app_images.dart';
 import 'app_date_utils_helper.dart';
 
 class AppUtils {
@@ -448,124 +446,108 @@ class AppUtils {
     ValueNotifier<bool> isMyFavorite = ValueNotifier<bool>(false);
     return Container(
       color: Colors.white,
-      child:
-          BlocConsumer<CampaignStoreFavoriteCubit, CampaignStoreFavoriteState>(
-            listener: (context, state) {
-              if (state == CampaignStoreFavoriteState.success) {
-                context.read<FavoriteCubit>().getAllFavorites();
-              }
-            },
-            builder: (context, stateStore) {
-              return BlocBuilder<FavoriteCubit, FavoriteState>(
-                builder: (context, state) {
-                  if (state is FavoriteLoading) {
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: SvgPicture.asset(AppIcons.heartBold, width: 24),
-                    );
-                  } else if (state is FavoriteLoaded) {
-                    bool isFavorite = state.favorites.any(
-                      (element) => element.itemId == itemId,
-                    );
-                    isMyFavorite.value = isFavorite;
+      child: BlocConsumer<CampaignStoreFavoriteCubit, CampaignStoreFavoriteState>(
+        listener: (context, state) {
+          if (state == CampaignStoreFavoriteState.success) {
+            context.read<FavoriteCubit>().loadFavorites();
+          }
+        },
+        builder: (context, stateStore) {
+          return BlocBuilder<FavoriteCubit, FavoriteState>(
+            builder: (context, state) {
+              if (state is FavoriteLoading) {
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SvgPicture.asset(AppIcons.heartBold, width: 24),
+                );
+              } else if (state is FavoriteLoaded) {
+                bool isFavorite = state.favorites.any(
+                  (element) => element.itemId == itemId,
+                );
+                isMyFavorite.value = isFavorite;
 
-                    return ValueListenableBuilder(
-                      valueListenable: isMyFavorite,
-                      builder: (context, value, _) {
-                        return RoundCheckBox(
-                          uncheckedColor: Colors.transparent,
-                          checkedColor: Colors.transparent,
-                          borderColor: Colors.transparent,
-                          isChecked: value,
-                          checkedWidget: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: SvgPicture.asset(
-                              AppIcons.heartBold,
-                              color: Colors.red,
-                            ),
-                          ),
-                          uncheckedWidget: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: SvgPicture.asset(AppIcons.heartBold),
-                          ),
-                          onTap: (selected) {
-                            isMyFavorite.value = selected!;
-                            // setState(() {
-                            //   isMyFavorite = isMyFavorite;
+                return ValueListenableBuilder(
+                  valueListenable: isMyFavorite,
+                  builder: (context, value, _) {
+                    return RoundCheckBox(
+                      uncheckedColor: Colors.transparent,
+                      checkedColor: Colors.transparent,
+                      borderColor: Colors.transparent,
+                      isChecked: value,
+                      checkedWidget: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: SvgPicture.asset(
+                          AppIcons.heartBold,
+                          color: Colors.red,
+                        ),
+                      ),
+                      uncheckedWidget: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: SvgPicture.asset(AppIcons.heartBold),
+                      ),
+                      onTap: (selected) {
+                        isMyFavorite.value = selected!;
 
-                            if (selected) {
-                              context
-                                  .read<CampaignStoreFavoriteCubit>()
-                                  .addFavorite(
-                                    FavoriteEntity(
-                                      itemId: itemId,
-                                      userId: AppEntity.uid,
-                                      itemType: itemType,
-                                    ),
-                                  );
-                            } else {
-                              context
-                                  .read<CampaignStoreFavoriteCubit>()
-                                  .removeFavorite(
-                                    FavoriteEntity(
-                                      itemId: itemId,
-                                      userId: AppEntity.uid,
-                                      itemType: itemType,
-                                    ),
-                                  );
-                            }
-                          },
-                        );
+                        if (selected) {
+                          context
+                              .read<CampaignStoreFavoriteCubit>()
+                              .toggleFavorite(
+                                itemId: itemId,
+                                itemType: itemId,
+                                state: selected,
+                              );
+                        } else {
+                          context
+                              .read<CampaignStoreFavoriteCubit>()
+                              .toggleFavorite(
+                                itemId: itemId,
+                                itemType: itemId,
+                                state: selected,
+                              );
+                        }
                       },
                     );
-                  }
-                  /////// editar ao verificar se possua nos favoritos
-                  return RoundCheckBox(
-                    uncheckedColor: Colors.transparent,
-                    checkedColor: Colors.transparent,
-                    borderColor: Colors.transparent,
-                    isChecked: false,
-                    checkedWidget: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: SvgPicture.asset(
-                        AppIcons.heartBold,
-                        color: Colors.red,
-                      ),
-                    ),
-                    uncheckedWidget: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: SvgPicture.asset(AppIcons.heartBold),
-                    ),
-                    onTap: (selected) {
-                      isMyFavorite.value = selected!;
-                      // setState(() {
-                      //   isMyFavorite = isMyFavorite;
+                  },
+                );
+              }
+              /////// editar ao verificar se possua nos favoritos
+              return SizedBox.shrink();
+              return RoundCheckBox(
+                uncheckedColor: Colors.transparent,
+                checkedColor: Colors.transparent,
+                borderColor: Colors.transparent,
+                isChecked: false,
+                checkedWidget: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SvgPicture.asset(
+                    AppIcons.heartBold,
+                    color: Colors.red,
+                  ),
+                ),
+                uncheckedWidget: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SvgPicture.asset(AppIcons.heartBold),
+                ),
+                onTap: (selected) {
+                  isMyFavorite.value = selected!;
+                  // setState(() {
+                  //   isMyFavorite = isMyFavorite;
 
-                      if (selected) {
-                        context.read<CampaignStoreFavoriteCubit>().addFavorite(
-                          FavoriteEntity(
-                            itemId: itemId,
-                            userId: AppEntity.uid,
-                            itemType: itemType,
-                          ),
-                        );
-                      } else {
-                        context
-                            .read<CampaignStoreFavoriteCubit>()
-                            .removeFavorite(
-                              FavoriteEntity(
-                                itemId: itemId,
-                                userId: AppEntity.uid,
-                                itemType: itemType,
-                              ),
-                            );
-                      }
-                    },
-                  );
+                  // if (selected) {
+                  //   context
+                  //       .read<CampaignStoreFavoriteCubit>()
+                  //       .toggleFavorite(itemId: itemId, itemType: itemId, state);
+                  // } else {
+                  //   context
+                  //       .read<CampaignStoreFavoriteCubit>()
+                  //       .toggleFavorite(itemId: itemId, itemType: itemId);
+                  // }
                 },
               );
             },
-          ),
+          );
+        },
+      ),
     );
   }
 

@@ -18,6 +18,7 @@ class EventModel extends EventEntity {
     super.ong,
     super.user,
     super.distanceKm,
+    super.isFavorite,
   });
 
   // Factory para criar uma instância de EventModel a partir de um Map
@@ -33,6 +34,7 @@ class EventModel extends EventEntity {
       title: map['title'],
       location: map['location'],
       description: map['description'],
+      isFavorite: map['isFavorite'],
       backgroundImageUrl: map['backgroundImageUrl'],
       startDate: DateTime.parse(map['startDate']),
       endDate: DateTime.parse(map['endDate']),

@@ -1,17 +1,17 @@
 class FavoriteEntity {
-  String? id;
-  String? itemId;
-  String? userId;
-  String? itemType;
-  DateTime? createdAt;
-  DateTime? updatedAt;
+  String id;
+  String itemId;
+  String userId;
+  String itemType;
+  DateTime createdAt;
+  DateTime updatedAt;
 
   FavoriteEntity({
-    this.id,
-    this.itemId,
-    this.userId,
-    this.itemType,
-    this.createdAt,
-    this.updatedAt,
+    required this.id,
+    required this.itemId,
+    required this.userId,
+    required this.itemType,
+    required this.createdAt,
+    required this.updatedAt,
   });
 }

@@ -16,8 +16,8 @@ class FeedDataSource extends IFeedDataSource {
         .order('created_at')
         .asStream()
         .map((data) {
-      return data.map((feed) => FeedModel.fromMap(feed)).toList();
-    });
+          return data.map((feed) => FeedModel.fromMap(feed)).toList();
+        });
 
     return feeds;
   }

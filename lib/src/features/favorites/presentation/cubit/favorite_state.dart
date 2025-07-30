@@ -1,6 +1,11 @@
-import '../../domain/entities/favorite_entity.dart';
+part of 'favorite_cubit.dart';
 
-abstract class FavoriteState {}
+abstract class FavoriteState extends Equatable {
+  const FavoriteState();
+
+  @override
+  List<Object?> get props => [];
+}
 
 class FavoriteInitial extends FavoriteState {}
 
@@ -8,12 +13,16 @@ class FavoriteLoading extends FavoriteState {}
 
 class FavoriteLoaded extends FavoriteState {
   final List<FavoriteEntity> favorites;
+  const FavoriteLoaded({required this.favorites});
 
-  FavoriteLoaded({required this.favorites});
+  @override
+  List<Object?> get props => [favorites];
 }
 
-class FavoriteFailure extends FavoriteState {
-  final String failure;
+class FavoriteError extends FavoriteState {
+  final String error;
+  const FavoriteError({required this.error});
 
-  FavoriteFailure({required this.failure});
+  @override
+  List<Object?> get props => [error];
 }

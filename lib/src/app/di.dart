@@ -10,6 +10,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:utueji/src/core/api/dio_consumer.dart';
 import 'package:utueji/src/features/events/domain/usecases/get_event_by_id_usecase.dart';
+import 'package:utueji/src/features/favorites/domain/usecases/get_favorites_by_type_usecase.dart';
 import 'package:utueji/src/features/solidary/cubit/user_local_data/user_local_data_cubit.dart';
 
 import '../core/cache/secure_storage.dart';
@@ -184,12 +185,23 @@ void _setUpCubits() {
 
   sl.registerFactory(
     () => CampaignStoreFavoriteCubit(
-      addFavoriteUseCase: sl(),
-      removeFavoriteUseCase: sl(),
+      addFavoriteUsecase: sl(),
+      removeFavoriteUsecase: sl(),
+      getAllFavoritesUsecase: sl(),
+      getFavoritesByTypeUseCase: sl(),
+      isMyFavoriteUsecase: sl(),
     ),
   );
 
-  sl.registerFactory(() => FavoriteCubit(getAllFavoritesByUseCase: sl()));
+  sl.registerFactory(
+    () => FavoriteCubit(
+      addFavoriteUsecase: sl(),
+      removeFavoriteUsecase: sl(),
+      isMyFavoriteUsecase: sl(),
+      getAllFavoritesUsecase: sl(),
+      getFavoritesByTypeUseCase: sl(),
+    ),
+  );
   sl.registerFactory(() => MyCampaignCubit(getAllMyCampaignsUseCase: sl()));
   sl.registerFactory(
     () => MyCampaignDetailCubit(getMyCampaignByIdUseCase: sl()),
@@ -289,13 +301,6 @@ void _setUpUsecases() {
     () => FetchLatestBlogUseCase(repository: sl()),
   );
 
-  sl.registerLazySingleton<IsMyFavoriteUseCase>(
-    () => IsMyFavoriteUseCase(repository: sl()),
-  );
-  sl.registerLazySingleton<GetAllFavoritesByUseCase>(
-    () => GetAllFavoritesByUseCase(repository: sl()),
-  );
-
   sl.registerLazySingleton<GetCampaignByIdUseCase>(
     () => GetCampaignByIdUseCase(repository: sl()),
   );
@@ -303,12 +308,11 @@ void _setUpUsecases() {
     () => GetAllMyCampaignsUseCase(repository: sl()),
   );
 
-  sl.registerLazySingleton<AddFavoriteUseCase>(
-    () => AddFavoriteUseCase(repository: sl()),
-  );
-  sl.registerLazySingleton<RemoveFavoriteUseCase>(
-    () => RemoveFavoriteUseCase(repository: sl()),
-  );
+  sl.registerLazySingleton(() => IsMyFavoriteUseCase(repository: sl()));
+  sl.registerLazySingleton(() => GetAllFavoritesUseCase(repository: sl()));
+  sl.registerLazySingleton(() => AddFavoriteUseCase(repository: sl()));
+  sl.registerLazySingleton(() => RemoveFavoriteUseCase(repository: sl()));
+  sl.registerLazySingleton(() => GetFavoritesByTypeUseCase(repository: sl()));
 
   sl.registerLazySingleton<CreateCampaignUpdateUseCase>(
     () => CreateCampaignUpdateUseCase(repository: sl()),
@@ -361,7 +365,7 @@ void _setUpRepositories() {
     () => BlogRepository(datasource: sl()),
   );
   sl.registerLazySingleton<IFavoriteRepository>(
-    () => FavoriteRepository(datasource: sl()),
+    () => FavoriteRepository(favoriteDataSource: sl(), netWorkInfo: sl()),
   );
   sl.registerLazySingleton<IUpdateRepository>(
     () => UpdateRepository(datasource: sl(), netWorkInfo: sl()),
@@ -398,7 +402,7 @@ void _setUpDatasources() {
   );
 
   sl.registerLazySingleton<IFavoriteDataSource>(
-    () => FavoriteDataSource(supabase: sl()),
+    () => FavoriteDataSource(dio: sl()),
   );
 
   sl.registerLazySingleton<IUpdateDataSource>(
