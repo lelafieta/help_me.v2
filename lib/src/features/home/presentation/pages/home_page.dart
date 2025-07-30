@@ -538,7 +538,7 @@ class _HomePageState extends State<HomePage> {
                     }
                     return CarouselSlider(
                       options: CarouselOptions(
-                        height: 190,
+                        height: 150,
                         aspectRatio: 16 / 9,
                         viewportFraction: 0.8,
                         initialPage: 0,

@@ -1,17 +1,15 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:sliver_snap/widgets/sliver_snap.dart';
-import 'package:utueji/src/features/campaigns/presentation/widgets/campaign_skeleton_widget.dart';
 import '../../../../config/themes/app_colors.dart';
 import '../../../../core/resources/icons/app_icons.dart';
 import '../../../../core/resources/images/app_images.dart';
 import '../../../../core/utils/app_date_utils_helper.dart';
 import '../../../campaigns/presentation/cubit/campaign_cubit.dart';
 import '../../../campaigns/presentation/cubit/campaign_state.dart';
+import '../../../campaigns/presentation/widgets/campaign_skeleton_widget.dart';
 import '../../../campaigns/presentation/widgets/campaign_widget.dart';
 import '../../../events/presentation/cubit/event_cubit.dart';
 import '../../../events/presentation/cubit/event_state.dart';
@@ -129,11 +127,13 @@ class _OngProfilePageState extends State<OngProfilePage> {
                                     progressIndicatorBuilder:
                                         (context, url, downloadProgress) =>
                                             Container(
-                                      width: 50,
-                                      height: 50,
-                                      child: CircularProgressIndicator(
-                                          value: downloadProgress.progress),
-                                    ),
+                                              width: 50,
+                                              height: 50,
+                                              child: CircularProgressIndicator(
+                                                value:
+                                                    downloadProgress.progress,
+                                              ),
+                                            ),
                                     errorWidget: (context, url, error) =>
                                         const Icon(Icons.error),
                                   ),
@@ -168,8 +168,9 @@ class _OngProfilePageState extends State<OngProfilePage> {
                                   color: Colors.black,
                                   border: Border.all(
                                     width: 5,
-                                    color: Theme.of(context)
-                                        .scaffoldBackgroundColor,
+                                    color: Theme.of(
+                                      context,
+                                    ).scaffoldBackgroundColor,
                                   ),
                                   borderRadius: BorderRadius.circular(100),
                                 ),
@@ -177,10 +178,11 @@ class _OngProfilePageState extends State<OngProfilePage> {
                                   child: CachedNetworkImage(
                                     imageUrl: widget.ong.profileImageUrl!,
                                     fit: BoxFit.cover,
-                                    progressIndicatorBuilder: (context, url,
-                                            downloadProgress) =>
-                                        CircularProgressIndicator(
-                                            value: downloadProgress.progress),
+                                    progressIndicatorBuilder:
+                                        (context, url, downloadProgress) =>
+                                            CircularProgressIndicator(
+                                              value: downloadProgress.progress,
+                                            ),
                                     errorWidget: (context, url, error) =>
                                         const Icon(Icons.error),
                                   ),
@@ -205,14 +207,11 @@ class _OngProfilePageState extends State<OngProfilePage> {
                                 onPressed: () {
                                   Get.back();
                                 },
-                                icon: Icon(
-                                  Icons.share,
-                                  color: Colors.white,
-                                ),
+                                icon: Icon(Icons.share, color: Colors.white),
                               ),
                             ),
                           ),
-                        )
+                        ),
                       ],
                     ),
                   ),
@@ -223,9 +222,7 @@ class _OngProfilePageState extends State<OngProfilePage> {
                       children: [
                         Text(
                           widget.ong.name!,
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleMedium!
+                          style: Theme.of(context).textTheme.titleMedium!
                               .copyWith(fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(width: 5),
@@ -246,31 +243,21 @@ class _OngProfilePageState extends State<OngProfilePage> {
                     padding: EdgeInsets.all(16.0),
                     child: Row(
                       children: [
-                        Text(
-                          "1.000",
-                          style: TextStyle(color: Colors.black),
-                        ),
+                        Text("1.000", style: TextStyle(color: Colors.black)),
                         SizedBox(width: 8),
-                        Text(
-                          "Suportes",
-                          style: TextStyle(color: Colors.black),
-                        ),
+                        Text("Suportes", style: TextStyle(color: Colors.black)),
                         SizedBox(width: 10),
                         Text(
                           "|",
                           style: TextStyle(
-                              color: Colors.black, fontWeight: FontWeight.bold),
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                         SizedBox(width: 10),
-                        Text(
-                          "230",
-                          style: TextStyle(color: Colors.black),
-                        ),
+                        Text("230", style: TextStyle(color: Colors.black)),
                         SizedBox(width: 8),
-                        Text(
-                          "Serviços",
-                          style: TextStyle(color: Colors.black),
-                        ),
+                        Text("Serviços", style: TextStyle(color: Colors.black)),
                       ],
                     ),
                   ),
@@ -282,13 +269,13 @@ class _OngProfilePageState extends State<OngProfilePage> {
                           child: OutlinedButton(
                             style: ButtonStyle(
                               foregroundColor: MaterialStateProperty.all(
-                                  AppColors.whiteColor),
+                                AppColors.whiteColor,
+                              ),
                               backgroundColor: MaterialStateProperty.all(
-                                  AppColors.primaryColor),
+                                AppColors.primaryColor,
+                              ),
                               side: const MaterialStatePropertyAll(
-                                BorderSide(
-                                  color: AppColors.primaryColor,
-                                ),
+                                BorderSide(color: AppColors.primaryColor),
                               ),
                             ),
                             onPressed: () {},
@@ -303,12 +290,10 @@ class _OngProfilePageState extends State<OngProfilePage> {
                           child: OutlinedButton(
                             style: ButtonStyle(
                               foregroundColor: MaterialStateProperty.all(
-                                  AppColors.blackColor),
+                                AppColors.blackColor,
+                              ),
                               side: const MaterialStatePropertyAll(
-                                BorderSide(
-                                  color: Colors.black12,
-                                  width: 2,
-                                ),
+                                BorderSide(color: Colors.black12, width: 2),
                               ),
                             ),
                             onPressed: () {},
@@ -321,21 +306,19 @@ class _OngProfilePageState extends State<OngProfilePage> {
                         const SizedBox(width: 10),
                         OutlinedButton(
                           style: ButtonStyle(
-                            foregroundColor:
-                                MaterialStateProperty.all(AppColors.blackColor),
+                            foregroundColor: MaterialStateProperty.all(
+                              AppColors.blackColor,
+                            ),
                             minimumSize: const MaterialStatePropertyAll(
                               Size(50, 50),
                             ),
                             side: const MaterialStatePropertyAll(
-                              BorderSide(
-                                color: Colors.black12,
-                                width: 2,
-                              ),
+                              BorderSide(color: Colors.black12, width: 2),
                             ),
                           ),
                           onPressed: () {},
                           child: const Icon(Icons.phone),
-                        )
+                        ),
                       ],
                     ),
                   ),
@@ -353,7 +336,9 @@ class _OngProfilePageState extends State<OngProfilePage> {
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(
-                        vertical: 15, horizontal: 16),
+                      vertical: 15,
+                      horizontal: 16,
+                    ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -395,7 +380,7 @@ class _OngProfilePageState extends State<OngProfilePage> {
                                     widget.ong.vision!,
                                     maxLines: 3,
                                     overflow: TextOverflow.ellipsis,
-                                  )
+                                  ),
                                 ],
                               ),
                             ),
@@ -440,7 +425,7 @@ class _OngProfilePageState extends State<OngProfilePage> {
                                     widget.ong.mission!,
                                     maxLines: 3,
                                     overflow: TextOverflow.ellipsis,
-                                  )
+                                  ),
                                 ],
                               ),
                             ),
@@ -458,16 +443,14 @@ class _OngProfilePageState extends State<OngProfilePage> {
                           "Impactos feitos",
                           style: Theme.of(context).textTheme.titleLarge,
                         ),
-                        TextButton(onPressed: () {}, child: Text("Ver mais"))
+                        TextButton(onPressed: () {}, child: Text("Ver mais")),
                       ],
                     ),
                   ),
                   BlocBuilder<OngCubit, OngState>(
                     builder: (context, state) {
                       if (state is OngLoading) {
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
+                        return const Center(child: CircularProgressIndicator());
                       } else if (state is OngLoaded) {
                         if (state.ongs.isEmpty) {
                           return Center(child: Text("Sem ongs registadas"));
@@ -506,9 +489,7 @@ class _OngProfilePageState extends State<OngProfilePage> {
                                       right: 0,
                                       top: 0,
                                       bottom: 0,
-                                      child: Container(
-                                        color: Colors.black26,
-                                      ),
+                                      child: Container(color: Colors.black26),
                                     ),
                                     Positioned(
                                       left: 0,
@@ -577,9 +558,9 @@ class _OngProfilePageState extends State<OngProfilePage> {
                   Container(
                     key: _stickyKey,
                     width: double.infinity,
+
                     // height: 50,
                     // color: Colors.red,
-
                     child: TabBar(
                       isScrollable: true,
                       onTap: (value) {
@@ -627,14 +608,12 @@ class _OngProfilePageState extends State<OngProfilePage> {
                     itemCount: 40,
                     itemBuilder: (context, index) {
                       return ListTile(
-                        leading: CircleAvatar(
-                          child: Text('${index + 1}'),
-                        ),
+                        leading: CircleAvatar(child: Text('${index + 1}')),
                         title: Text('Item ${index + 1}'),
                         subtitle: Text('Subtitle for item ${index + 1}'),
                       );
                     },
-                  )
+                  ),
 
                   // _menuWidget(),
                 ],
@@ -659,10 +638,7 @@ class _OngProfilePageState extends State<OngProfilePage> {
                               onPressed: () {
                                 Get.back();
                               },
-                              icon: Icon(
-                                Icons.arrow_back,
-                                color: Colors.white,
-                              ),
+                              icon: Icon(Icons.arrow_back, color: Colors.white),
                             ),
                             title: Text(
                               widget.ong.name!,
@@ -672,10 +648,7 @@ class _OngProfilePageState extends State<OngProfilePage> {
                               onPressed: () {
                                 Get.back();
                               },
-                              icon: Icon(
-                                Icons.share,
-                                color: Colors.white,
-                              ),
+                              icon: Icon(Icons.share, color: Colors.white),
                             ),
                           ),
                         ),
@@ -715,18 +688,10 @@ class _OngProfilePageState extends State<OngProfilePage> {
                             indicatorColor: AppColors.primaryColor,
                             automaticIndicatorColorAdjustment: true,
                             tabs: [
-                              Tab(
-                                text: 'Recentes',
-                              ),
-                              Tab(
-                                text: 'Campanhas',
-                              ),
-                              Tab(
-                                text: 'Eventos',
-                              ),
-                              Tab(
-                                text: 'Blogs',
-                              ),
+                              Tab(text: 'Recentes'),
+                              Tab(text: 'Campanhas'),
+                              Tab(text: 'Eventos'),
+                              Tab(text: 'Blogs'),
                             ],
                           ),
                         ),
@@ -857,18 +822,12 @@ class _OngProfilePageState extends State<OngProfilePage> {
                 pinned: true,
                 leading: IconButton(
                   onPressed: () {},
-                  icon: Icon(
-                    Icons.arrow_back,
-                    color: value,
-                  ),
+                  icon: Icon(Icons.arrow_back, color: value),
                 ),
                 actions: [
                   IconButton(
                     onPressed: () {},
-                    icon: Icon(
-                      Icons.share,
-                      color: value,
-                    ),
+                    icon: Icon(Icons.share, color: value),
                   ),
                 ],
                 flexibleSpace: FlexibleSpaceBar(
@@ -884,7 +843,8 @@ class _OngProfilePageState extends State<OngProfilePage> {
                           progressIndicatorBuilder:
                               (context, url, downloadProgress) =>
                                   CircularProgressIndicator(
-                                      value: downloadProgress.progress),
+                                    value: downloadProgress.progress,
+                                  ),
                           errorWidget: (context, url, error) =>
                               const Icon(Icons.error),
                         ),
@@ -894,10 +854,8 @@ class _OngProfilePageState extends State<OngProfilePage> {
                         right: 0,
                         bottom: 0,
                         top: 0,
-                        child: Container(
-                          color: Colors.black26,
-                        ),
-                      )
+                        child: Container(color: Colors.black26),
+                      ),
                     ],
                   ),
                 ),
@@ -906,8 +864,8 @@ class _OngProfilePageState extends State<OngProfilePage> {
                   child: Container(
                     width: double.infinity,
                     decoration: const BoxDecoration(
-                        // color: Theme.of(context).scaffoldBackgroundColor,
-                        ),
+                      // color: Theme.of(context).scaffoldBackgroundColor,
+                    ),
                     child: Stack(
                       children: [
                         Positioned(
@@ -931,9 +889,11 @@ class _OngProfilePageState extends State<OngProfilePage> {
                                   color: Colors.green,
                                   borderRadius: BorderRadius.circular(50),
                                   border: Border.all(
-                                      width: 5,
-                                      color: Theme.of(context)
-                                          .scaffoldBackgroundColor),
+                                    width: 5,
+                                    color: Theme.of(
+                                      context,
+                                    ).scaffoldBackgroundColor,
+                                  ),
                                 ),
                                 margin: const EdgeInsets.only(left: 16),
                                 child: ClipRRect(
@@ -941,10 +901,11 @@ class _OngProfilePageState extends State<OngProfilePage> {
                                   child: CachedNetworkImage(
                                     imageUrl: widget.ong.profileImageUrl!,
                                     fit: BoxFit.cover,
-                                    progressIndicatorBuilder: (context, url,
-                                            downloadProgress) =>
-                                        CircularProgressIndicator(
-                                            value: downloadProgress.progress),
+                                    progressIndicatorBuilder:
+                                        (context, url, downloadProgress) =>
+                                            CircularProgressIndicator(
+                                              value: downloadProgress.progress,
+                                            ),
                                     errorWidget: (context, url, error) =>
                                         const Icon(Icons.error),
                                   ),
@@ -966,7 +927,8 @@ class _OngProfilePageState extends State<OngProfilePage> {
                                               .textTheme
                                               .titleMedium!
                                               .copyWith(
-                                                  fontWeight: FontWeight.bold),
+                                                fontWeight: FontWeight.bold,
+                                              ),
                                         ),
                                         const SizedBox(width: 5),
                                         SvgPicture.asset(
@@ -1004,31 +966,21 @@ class _OngProfilePageState extends State<OngProfilePage> {
                 padding: EdgeInsets.all(16.0),
                 child: Row(
                   children: [
-                    Text(
-                      "1.000",
-                      style: TextStyle(color: Colors.black),
-                    ),
+                    Text("1.000", style: TextStyle(color: Colors.black)),
                     SizedBox(width: 8),
-                    Text(
-                      "Suportes",
-                      style: TextStyle(color: Colors.black),
-                    ),
+                    Text("Suportes", style: TextStyle(color: Colors.black)),
                     SizedBox(width: 10),
                     Text(
                       "|",
                       style: TextStyle(
-                          color: Colors.black, fontWeight: FontWeight.bold),
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     SizedBox(width: 10),
-                    Text(
-                      "230",
-                      style: TextStyle(color: Colors.black),
-                    ),
+                    Text("230", style: TextStyle(color: Colors.black)),
                     SizedBox(width: 8),
-                    Text(
-                      "Serviços",
-                      style: TextStyle(color: Colors.black),
-                    ),
+                    Text("Serviços", style: TextStyle(color: Colors.black)),
                   ],
                 ),
               ),
@@ -1039,14 +991,14 @@ class _OngProfilePageState extends State<OngProfilePage> {
                     Expanded(
                       child: OutlinedButton(
                         style: ButtonStyle(
-                          foregroundColor:
-                              MaterialStateProperty.all(AppColors.whiteColor),
-                          backgroundColor:
-                              MaterialStateProperty.all(AppColors.primaryColor),
+                          foregroundColor: MaterialStateProperty.all(
+                            AppColors.whiteColor,
+                          ),
+                          backgroundColor: MaterialStateProperty.all(
+                            AppColors.primaryColor,
+                          ),
                           side: const MaterialStatePropertyAll(
-                            BorderSide(
-                              color: AppColors.primaryColor,
-                            ),
+                            BorderSide(color: AppColors.primaryColor),
                           ),
                         ),
                         onPressed: () {},
@@ -1060,13 +1012,11 @@ class _OngProfilePageState extends State<OngProfilePage> {
                     Expanded(
                       child: OutlinedButton(
                         style: ButtonStyle(
-                          foregroundColor:
-                              MaterialStateProperty.all(AppColors.blackColor),
+                          foregroundColor: MaterialStateProperty.all(
+                            AppColors.blackColor,
+                          ),
                           side: const MaterialStatePropertyAll(
-                            BorderSide(
-                              color: Colors.black12,
-                              width: 2,
-                            ),
+                            BorderSide(color: Colors.black12, width: 2),
                           ),
                         ),
                         onPressed: () {},
@@ -1079,21 +1029,19 @@ class _OngProfilePageState extends State<OngProfilePage> {
                     const SizedBox(width: 10),
                     OutlinedButton(
                       style: ButtonStyle(
-                        foregroundColor:
-                            MaterialStateProperty.all(AppColors.blackColor),
+                        foregroundColor: MaterialStateProperty.all(
+                          AppColors.blackColor,
+                        ),
                         minimumSize: const MaterialStatePropertyAll(
                           Size(50, 50),
                         ),
                         side: const MaterialStatePropertyAll(
-                          BorderSide(
-                            color: Colors.black12,
-                            width: 2,
-                          ),
+                          BorderSide(color: Colors.black12, width: 2),
                         ),
                       ),
                       onPressed: () {},
                       child: const Icon(Icons.phone),
-                    )
+                    ),
                   ],
                 ),
               ),
@@ -1110,8 +1058,10 @@ class _OngProfilePageState extends State<OngProfilePage> {
                 child: Text(widget.ong.about!),
               ),
               Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 15, horizontal: 16),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 15,
+                  horizontal: 16,
+                ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -1143,9 +1093,7 @@ class _OngProfilePageState extends State<OngProfilePage> {
                               const SizedBox(height: 5),
                               Text(
                                 "Visão",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .titleSmall!
+                                style: Theme.of(context).textTheme.titleSmall!
                                     .copyWith(fontWeight: FontWeight.bold),
                               ),
                               const SizedBox(height: 5),
@@ -1153,7 +1101,7 @@ class _OngProfilePageState extends State<OngProfilePage> {
                                 widget.ong.vision!,
                                 maxLines: 3,
                                 overflow: TextOverflow.ellipsis,
-                              )
+                              ),
                             ],
                           ),
                         ),
@@ -1188,9 +1136,7 @@ class _OngProfilePageState extends State<OngProfilePage> {
                               const SizedBox(height: 5),
                               Text(
                                 "Missão",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .titleSmall!
+                                style: Theme.of(context).textTheme.titleSmall!
                                     .copyWith(fontWeight: FontWeight.bold),
                               ),
                               const SizedBox(height: 5),
@@ -1198,7 +1144,7 @@ class _OngProfilePageState extends State<OngProfilePage> {
                                 widget.ong.mission!,
                                 maxLines: 3,
                                 overflow: TextOverflow.ellipsis,
-                              )
+                              ),
                             ],
                           ),
                         ),
@@ -1216,16 +1162,14 @@ class _OngProfilePageState extends State<OngProfilePage> {
                       "Impactos feitos",
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
-                    TextButton(onPressed: () {}, child: Text("Ver mais"))
+                    TextButton(onPressed: () {}, child: Text("Ver mais")),
                   ],
                 ),
               ),
               BlocBuilder<OngCubit, OngState>(
                 builder: (context, state) {
                   if (state is OngLoading) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
+                    return const Center(child: CircularProgressIndicator());
                   } else if (state is OngLoaded) {
                     if (state.ongs.isEmpty) {
                       return Center(child: Text("Sem ongs registadas"));
@@ -1264,9 +1208,7 @@ class _OngProfilePageState extends State<OngProfilePage> {
                                   right: 0,
                                   top: 0,
                                   bottom: 0,
-                                  child: Container(
-                                    color: Colors.black26,
-                                  ),
+                                  child: Container(color: Colors.black26),
                                 ),
                                 Positioned(
                                   left: 0,
@@ -1344,9 +1286,7 @@ class _OngProfilePageState extends State<OngProfilePage> {
         return BlocBuilder<FeedCubit, FeedState>(
           builder: (context, state) {
             if (state is FeedLoading) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
+              return const Center(child: CircularProgressIndicator());
             } else if (state is FeedLoaded) {
               return ListView.separated(
                 padding: const EdgeInsets.all(16),
@@ -1360,7 +1300,10 @@ class _OngProfilePageState extends State<OngProfilePage> {
                     ),
                     child: Padding(
                       padding: const EdgeInsets.only(
-                          left: 10, right: 10, bottom: 10),
+                        left: 10,
+                        right: 10,
+                        bottom: 10,
+                      ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -1378,16 +1321,22 @@ class _OngProfilePageState extends State<OngProfilePage> {
                                   progressIndicatorBuilder:
                                       (context, url, downloadProgress) =>
                                           CircularProgressIndicator(
-                                              value: downloadProgress.progress),
+                                            value: downloadProgress.progress,
+                                          ),
                                   errorWidget: (context, url, error) =>
                                       Icon(Icons.error),
                                 ),
                               ),
                             ),
                             title: Text(
-                                "${feed.user!.firstName} ${feed.user!.lastName}"),
-                            subtitle: Text(AppDateUtilsHelper.formatDate(
-                                data: feed.createdAt!, showTime: true)),
+                              "${feed.user!.firstName} ${feed.user!.lastName}",
+                            ),
+                            subtitle: Text(
+                              AppDateUtilsHelper.formatDate(
+                                data: feed.createdAt!,
+                                showTime: true,
+                              ),
+                            ),
                             trailing: const Icon(Icons.more_vert),
                           ),
                           Text("${feed.description}"),
@@ -1405,14 +1354,17 @@ class _OngProfilePageState extends State<OngProfilePage> {
                                       imageUrl: feed.image!,
                                       fit: BoxFit.cover,
                                       progressIndicatorBuilder:
-                                          (context, url, downloadProgress) =>
-                                              SizedBox(
-                                        width: 40,
-                                        height: 40,
-                                        child: CircularProgressIndicator(
-                                          value: downloadProgress.progress,
-                                        ),
-                                      ),
+                                          (
+                                            context,
+                                            url,
+                                            downloadProgress,
+                                          ) => SizedBox(
+                                            width: 40,
+                                            height: 40,
+                                            child: CircularProgressIndicator(
+                                              value: downloadProgress.progress,
+                                            ),
+                                          ),
                                       errorWidget: (context, url, error) =>
                                           Icon(Icons.error),
                                     ),
@@ -1426,7 +1378,8 @@ class _OngProfilePageState extends State<OngProfilePage> {
                                     height: 45,
                                     color: AppColors.primaryColor,
                                     padding: const EdgeInsets.symmetric(
-                                        horizontal: 10),
+                                      horizontal: 10,
+                                    ),
                                     child: const Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
@@ -1442,7 +1395,7 @@ class _OngProfilePageState extends State<OngProfilePage> {
                                           Icons.arrow_forward_ios_rounded,
                                           size: 20,
                                           color: Colors.white,
-                                        )
+                                        ),
                                       ],
                                     ),
                                   ),
@@ -1470,7 +1423,7 @@ class _OngProfilePageState extends State<OngProfilePage> {
                                       const Text(
                                         "55",
                                         style: TextStyle(color: Colors.black),
-                                      )
+                                      ),
                                     ],
                                   ),
                                   const SizedBox(width: 20),
@@ -1488,7 +1441,7 @@ class _OngProfilePageState extends State<OngProfilePage> {
                                       const Text(
                                         "58",
                                         style: TextStyle(color: Colors.black),
-                                      )
+                                      ),
                                     ],
                                   ),
                                   const SizedBox(width: 20),
@@ -1506,9 +1459,9 @@ class _OngProfilePageState extends State<OngProfilePage> {
                                       const Text(
                                         "1.2M",
                                         style: TextStyle(color: Colors.black),
-                                      )
+                                      ),
                                     ],
-                                  )
+                                  ),
                                 ],
                               ),
                               SvgPicture.asset(
@@ -1517,16 +1470,14 @@ class _OngProfilePageState extends State<OngProfilePage> {
                                 width: 16,
                               ),
                             ],
-                          )
+                          ),
                         ],
                       ),
                     ),
                   );
                 },
                 separatorBuilder: (context, index) {
-                  return const Divider(
-                    height: 20,
-                  );
+                  return const Divider(height: 20);
                 },
                 itemCount: 10,
               );
@@ -1553,9 +1504,7 @@ class _OngProfilePageState extends State<OngProfilePage> {
               );
             } else if (state is CampaignLoaded) {
               if (state.campaigns.isEmpty) {
-                return const Center(
-                  child: Text("Sem campanhas"),
-                );
+                return const Center(child: Text("Sem campanhas"));
               }
 
               return ListView.separated(
@@ -1594,9 +1543,7 @@ class _OngProfilePageState extends State<OngProfilePage> {
               );
             } else if (state is EventLoaded) {
               if (state.events.isEmpty) {
-                return const Center(
-                  child: Text("Sem campanhas"),
-                );
+                return const Center(child: Text("Sem campanhas"));
               }
 
               return ListView.separated(
@@ -1605,9 +1552,7 @@ class _OngProfilePageState extends State<OngProfilePage> {
                 physics: const ClampingScrollPhysics(),
                 itemBuilder: (context, index) {
                   final event = state.events[index];
-                  return EventWidget(
-                    event: event,
-                  );
+                  return EventWidget(event: event);
                 },
                 separatorBuilder: (context, index) {
                   return const SizedBox(height: 20);

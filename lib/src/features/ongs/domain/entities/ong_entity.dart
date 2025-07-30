@@ -1,3 +1,5 @@
+import 'package:utueji/src/features/ongs/domain/entities/ong_member_entity.dart';
+
 import 'ong_document_entity.dart';
 
 class OngEntity {
@@ -20,6 +22,7 @@ class OngEntity {
   final String? vision;
   final DateTime? updatedAt;
   final OngDocumentEntity? ongDocument;
+  final List<OngMemberEntity>? ongMember;
 
   OngEntity({
     this.id,
@@ -41,5 +44,6 @@ class OngEntity {
     this.userId,
     this.vision,
     this.ongDocument,
+    this.ongMember,
   });
 }

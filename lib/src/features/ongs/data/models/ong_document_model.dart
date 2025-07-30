@@ -17,7 +17,7 @@ class OngDocumentModel extends OngDocumentEntity {
     super.updatedAt,
   });
 
-  factory OngDocumentModel.fromMap(Map<String, dynamic> map) {
+  factory OngDocumentModel.fromJson(Map<String, dynamic> map) {
     return OngDocumentModel(
       id: map['id'],
       userId: map['user_id'],

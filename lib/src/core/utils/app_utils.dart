@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:intl/intl.dart';
 import 'package:roundcheckbox/roundcheckbox.dart';
+import 'package:utueji/core/gen/assets.gen.dart';
 import 'package:utueji/src/app/app_entity.dart';
 
 import '../../config/themes/app_colors.dart';
@@ -45,7 +46,52 @@ class AppUtils {
     );
   }
 
-  static Positioned contributeUserItem(
+  // static Positioned contributeUserItem(
+  //   double left,
+  //   double top,
+  //   double bottom,
+  //   String? imagePath,
+  //   Color color, {
+  //   String? text,
+  // }) {
+  //   return Positioned(
+  //     left: left,
+  //     top: top,
+  //     bottom: bottom,
+  //     child: ClipRRect(
+  //       borderRadius: BorderRadius.circular(50),
+  //       child: Container(
+  //         width: (text != null) ? 30 : 16,
+  //         height: 16,
+  //         color: color,
+  //         child: (text == null)
+  //             ? (imagePath == null)
+  //                   ? SizedBox.shrink()
+  //                   : CachedNetworkImage(
+  //                       imageUrl: imagePath,
+  //                       fit: BoxFit.cover,
+  //                       progressIndicatorBuilder:
+  //                           (context, url, downloadProgress) =>
+  //                               CircularProgressIndicator(
+  //                                 value: downloadProgress.progress,
+  //                               ),
+  //                       errorWidget: (context, url, error) => Icon(Icons.error),
+  //                     )
+  //             : Center(
+  //                 child: Text(
+  //                   text,
+  //                   style: const TextStyle(
+  //                     color: Colors.white,
+  //                     fontWeight: FontWeight.bold,
+  //                     fontSize: 12,
+  //                   ),
+  //                 ),
+  //               ),
+  //       ),
+  //     ),
+  //   );
+  // }
+  static Widget contributeUserItem(
     double left,
     double top,
     double bottom,
@@ -53,40 +99,103 @@ class AppUtils {
     Color color, {
     String? text,
   }) {
-    return Positioned(
-      left: left,
-      top: top,
-      bottom: bottom,
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(50),
-        child: Container(
-          width: (text != null) ? 30 : 16,
-          height: 16,
-          color: color,
-          child: (text == null)
-              ? (imagePath == null)
-                    ? SizedBox.shrink()
-                    : CachedNetworkImage(
-                        imageUrl: imagePath,
-                        progressIndicatorBuilder:
-                            (context, url, downloadProgress) =>
-                                CircularProgressIndicator(
-                                  value: downloadProgress.progress,
+    const double size = 24.0;
+
+    return Stack(
+      children: [
+        Positioned(
+          left: left,
+          top: top,
+          bottom: bottom,
+          child: Container(
+            width: 20,
+            height: 20,
+            decoration: BoxDecoration(
+              color: color,
+              border: Border.all(width: 1, color: Colors.white),
+              borderRadius: BorderRadius.circular(50),
+            ),
+            child: (text == null)
+                ? (imagePath == null)
+                      ? ClipOval(
+                          child: Image.asset(
+                            Assets.images.avatarBackground.path,
+                            fit: BoxFit.cover,
+                            width: size,
+                            height: size,
+                          ),
+                        )
+                      : ClipOval(
+                          child: CachedNetworkImage(
+                            imageUrl: imagePath,
+                            fit: BoxFit.cover,
+                            width: size,
+                            height: size,
+                            progressIndicatorBuilder:
+                                (context, url, downloadProgress) => Center(
+                                  child: SizedBox(
+                                    width: 16,
+                                    height: 16,
+                                    child: CircularProgressIndicator(
+                                      value: downloadProgress.progress,
+                                      strokeWidth: 2,
+                                    ),
+                                  ),
                                 ),
-                        errorWidget: (context, url, error) => Icon(Icons.error),
-                      )
-              : Center(
-                  child: Text(
-                    text,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 12,
+                            errorWidget: (context, url, error) =>
+                                const Icon(Icons.error, size: 16),
+                          ),
+                        )
+                : Center(
+                    child: Text(
+                      text,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
+                      ),
                     ),
                   ),
-                ),
+          ),
         ),
-      ),
+      ],
+    );
+  }
+
+  static Widget contributeUserItemText(
+    double left,
+    double top,
+    double bottom,
+    Color color, {
+    String? text,
+    Color? textColor,
+  }) {
+    return Stack(
+      children: [
+        Positioned(
+          left: left,
+          top: top,
+          bottom: bottom,
+          child: Container(
+            height: 20,
+            decoration: BoxDecoration(
+              color: color,
+              // border: Border.all(width: 1, color: Colors.grey),
+              // borderRadius: BorderRadius.circular(50),
+            ),
+            child: Center(
+              child: Text(
+                text!,
+                style: TextStyle(
+                  color: textColor ?? Colors.grey.shade800,
+                  // fontWeight: FontWeight.w600,
+                  fontSize: 12,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -127,6 +236,88 @@ class AppUtils {
                 ),
         ),
       ),
+    );
+  }
+
+  static Widget memberParticipatesWidget({
+    required List<Map<String, dynamic>> list,
+    required String textForMore,
+  }) {
+    return Builder(
+      builder: (context) {
+        if (list.isEmpty) {
+          return AppUtils.contributeUserItemText(
+            5,
+            0,
+            0,
+            Colors.transparent,
+            text: "Nnehum membro",
+          );
+        }
+
+        final maxVisible = 4;
+        final visibleCount = list.length > maxVisible
+            ? maxVisible - 1
+            : list.length;
+
+        final overflowCount = list.length > maxVisible
+            ? list.length - (maxVisible - 1)
+            : 0;
+
+        return Stack(
+          children: [
+            if (list.isEmpty)
+              AppUtils.contributeUserItemText(
+                5,
+                0,
+                0,
+                Colors.transparent,
+                text: "Membros",
+              ),
+            for (int i = 0; i < visibleCount; i++)
+              Stack(
+                children: [
+                  AppUtils.contributeUserItem(
+                    i * 8.0, // deslocamento para a esquerda
+                    0,
+                    0,
+                    list[i]["user"].avatarUrl,
+                    Colors.transparent,
+                  ),
+                  if (list.length <= 3 && i == visibleCount - 1)
+                    AppUtils.contributeUserItemText(
+                      (visibleCount + 2) * 8.0,
+                      0,
+                      0,
+                      Colors.transparent,
+                      text: textForMore,
+                    ),
+                ],
+              ),
+
+            if (overflowCount > 0)
+              Stack(
+                children: [
+                  AppUtils.contributeUserItem(
+                    visibleCount * 8.0,
+                    0,
+                    0,
+                    null,
+                    AppColors.primaryColor,
+                    text: '+$overflowCount',
+                  ),
+                  AppUtils.contributeUserItemText(
+                    (visibleCount + 3) * 8.0,
+                    0,
+                    0,
+                    Colors.transparent,
+                    text: "Membros",
+                  ),
+                ],
+              ),
+          ],
+        );
+      },
     );
   }
 
