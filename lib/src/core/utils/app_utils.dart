@@ -251,7 +251,7 @@ class AppUtils {
             0,
             0,
             Colors.transparent,
-            text: "Nnehum membro",
+            text: "Nenehum $textForMore",
           );
         }
 
@@ -272,7 +272,7 @@ class AppUtils {
                 0,
                 0,
                 Colors.transparent,
-                text: "Membros",
+                text: textForMore,
               ),
             for (int i = 0; i < visibleCount; i++)
               Stack(
@@ -311,7 +311,7 @@ class AppUtils {
                     0,
                     0,
                     Colors.transparent,
-                    text: "Membros",
+                    text: "$textForMore(s)",
                   ),
                 ],
               ),
@@ -702,7 +702,7 @@ class AppUtils {
                 );
               }
               /////// editar ao verificar se possua nos favoritos
-              return SizedBox.shrink();
+              // return SizedBox.shrink();
               return RoundCheckBox(
                 uncheckedColor: Colors.transparent,
                 checkedColor: Colors.transparent,

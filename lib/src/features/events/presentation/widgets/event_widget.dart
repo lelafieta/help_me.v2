@@ -19,6 +19,19 @@ class EventWidget extends StatefulWidget {
 }
 
 class _EventWidgetState extends State<EventWidget> {
+  List<Map<String, dynamic>> list = [];
+  String textForMore = "membros";
+
+  @override
+  void initState() {
+    // list = widget.event..map((toElement) {
+    //   Map<String, dynamic> item = {};
+    //   item["user"] = toElement.user;
+    //   return item;
+    // }).toList();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return InkWell(

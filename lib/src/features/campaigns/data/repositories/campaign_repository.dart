@@ -10,16 +10,19 @@ import '../../domain/repositories/i_campaign_repository.dart';
 import '../datasources/i_campaign_datasource.dart';
 
 class CampaignRepository implements ICampaignRepository {
-  final ICampaignRemoteDataSource datasource;
+  final ICampaignRemoteDataSource campaignDataSource;
   final INetWorkInfo networkInfo;
 
-  CampaignRepository({required this.datasource, required this.networkInfo});
+  CampaignRepository({
+    required this.campaignDataSource,
+    required this.networkInfo,
+  });
 
   @override
   Future<Either<Failure, Unit>> createCampaign(CampaignEntity campaign) async {
     if (await networkInfo.isConnected == true) {
       try {
-        await datasource.createCampaign(campaign);
+        await campaignDataSource.createCampaign(campaign);
         return right(unit);
       } catch (e) {
         return left(ServerFailure(errorMessage: e.toString()));
@@ -40,7 +43,7 @@ class CampaignRepository implements ICampaignRepository {
   ) async {
     if (await networkInfo.isConnected == true) {
       try {
-        final response = await datasource.getAllCampaigns(params);
+        final response = await campaignDataSource.getAllCampaigns(params);
         return right(response);
       } catch (e) {
         return left(ServerFailure(errorMessage: e.toString()));
@@ -56,9 +59,11 @@ class CampaignRepository implements ICampaignRepository {
   ) async {
     if (await networkInfo.isConnected == true) {
       try {
-        final response = await datasource.getAllUrgentCampaigns(params);
+        final response = await campaignDataSource.getAllUrgentCampaigns(params);
         return right(response);
-      } catch (e) {
+      } catch (e, s) {
+        print(e);
+        print(s);
         return left(ServerFailure(errorMessage: e.toString()));
       }
     } else {
@@ -70,7 +75,7 @@ class CampaignRepository implements ICampaignRepository {
   Future<Either<Failure, CampaignEntity>> getCampaignById(String id) async {
     if (await networkInfo.isConnected) {
       try {
-        final response = await datasource.getCampaignById(id);
+        final response = await campaignDataSource.getCampaignById(id);
         return right(response);
       } on DioException catch (e) {
         return left(ServerFailure.fromDioException(e));
@@ -88,7 +93,7 @@ class CampaignRepository implements ICampaignRepository {
   ) async {
     if (await networkInfo.isConnected) {
       try {
-        final response = await datasource.getLatestUrgentCampaigns();
+        final response = await campaignDataSource.getLatestUrgentCampaigns();
         return right(response);
       } on DioException catch (e) {
         return left(ServerFailure.fromDioException(e));
@@ -112,7 +117,7 @@ class CampaignRepository implements ICampaignRepository {
   ) async {
     if (await networkInfo.isConnected == true) {
       try {
-        final response = await datasource.getAllMyCampaigns(params);
+        final response = await campaignDataSource.getAllMyCampaigns(params);
         return right(response);
       } catch (e) {
         return left(ServerFailure(errorMessage: e.toString()));

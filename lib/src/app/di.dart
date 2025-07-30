@@ -350,7 +350,7 @@ void _setUpRepositories() {
     ),
   );
   sl.registerLazySingleton<ICampaignRepository>(
-    () => CampaignRepository(datasource: sl(), networkInfo: sl()),
+    () => CampaignRepository(campaignDataSource: sl(), networkInfo: sl()),
   );
   sl.registerLazySingleton<IEventRepository>(
     () => EventRepository(netWorkInfo: sl(), eventDataSource: sl()),

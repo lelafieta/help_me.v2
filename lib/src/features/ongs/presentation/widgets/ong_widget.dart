@@ -20,7 +20,7 @@ class OngWidget extends StatefulWidget {
 
 class _OngWidgetState extends State<OngWidget> {
   List<Map<String, dynamic>> list = [];
-  String textForMore = "membros";
+  String textForMore = "membro";
 
   @override
   void initState() {

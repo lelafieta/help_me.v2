@@ -8,19 +8,36 @@ import '../../../../config/themes/app_colors.dart';
 import '../../../../core/utils/app_date_utils_helper.dart';
 import '../../../../core/utils/app_functions_utils_helper.dart';
 import '../../../../core/utils/app_utils.dart';
-import '../../../../core/utils/app_values.dart';
 import '../../../../core/utils/image_helper.dart';
 import '../../domain/entities/campaign_entity.dart';
 
-class CampaignWidget extends StatelessWidget {
+class CampaignWidget extends StatefulWidget {
   final CampaignEntity campaign;
   const CampaignWidget({super.key, required this.campaign});
+
+  @override
+  State<CampaignWidget> createState() => _CampaignWidgetState();
+}
+
+class _CampaignWidgetState extends State<CampaignWidget> {
+  List<Map<String, dynamic>> list = [];
+  String textForMore = "Participante";
+
+  @override
+  void initState() {
+    list = widget.campaign.contributors!.map((toElement) {
+      Map<String, dynamic> item = {};
+      item["user"] = toElement.user;
+      return item;
+    }).toList();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Get.toNamed(AppRoutes.campaignDetail, arguments: campaign);
+        Get.toNamed(AppRoutes.campaignDetail, arguments: widget.campaign);
       },
       child: Container(
         padding: const EdgeInsets.all(10),
@@ -43,14 +60,14 @@ class CampaignWidget extends StatelessWidget {
                         SizedBox(
                           width: double.infinity,
                           height: 190,
-                          child: (campaign.imageCoverUrl == null)
+                          child: (widget.campaign.imageCoverUrl == null)
                               ? Image.asset(
                                   AppImages.coverBackground,
                                   fit: BoxFit.cover,
                                 )
                               : CachedNetworkImage(
                                   imageUrl: ImageHelper.buildImageUrl(
-                                    campaign.imageCoverUrl!,
+                                    widget.campaign.imageCoverUrl!,
                                   ),
                                   fit: BoxFit.cover,
                                   placeholder: (context, url) => const Center(
@@ -80,7 +97,7 @@ class CampaignWidget extends StatelessWidget {
                             ),
                           ),
                         ),
-                        (campaign.priority != 0)
+                        (widget.campaign.priority != 0)
                             ? const SizedBox.shrink()
                             : Positioned(
                                 right: 55,
@@ -117,7 +134,7 @@ class CampaignWidget extends StatelessWidget {
                             borderRadius: BorderRadius.circular(50),
                             child: AppUtils.favoriteWidget(
                               context: context,
-                              itemId: campaign.id!,
+                              itemId: widget.campaign.id!,
                               itemType: "campaign",
                             ),
                           ),
@@ -127,154 +144,142 @@ class CampaignWidget extends StatelessWidget {
                   ),
                   const SizedBox(height: 10),
                   Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      Row(
                         children: [
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  campaign.title!,
-                                  style: Theme.of(context).textTheme.titleLarge!
-                                      .copyWith(
-                                        fontWeight: FontWeight.w600,
-                                        // fontSize: 16,
-                                      ),
+                          Expanded(
+                            child: Text(
+                              widget.campaign.title!,
+                              style: Theme.of(context).textTheme.titleLarge!
+                                  .copyWith(
+                                    fontWeight: FontWeight.w600,
+                                    // fontSize: 16,
+                                  ),
 
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 1,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 5),
-                          RichText(
-                            text: TextSpan(
-                              style: DefaultTextStyle.of(context).style,
-                              children: [
-                                TextSpan(
-                                  text: AppUtils.formatCurrency(
-                                    campaign.fundsRaised ?? 0,
-                                  ),
-                                  style: Theme.of(context).textTheme.titleSmall!
-                                      .copyWith(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 18,
-                                      ),
-                                ),
-                                const TextSpan(text: " / "),
-                                TextSpan(
-                                  text: AppUtils.formatCurrency(
-                                    campaign.fundraisingGoal ?? 0,
-                                  ),
-                                ),
-                              ],
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
                             ),
-                          ),
-                          const SizedBox(height: 10),
-                          Stack(
-                            children: [
-                              Container(
-                                width: double.infinity,
-                                height: 15,
-                                decoration: BoxDecoration(
-                                  color: AppColors.strokeColor,
-                                  borderRadius: BorderRadius.circular(100),
-                                ),
-                              ),
-                              Positioned(
-                                child: FAProgressBar(
-                                  currentValue:
-                                      AppFuncionsUtilsHelper.calculateFundraisingPercentage(
-                                        campaign.fundsRaised,
-                                        campaign.fundraisingGoal,
-                                      ),
-                                  backgroundColor: AppColors.strokeColor,
-                                  progressColor: AppColors.primaryColor,
-                                  changeProgressColor: Colors.red,
-                                  size: 15,
-                                  displayTextStyle: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 10,
-                                    color: Colors.white,
-                                  ),
-                                  displayText: '%',
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 10),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: InkWell(
-                                  onTap: () {
-                                    AppUtils.contributorUsers(
-                                      context,
-                                      campaign.contributors!,
-                                    );
-                                  },
-                                  child: Row(
-                                    children: [
-                                      AppUtils.contributores(
-                                        campaign.contributors!,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              const Icon(Icons.timelapse_rounded, size: 16),
-                              const SizedBox(width: 5),
-                              (AppDateUtilsHelper.daysRemainingUntil(
-                                        campaign.endDate!,
-                                      ) ==
-                                      0)
-                                  ? Text(
-                                      "Está acontecer",
-                                      style: const TextStyle(fontSize: 12),
-                                    )
-                                  : (AppDateUtilsHelper.daysRemainingUntil(
-                                          campaign.endDate!,
-                                        ) <
-                                        0)
-                                  ? Text(
-                                      AppDateUtilsHelper.formatDate(
-                                        data: campaign.endDate!,
-                                      ),
-                                      style: const TextStyle(fontSize: 12),
-                                    )
-                                  : Text(
-                                      "Faltando ${AppDateUtilsHelper.daysRemainingUntil(campaign.endDate!)} dias",
-                                      style: const TextStyle(fontSize: 12),
-                                    ),
-                            ],
                           ),
                         ],
                       ),
-
-                      // Align(
-                      //   alignment: Alignment.bottomCenter,
-                      //   child: Padding(
-                      //     padding: const EdgeInsets.symmetric(horizontal: 10),
-                      //     child: ElevatedButton(
-                      //       style: ButtonStyle(
-                      //         shape:
-                      //             MaterialStateProperty.all<
-                      //               RoundedRectangleBorder
-                      //             >(
-                      //               RoundedRectangleBorder(
-                      //                 borderRadius: BorderRadius.circular(
-                      //                   AppValues.s10,
-                      //                 ), // Define o raio da borda aqui
-                      //               ),
-                      //             ),
-                      //       ),
-                      //       onPressed: () {},
-                      //       child: Text("Doar"),
-                      //     ),
-                      //   ),
-                      // ),
+                      const SizedBox(height: 5),
+                      RichText(
+                        text: TextSpan(
+                          style: DefaultTextStyle.of(context).style,
+                          children: [
+                            TextSpan(
+                              text: AppUtils.formatCurrency(
+                                widget.campaign.fundsRaised ?? 0,
+                              ),
+                              style: Theme.of(context).textTheme.titleSmall!
+                                  .copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                  ),
+                            ),
+                            const TextSpan(text: " / "),
+                            TextSpan(
+                              text: AppUtils.formatCurrency(
+                                widget.campaign.fundraisingGoal ?? 0,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Stack(
+                        children: [
+                          Container(
+                            width: double.infinity,
+                            height: 15,
+                            decoration: BoxDecoration(
+                              color: AppColors.strokeColor,
+                              borderRadius: BorderRadius.circular(100),
+                            ),
+                          ),
+                          Positioned(
+                            child: FAProgressBar(
+                              currentValue:
+                                  AppFuncionsUtilsHelper.calculateFundraisingPercentage(
+                                    widget.campaign.fundsRaised,
+                                    widget.campaign.fundraisingGoal,
+                                  ),
+                              backgroundColor: AppColors.strokeColor,
+                              progressColor: AppColors.primaryColor,
+                              changeProgressColor: Colors.red,
+                              size: 15,
+                              displayTextStyle: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 10,
+                                color: Colors.white,
+                              ),
+                              displayText: '%',
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      SizedBox(
+                        width: double.infinity,
+                        height: 20,
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: InkWell(
+                                onTap: () {
+                                  AppUtils.contributorUsers(
+                                    context,
+                                    widget.campaign.contributors!,
+                                  );
+                                },
+                                child: AppUtils.memberParticipatesWidget(
+                                  list: list,
+                                  textForMore: textForMore,
+                                ),
+                              ),
+                            ),
+                            // Expanded(
+                            //   child: InkWell(
+                            //     onTap: () {
+                            // AppUtils.contributorUsers(
+                            //   context,
+                            //   widget.campaign.contributors!,
+                            // );
+                            //     },
+                            // child: AppUtils.memberParticipatesWidget(
+                            //   list: list,
+                            //   textForMore: textForMore,
+                            // ),
+                            //   ),
+                            // ),
+                            const Icon(Icons.timelapse_rounded, size: 16),
+                            const SizedBox(width: 5),
+                            (AppDateUtilsHelper.daysRemainingUntil(
+                                      widget.campaign.endDate!,
+                                    ) ==
+                                    0)
+                                ? Text(
+                                    "Está acontecer",
+                                    style: const TextStyle(fontSize: 12),
+                                  )
+                                : (AppDateUtilsHelper.daysRemainingUntil(
+                                        widget.campaign.endDate!,
+                                      ) <
+                                      0)
+                                ? Text(
+                                    AppDateUtilsHelper.formatDate(
+                                      data: widget.campaign.endDate!,
+                                    ),
+                                    style: const TextStyle(fontSize: 12),
+                                  )
+                                : Text(
+                                    "Faltando ${AppDateUtilsHelper.daysRemainingUntil(widget.campaign.endDate!)} dias",
+                                    style: const TextStyle(fontSize: 12),
+                                  ),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                 ],

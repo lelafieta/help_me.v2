@@ -20,7 +20,7 @@ class CampaignContributorModel extends CampaignContributorEntity {
       id: json['id'],
       campaignId: json['campaignId'],
       userId: json['userId'],
-      money: json['money'],
+      money: num.parse(json['money']),
       isAnonymous: json['isAnonymous'],
       user: (json['user'] == null) ? null : UserModel.fromJson(json['user']),
       campaign: json['campaign'],
