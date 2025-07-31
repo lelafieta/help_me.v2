@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:get/get_core/get_core.dart';
 
 import 'package:get_it/get_it.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -82,6 +83,12 @@ import '../features/categories/data/repositories/category_repository.dart';
 import '../features/categories/domain/repositories/i_category_repository.dart';
 import '../features/categories/domain/usecases/get_all_categories_usecase.dart';
 import '../features/categories/presentation/cubit/category_cubit.dart';
+import '../features/communities/data/datasources/community_datasource.dart';
+import '../features/communities/data/datasources/i_community_datasource.dart';
+import '../features/communities/data/repositories/community_repository.dart';
+import '../features/communities/domain/repositories/i_community_repository.dart';
+import '../features/communities/domain/usecases/get_my_communities_usecase.dart';
+import '../features/communities/presentation/cubit/community_cubit.dart';
 import '../features/events/data/datasources/event_datasource.dart';
 import '../features/events/data/datasources/i_event_datasource.dart';
 import '../features/events/data/repositories/event_repository.dart';
@@ -234,6 +241,8 @@ void _setUpCubits() {
 
   sl.registerFactory(() => CategoryCubit(getAllCategoriesUsecase: sl()));
   sl.registerFactory(() => UserLocalDataCubit(authLocalDataSource: sl()));
+
+  sl.registerFactory(() => CommunityCubit(getMyCommunitiesUseCase: sl()));
 }
 
 void _setUpUsecases() {
@@ -258,18 +267,11 @@ void _setUpUsecases() {
   sl.registerLazySingleton(() => GetUserNameUseCase(repository: sl()));
   sl.registerLazySingleton(() => GetUserAvatarUseCase(repository: sl()));
   sl.registerLazySingleton(() => ClearUserDataUseCase(repository: sl()));
+  sl.registerLazySingleton(() => CreateCampaignUseCase(repository: sl()));
 
-  sl.registerLazySingleton<CreateCampaignUseCase>(
-    () => CreateCampaignUseCase(repository: sl()),
-  );
-
-  sl.registerLazySingleton<DeleteCampaignUseCase>(
-    () => DeleteCampaignUseCase(repository: sl()),
-  );
-  sl.registerLazySingleton<GetAllCampaignsUseCase>(
-    () => GetAllCampaignsUseCase(repository: sl()),
-  );
-  sl.registerLazySingleton<GetAllUrgentCampaignsUseCase>(
+  sl.registerLazySingleton(() => DeleteCampaignUseCase(repository: sl()));
+  sl.registerLazySingleton(() => GetAllCampaignsUseCase(repository: sl()));
+  sl.registerLazySingleton(
     () => GetAllUrgentCampaignsUseCase(repository: sl()),
   );
 
@@ -335,6 +337,8 @@ void _setUpUsecases() {
   sl.registerLazySingleton<GetAllCategoriesUsecase>(
     () => GetAllCategoriesUsecase(repository: sl()),
   );
+
+  sl.registerLazySingleton(() => GetMyCommunitiesUseCase(repository: sl()));
 }
 
 void _setUpRepositories() {
@@ -378,6 +382,9 @@ void _setUpRepositories() {
   sl.registerLazySingleton<ICategoryRepository>(
     () => CategoryRepository(netWorkInfo: sl(), categoryDataSource: sl()),
   );
+  sl.registerLazySingleton<ICommunityRepository>(
+    () => CommunityRepository(netWorkInfo: sl(), communityDataSource: sl()),
+  );
 }
 
 void _setUpDatasources() {
@@ -411,5 +418,9 @@ void _setUpDatasources() {
 
   sl.registerLazySingleton<ICategoryDataSource>(
     () => CategoryDataSource(dio: sl()),
+  );
+
+  sl.registerLazySingleton<ICommunityDataSource>(
+    () => CommunityDataSource(dio: sl()),
   );
 }

@@ -1,19 +1,27 @@
+import 'community_member_entity.dart';
+
 class CommunityEntity {
-  final String? id;
-  final String? userId;
-  final String? name;
-  final String? description;
-  final String? image;
-  final String? banner;
-  final DateTime? createdAt;
+  final String id;
+  final String name;
+  final String description;
+  final String location;
+  String? imageUrl;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final String ownerId;
+  final List<CommunityMemberEntity> members;
+  final int membersCount;
 
   CommunityEntity({
-    this.id,
-    this.userId,
-    this.name,
-    this.image,
-    this.banner,
-    this.description,
-    this.createdAt,
+    required this.id,
+    required this.name,
+    required this.description,
+    required this.location,
+    this.imageUrl,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.ownerId,
+    required this.members,
+    required this.membersCount,
   });
 }

@@ -1,11 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:dotted_dashed_line/dotted_dashed_line.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:utueji/src/core/utils/image_helper.dart';
+import 'package:utueji/src/features/communities/presentation/cubit/community_cubit.dart';
 import 'package:utueji/src/features/ongs/presentation/widgets/ong_widget.dart';
 
 import '../../../../config/themes/app_colors.dart';
@@ -25,15 +24,11 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
-  List<String> menus = ["Todas", "Pendentes", "Passado", "Pendentes"];
-
-  int selectedIndex = 0;
-  List<Widget> widgets = [
-    const FeedContainer(),
-    const BlogContainer(),
-    const EventContainer(),
-    const OngContainer(),
-  ];
+  @override
+  void initState() {
+    context.read<CommunityCubit>().getMyCommunities();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +40,7 @@ class _ChatPageState extends State<ChatPage> {
           IconButton(
             onPressed: () {},
             icon: SvgPicture.asset(AppIcons.squarePlus),
-          )
+          ),
         ],
       ),
       body: Column(
@@ -80,10 +75,14 @@ class _ChatPageState extends State<ChatPage> {
             child: SingleChildScrollView(
               physics: const ClampingScrollPhysics(),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    padding:
-                        const EdgeInsets.only(left: 16, right: 16, top: 16),
+                    padding: const EdgeInsets.only(
+                      left: 16,
+                      right: 16,
+                      top: 16,
+                    ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -99,21 +98,21 @@ class _ChatPageState extends State<ChatPage> {
                             Icons.add,
                             color: AppColors.primaryColor,
                           ),
-                        )
+                        ),
                       ],
                     ),
                   ),
-                  BlocBuilder<OngCubit, OngState>(
+                  BlocBuilder<CommunityCubit, CommunityState>(
                     builder: (context, state) {
-                      if (state is OngLoading) {
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      } else if (state is OngLoaded) {
-                        if (state.ongs.isEmpty) {
+                      print(state);
+                      if (state is CommunityLoading) {
+                        return const Center(child: CircularProgressIndicator());
+                      } else if (state is CommunityLoaded) {
+                        if (state.communities.isEmpty) {
                           return Center(child: Text("Sem ongs registadas"));
                         }
-                        return Container(
+                        final communities = state.communities;
+                        return SizedBox(
                           height: 80,
                           child: ListView.separated(
                             scrollDirection: Axis.horizontal,
@@ -121,6 +120,8 @@ class _ChatPageState extends State<ChatPage> {
                             physics: const ClampingScrollPhysics(),
                             padding: const EdgeInsets.symmetric(horizontal: 16),
                             itemBuilder: (context, index) {
+                              final community = communities[index];
+
                               return ClipRRect(
                                 borderRadius: BorderRadius.circular(5),
                                 child: Stack(
@@ -137,26 +138,32 @@ class _ChatPageState extends State<ChatPage> {
                                       right: 0,
                                       top: 0,
                                       bottom: 0,
-                                      child: Image.asset(
-                                        AppImages.image1,
-                                        fit: BoxFit.cover,
-                                      ),
+                                      child: (community.imageUrl != null)
+                                          ? CachedNetworkImage(
+                                              imageUrl:
+                                                  ImageHelper.buildImageUrl(
+                                                    community.imageUrl!,
+                                                  ),
+                                              fit: BoxFit.cover,
+                                            )
+                                          : Image.asset(
+                                              AppImages.image1,
+                                              fit: BoxFit.cover,
+                                            ),
                                     ),
                                     Positioned(
                                       left: 0,
                                       right: 0,
                                       top: 0,
                                       bottom: 0,
-                                      child: Container(
-                                        color: Colors.black26,
-                                      ),
+                                      child: Container(color: Colors.black26),
                                     ),
                                     Positioned(
                                       left: 0,
                                       right: 0,
                                       bottom: 0,
                                       child: Container(
-                                        height: 55,
+                                        height: 45,
                                         decoration: const BoxDecoration(
                                           gradient: LinearGradient(
                                             begin: Alignment.topCenter,
@@ -167,28 +174,33 @@ class _ChatPageState extends State<ChatPage> {
                                             ],
                                           ),
                                         ),
-                                        child: const Padding(
-                                          padding: EdgeInsets.all(8.0),
+                                        child: Padding(
+                                          padding: EdgeInsets.all(5.0),
                                           child: Column(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
                                               Text(
-                                                "Global",
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                ),
-                                              ),
-                                              Text(
-                                                "33 Serviços",
+                                                community.name,
                                                 style: TextStyle(
                                                   color: Colors.white,
                                                   overflow:
                                                       TextOverflow.ellipsis,
                                                   fontSize: 10,
+                                                  fontWeight: FontWeight.w600,
                                                 ),
+                                                maxLines: 1,
+                                              ),
+                                              Text(
+                                                "${community.membersCount} membros",
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  fontSize: 10,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                                maxLines: 1,
                                               ),
                                             ],
                                           ),
@@ -202,7 +214,7 @@ class _ChatPageState extends State<ChatPage> {
                             separatorBuilder: (context, index) {
                               return const SizedBox(width: 10);
                             },
-                            itemCount: 15,
+                            itemCount: communities.length,
                           ),
                         );
                       }
@@ -210,8 +222,11 @@ class _ChatPageState extends State<ChatPage> {
                     },
                   ),
                   Container(
-                    padding:
-                        const EdgeInsets.only(left: 16, right: 16, top: 16),
+                    padding: const EdgeInsets.only(
+                      left: 16,
+                      right: 16,
+                      top: 16,
+                    ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -225,9 +240,7 @@ class _ChatPageState extends State<ChatPage> {
                   BlocBuilder<OngCubit, OngState>(
                     builder: (context, state) {
                       if (state is OngLoading) {
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
+                        return const Center(child: CircularProgressIndicator());
                       } else if (state is OngLoaded) {
                         if (state.ongs.isEmpty) {
                           return const Center(
@@ -258,9 +271,7 @@ class _ChatPageState extends State<ChatPage> {
                                 child: Column(
                                   children: [
                                     const Text("12:06m"),
-                                    const SizedBox(
-                                      height: 5,
-                                    ),
+                                    const SizedBox(height: 5),
                                     Container(
                                       width: 20,
                                       height: 20,
@@ -303,9 +314,7 @@ class _ChatPageState extends State<ChatPage> {
 }
 
 class FeedContainer extends StatelessWidget {
-  const FeedContainer({
-    super.key,
-  });
+  const FeedContainer({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -331,7 +340,8 @@ class FeedContainer extends StatelessWidget {
                 trailing: Icon(Icons.more_vert),
               ),
               const Text(
-                  "Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet"),
+                "Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet",
+              ),
               const SizedBox(height: 10),
               ClipRRect(
                 borderRadius: BorderRadius.circular(15),
@@ -364,7 +374,7 @@ class FeedContainer extends StatelessWidget {
                               Icons.arrow_forward_ios_rounded,
                               size: 20,
                               color: Colors.white,
-                            )
+                            ),
                           ],
                         ),
                       ),
@@ -391,7 +401,7 @@ class FeedContainer extends StatelessWidget {
                           const Text(
                             "55",
                             style: TextStyle(color: Colors.black),
-                          )
+                          ),
                         ],
                       ),
                       const SizedBox(width: 20),
@@ -408,7 +418,7 @@ class FeedContainer extends StatelessWidget {
                           const Text(
                             "58",
                             style: TextStyle(color: Colors.black),
-                          )
+                          ),
                         ],
                       ),
                       const SizedBox(width: 20),
@@ -425,9 +435,9 @@ class FeedContainer extends StatelessWidget {
                           const Text(
                             "1.2M",
                             style: TextStyle(color: Colors.black),
-                          )
+                          ),
                         ],
-                      )
+                      ),
                     ],
                   ),
                   SvgPicture.asset(
@@ -436,15 +446,13 @@ class FeedContainer extends StatelessWidget {
                     width: 16,
                   ),
                 ],
-              )
+              ),
             ],
           ),
         );
       },
       separatorBuilder: (context, index) {
-        return const Divider(
-          height: 20,
-        );
+        return const Divider(height: 20);
       },
       itemCount: 10,
     );
@@ -496,9 +504,7 @@ class BlogContainer extends StatelessWidget {
                       children: [
                         Stack(
                           children: [
-                            Container(
-                              height: 150,
-                            ),
+                            Container(height: 150),
                             Positioned(
                               left: 0,
                               right: 0,
@@ -542,9 +548,7 @@ class BlogContainer extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 const Text("Publicado aos 13, Abril, 2025"),
-                                SizedBox(
-                                  height: 5,
-                                ),
+                                SizedBox(height: 5),
                                 Text(
                                   "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor",
                                   style: Theme.of(context).textTheme.titleSmall,
@@ -554,7 +558,7 @@ class BlogContainer extends StatelessWidget {
                               ],
                             ),
                           ),
-                        )
+                        ),
                       ],
                     ),
                   ),
@@ -567,10 +571,7 @@ class BlogContainer extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  "Para ti",
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
+                Text("Para ti", style: Theme.of(context).textTheme.titleLarge),
               ],
             ),
           ),
@@ -606,9 +607,7 @@ class BlogContainer extends StatelessWidget {
                                 overflow: TextOverflow.ellipsis,
                                 maxLines: 2,
                               ),
-                              SizedBox(
-                                height: 5,
-                              ),
+                              SizedBox(height: 5),
                               const Text("Publicado aos 13, Abril, 2025"),
                             ],
                           ),
@@ -630,7 +629,7 @@ class BlogContainer extends StatelessWidget {
               return const SizedBox(height: 10);
             },
             itemCount: 8,
-          )
+          ),
         ],
       ),
     );
@@ -646,9 +645,7 @@ class EventContainer extends StatelessWidget {
       builder: (context, state) {
         print(state);
         if (state is EventLoading) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
+          return const Center(child: CircularProgressIndicator());
         } else if (state is EventLoaded) {
           if (state.events.isEmpty) {
             return const Center(child: Text("Sem eventos registados"));
@@ -658,8 +655,11 @@ class EventContainer extends StatelessWidget {
               child: Column(
                 children: [
                   Container(
-                    padding:
-                        const EdgeInsets.only(left: 16, right: 16, top: 16),
+                    padding: const EdgeInsets.only(
+                      left: 16,
+                      right: 16,
+                      top: 16,
+                    ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -667,7 +667,7 @@ class EventContainer extends StatelessWidget {
                           "Eventos próximos de si",
                           style: Theme.of(context).textTheme.titleLarge,
                         ),
-                        TextButton(onPressed: () {}, child: Text("Ver mais"))
+                        TextButton(onPressed: () {}, child: Text("Ver mais")),
                       ],
                     ),
                   ),
@@ -682,22 +682,24 @@ class EventContainer extends StatelessWidget {
                       reverse: false,
                       autoPlay: false,
                       autoPlayInterval: const Duration(seconds: 3),
-                      autoPlayAnimationDuration:
-                          const Duration(milliseconds: 800),
+                      autoPlayAnimationDuration: const Duration(
+                        milliseconds: 800,
+                      ),
                       autoPlayCurve: Curves.fastOutSlowIn,
                       enlargeCenterPage: false,
                       enlargeFactor: 0.3,
                       scrollDirection: Axis.horizontal,
                     ),
                     items: events.map((event) {
-                      return EventWidget(
-                        event: event,
-                      );
+                      return EventWidget(event: event);
                     }).toList(),
                   ),
                   Container(
-                    padding:
-                        const EdgeInsets.only(left: 16, right: 16, top: 16),
+                    padding: const EdgeInsets.only(
+                      left: 16,
+                      right: 16,
+                      top: 16,
+                    ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -710,21 +712,18 @@ class EventContainer extends StatelessWidget {
                     ),
                   ),
                   ListView.separated(
-                      shrinkWrap: true,
-                      physics: const ClampingScrollPhysics(),
-                      padding: const EdgeInsets.all(14),
-                      itemBuilder: (context, index) {
-                        final event = events[index];
-                        return EventWidget(
-                          event: event,
-                        );
-                      },
-                      separatorBuilder: (context, index) {
-                        return const SizedBox(
-                          height: 10,
-                        );
-                      },
-                      itemCount: state.events.length)
+                    shrinkWrap: true,
+                    physics: const ClampingScrollPhysics(),
+                    padding: const EdgeInsets.all(14),
+                    itemBuilder: (context, index) {
+                      final event = events[index];
+                      return EventWidget(event: event);
+                    },
+                    separatorBuilder: (context, index) {
+                      return const SizedBox(height: 10);
+                    },
+                    itemCount: state.events.length,
+                  ),
                 ],
               ),
             );
@@ -754,16 +753,14 @@ class OngContainer extends StatelessWidget {
                   "ONG's Populares",
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
-                TextButton(onPressed: () {}, child: Text("Ver mais"))
+                TextButton(onPressed: () {}, child: Text("Ver mais")),
               ],
             ),
           ),
           BlocBuilder<OngCubit, OngState>(
             builder: (context, state) {
               if (state is OngLoading) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
+                return const Center(child: CircularProgressIndicator());
               } else if (state is OngLoaded) {
                 if (state.ongs.isEmpty) {
                   return Center(child: Text("Sem ongs registadas"));
@@ -779,17 +776,16 @@ class OngContainer extends StatelessWidget {
                     reverse: false,
                     autoPlay: false,
                     autoPlayInterval: const Duration(seconds: 3),
-                    autoPlayAnimationDuration:
-                        const Duration(milliseconds: 800),
+                    autoPlayAnimationDuration: const Duration(
+                      milliseconds: 800,
+                    ),
                     autoPlayCurve: Curves.fastOutSlowIn,
                     enlargeCenterPage: false,
                     enlargeFactor: 0.3,
                     scrollDirection: Axis.horizontal,
                   ),
                   items: state.ongs.map((ong) {
-                    return OngWidget(
-                      ong: ong,
-                    );
+                    return OngWidget(ong: ong);
                   }).toList(),
                 );
               }
@@ -801,19 +797,14 @@ class OngContainer extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  "Para ti",
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
+                Text("Para ti", style: Theme.of(context).textTheme.titleLarge),
               ],
             ),
           ),
           BlocBuilder<OngCubit, OngState>(
             builder: (context, state) {
               if (state is OngLoading) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
+                return const Center(child: CircularProgressIndicator());
               } else if (state is OngLoaded) {
                 if (state.ongs.isEmpty) {
                   return Center(child: Text("Sem ongs registadas"));
@@ -853,8 +844,9 @@ class OngContainer extends StatelessWidget {
                                 children: [
                                   Text(
                                     "Lorem ipsum dolor sit amet",
-                                    style:
-                                        Theme.of(context).textTheme.titleSmall,
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.titleSmall,
                                     overflow: TextOverflow.ellipsis,
                                     maxLines: 1,
                                   ),

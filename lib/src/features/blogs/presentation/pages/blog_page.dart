@@ -7,8 +7,6 @@ import 'package:intl/intl.dart';
 import 'package:utueji/core/gen/assets.gen.dart';
 import 'package:utueji/src/core/utils/app_date_utils_helper.dart';
 import 'package:utueji/src/core/utils/image_helper.dart';
-
-import '../../../../core/resources/images/app_images.dart';
 import '../cubit/blog_featured/blog_featured_cubit.dart';
 import '../cubit/blog_for_you/blog_for_you_cubit.dart';
 
@@ -240,6 +238,12 @@ class _BlogPageState extends State<BlogPage> {
                               width: 70,
                               height: 70,
                               color: Colors.grey.shade300,
+                              child: CachedNetworkImage(
+                                fit: BoxFit.cover,
+                                imageUrl: ImageHelper.buildImageUrl(
+                                  blog.image!,
+                                ),
+                              ),
                             ),
                           ),
                           const SizedBox(width: 10),
