@@ -100,7 +100,7 @@ import '../features/feeds/data/datasources/feed_datasource.dart';
 import '../features/feeds/data/datasources/i_feed_datasource.dart';
 import '../features/feeds/data/repositories/feed_repository.dart';
 import '../features/feeds/domain/repositories/i_feed_repository.dart';
-import '../features/feeds/domain/usecases/fetch_feeds_usecase.dart';
+import '../features/feeds/domain/usecases/get_feeds_usecase.dart';
 import '../features/feeds/presentation/cubit/feed_cubit.dart';
 import '../features/home/presentation/cubit/home_campaign_cubit/home_campaign_cubit.dart';
 import '../features/home/presentation/cubit/home_profile_data_cubit/home_profile_data_cubit.dart';
@@ -177,7 +177,7 @@ void _setUpCubits() {
 
   sl.registerFactory(() => EventCubit(getNearbyEventsUsecase: sl()));
   sl.registerFactory(() => OngCubit(getPopularesOngsUseCase: sl()));
-  sl.registerFactory(() => FeedCubit(fetchFeedsUseCase: sl()));
+  sl.registerFactory(() => FeedCubit(getFeedsUseCase: sl()));
   sl.registerFactory(
     () => BlogCubit(fetchBlogUseCase: sl(), fetchLatestBlogUseCase: sl()),
   );
@@ -290,8 +290,8 @@ void _setUpUsecases() {
 
   sl.registerLazySingleton(() => GetPopularesOngsUsecase(repository: sl()));
   sl.registerLazySingleton(() => GetOngByIdUsecase(repository: sl()));
-  sl.registerLazySingleton<FetchFeedsUseCase>(
-    () => FetchFeedsUseCase(repository: sl()),
+  sl.registerLazySingleton<GetFeedsUseCase>(
+    () => GetFeedsUseCase(repository: sl()),
   );
 
   sl.registerLazySingleton<FetchBlogUseCase>(
@@ -359,7 +359,7 @@ void _setUpRepositories() {
     () => OngRepository(ongDataSource: sl(), netWorkInfo: sl()),
   );
   sl.registerLazySingleton<IFeedRepository>(
-    () => FeedRepository(datasource: sl()),
+    () => FeedRepository(feedDataSource: sl(), netWorkInfo: sl()),
   );
   sl.registerLazySingleton<IBlogRepository>(
     () => BlogRepository(datasource: sl()),
@@ -393,9 +393,7 @@ void _setUpDatasources() {
   );
   sl.registerLazySingleton<IEventDataSource>(() => EventDataSource(dio: sl()));
   sl.registerLazySingleton<IOngDataSource>(() => OngDataSource(dio: sl()));
-  sl.registerLazySingleton<IFeedDataSource>(
-    () => FeedDataSource(supabase: sl()),
-  );
+  sl.registerLazySingleton<IFeedDataSource>(() => FeedDataSource(dio: sl()));
 
   sl.registerLazySingleton<IBlogDataSource>(
     () => BlogDataSource(supabase: sl()),

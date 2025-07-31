@@ -1,6 +1,9 @@
 import '../../../auth/data/models/user_model.dart';
 import '../../../ongs/data/models/ong_model.dart';
 import '../../domain/entities/feed_entity.dart';
+import 'feed_comment_model.dart';
+import 'feed_like_model.dart';
+import 'feed_view_model.dart';
 
 class FeedModel extends FeedEntity {
   FeedModel({
@@ -12,6 +15,9 @@ class FeedModel extends FeedEntity {
     super.description,
     super.user,
     super.ong,
+    required super.comments,
+    required super.likes,
+    required super.views,
   });
 
   Map<String, dynamic> toMap() {
@@ -25,7 +31,7 @@ class FeedModel extends FeedEntity {
     };
   }
 
-  factory FeedModel.fromMap(Map<String, dynamic> map) {
+  factory FeedModel.fromJson(Map<String, dynamic> map) {
     return FeedModel(
       id: map['id'] ?? '',
       createdAt: DateTime.parse(
@@ -37,6 +43,15 @@ class FeedModel extends FeedEntity {
       description: map['description'] ?? '',
       user: (map['user'] == null) ? null : UserModel.fromJson(map['user']),
       ong: (map['ong'] == null) ? null : OngModel.fromJson(map['ong']),
+      likes: List<FeedLikeModel>.from(
+        map['feedLike'].map((x) => FeedLikeModel.fromJson(x)),
+      ),
+      comments: List<FeedCommentModel>.from(
+        map['feedComment'].map((x) => FeedCommentModel.fromJson(x)),
+      ),
+      views: List<FeedViewModel>.from(
+        map['feedView'].map((x) => FeedViewModel.fromJson(x)),
+      ),
     );
   }
 }

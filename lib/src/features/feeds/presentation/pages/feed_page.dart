@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
+import 'package:utueji/src/core/utils/image_helper.dart';
 
 import '../../../../config/themes/app_colors.dart';
 import '../../../../core/resources/icons/app_icons.dart';
@@ -22,7 +23,7 @@ class _FeedPageState extends State<FeedPage> {
   @override
   void initState() {
     super.initState();
-    // context.read<FeedCubit>().getFeeds();
+    context.read<FeedCubit>().getFeeds();
   }
 
   @override
@@ -36,9 +37,11 @@ class _FeedPageState extends State<FeedPage> {
             padding: const EdgeInsets.all(16),
             itemBuilder: (context, index) {
               final feed = state.feeds[index];
-              return Card(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
+              return Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: Colors.grey.shade300, width: 1),
                 ),
                 child: Padding(
                   padding: const EdgeInsets.only(
@@ -58,21 +61,24 @@ class _FeedPageState extends State<FeedPage> {
                             height: 40,
                             color: Colors.black12,
                             child: CachedNetworkImage(
-                              imageUrl: feed.user!.avatarUrl!,
+                              imageUrl: ImageHelper.buildImageUrl(
+                                feed.ong!.profileImageUrl!,
+                              ),
                               fit: BoxFit.cover,
                               progressIndicatorBuilder:
-                                  (context, url, downloadProgress) =>
-                                      CircularProgressIndicator(
-                                        value: downloadProgress.progress,
-                                      ),
+                                  (context, url, downloadProgress) => SizedBox(
+                                    width: 50,
+                                    height: 50,
+                                    child: CircularProgressIndicator(
+                                      value: downloadProgress.progress,
+                                    ),
+                                  ),
                               errorWidget: (context, url, error) =>
                                   Icon(Icons.error),
                             ),
                           ),
                         ),
-                        title: Text(
-                          "${feed.user!.firstName} ${feed.user!.lastName}",
-                        ),
+                        title: Text("${feed.ong!.name}"),
                         subtitle: Text(
                           AppDateUtilsHelper.formatDate(
                             data: feed.createdAt!,
@@ -93,7 +99,9 @@ class _FeedPageState extends State<FeedPage> {
                                 width: double.infinity,
                                 height: 200,
                                 child: CachedNetworkImage(
-                                  imageUrl: feed.image!,
+                                  imageUrl: ImageHelper.buildImageUrl(
+                                    feed.image!,
+                                  ),
                                   fit: BoxFit.cover,
                                   progressIndicatorBuilder:
                                       (context, url, downloadProgress) =>
@@ -158,8 +166,8 @@ class _FeedPageState extends State<FeedPage> {
                                     width: 16,
                                   ),
                                   const SizedBox(width: 5),
-                                  const Text(
-                                    "55",
+                                  Text(
+                                    "${feed.likes.length}",
                                     style: TextStyle(color: Colors.black),
                                   ),
                                 ],
@@ -175,8 +183,8 @@ class _FeedPageState extends State<FeedPage> {
                                     width: 16,
                                   ),
                                   const SizedBox(width: 5),
-                                  const Text(
-                                    "58",
+                                  Text(
+                                    "${feed.comments.length}",
                                     style: TextStyle(color: Colors.black),
                                   ),
                                 ],
@@ -192,8 +200,8 @@ class _FeedPageState extends State<FeedPage> {
                                     width: 16,
                                   ),
                                   const SizedBox(width: 5),
-                                  const Text(
-                                    "1.2M",
+                                  Text(
+                                    "${feed.views.length}",
                                     style: TextStyle(color: Colors.black),
                                   ),
                                 ],
@@ -215,7 +223,7 @@ class _FeedPageState extends State<FeedPage> {
             separatorBuilder: (context, index) {
               return const Divider(height: 20);
             },
-            itemCount: 10,
+            itemCount: state.feeds.length,
           );
         }
         return const Text("data");

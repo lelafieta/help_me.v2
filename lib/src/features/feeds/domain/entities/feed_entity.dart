@@ -1,5 +1,8 @@
 import '../../../auth/domain/entities/user_entity.dart';
 import '../../../ongs/domain/entities/ong_entity.dart';
+import 'feed_comment_entity.dart';
+import 'feed_like_entity.dart';
+import 'feed_view_entity.dart';
 
 class FeedEntity {
   final String? id;
@@ -10,6 +13,9 @@ class FeedEntity {
   final String? description;
   final UserEntity? user;
   final OngEntity? ong;
+  final List<FeedLikeEntity> likes;
+  final List<FeedCommentEntity> comments;
+  final List<FeedViewEntity> views;
 
   FeedEntity({
     this.id,
@@ -20,5 +26,8 @@ class FeedEntity {
     this.description,
     this.user,
     this.ong,
+    required this.likes,
+    required this.comments,
+    required this.views,
   });
 }
