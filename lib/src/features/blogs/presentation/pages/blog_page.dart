@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
-import 'package:utueji/src/features/blogs/presentation/cubit/blog_state.dart';
+import 'package:utueji/core/gen/assets.gen.dart';
+import 'package:utueji/src/core/utils/app_date_utils_helper.dart';
+import 'package:utueji/src/core/utils/image_helper.dart';
 
-import '../../../../core/resources/icons/app_icons.dart';
 import '../../../../core/resources/images/app_images.dart';
-import '../cubit/blog_cubit.dart';
+import '../cubit/blog_featured/blog_featured_cubit.dart';
+import '../cubit/blog_for_you/blog_for_you_cubit.dart';
 
 class BlogPage extends StatefulWidget {
   const BlogPage({super.key});
@@ -21,7 +23,8 @@ class _BlogPageState extends State<BlogPage> {
   @override
   void initState() {
     super.initState();
-    context.read<BlogCubit>().getBlogs();
+    context.read<BlogFeaturedCubit>().getFeaturedBlogs();
+    context.read<BlogForYouCubit>().getForYouBlogs();
   }
 
   String formatarDataPersonalizada(DateTime data) {
@@ -52,17 +55,13 @@ class _BlogPageState extends State<BlogPage> {
               ],
             ),
           ),
-          BlocBuilder<BlogCubit, BlogState>(
+          BlocBuilder<BlogFeaturedCubit, BlogFeaturedState>(
             builder: (context, state) {
-              if (state is BlogLoading) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              } else if (state is BlogLoaded) {
+              if (state is BlogFeaturedLoading) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (state is BlogFeaturedLoaded) {
                 if (state.blogs.isEmpty) {
-                  return const Center(
-                    child: Text("Sem blogs"),
-                  );
+                  return const Center(child: Text("Sem blogs"));
                 }
                 final blogs = state.blogs;
                 return CarouselSlider(
@@ -79,18 +78,21 @@ class _BlogPageState extends State<BlogPage> {
                       child: Container(
                         width: double.infinity,
                         margin: const EdgeInsets.only(left: 16, top: 16),
-                        child: Card(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(
+                              color: Colors.grey.shade300,
+                              width: 1,
+                            ),
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Stack(
                                 children: [
-                                  Container(
-                                    height: 150,
-                                  ),
+                                  Container(height: 150),
                                   Positioned(
                                     left: 0,
                                     right: 0,
@@ -102,12 +104,32 @@ class _BlogPageState extends State<BlogPage> {
                                       ),
                                       child: Container(
                                         height: 130,
-                                        decoration: const BoxDecoration(
-                                          color: Colors.yellow,
+                                        decoration: BoxDecoration(
+                                          color: Colors.grey.shade300,
                                         ),
-                                        child: Image.asset(
-                                          AppImages.image1,
+                                        // child: Image.asset(
+                                        //   AppImages.image1,
+                                        //   fit: BoxFit.cover,
+                                        // ),
+                                        child: CachedNetworkImage(
+                                          imageUrl: ImageHelper.buildImageUrl(
+                                            blog.image!,
+                                          ),
                                           fit: BoxFit.cover,
+                                          progressIndicatorBuilder:
+                                              (
+                                                context,
+                                                url,
+                                                downloadProgress,
+                                              ) => Center(
+                                                child:
+                                                    CircularProgressIndicator(
+                                                      value: downloadProgress
+                                                          .progress,
+                                                    ),
+                                              ),
+                                          errorWidget: (context, url, error) =>
+                                              Icon(Icons.error),
                                         ),
                                       ),
                                     ),
@@ -124,11 +146,15 @@ class _BlogPageState extends State<BlogPage> {
                                         child: CachedNetworkImage(
                                           imageUrl: blog.user!.avatarUrl!,
                                           fit: BoxFit.cover,
-                                          progressIndicatorBuilder: (context,
-                                                  url, downloadProgress) =>
-                                              CircularProgressIndicator(
-                                                  value: downloadProgress
-                                                      .progress),
+                                          progressIndicatorBuilder:
+                                              (
+                                                context,
+                                                url,
+                                                downloadProgress,
+                                              ) => CircularProgressIndicator(
+                                                value:
+                                                    downloadProgress.progress,
+                                              ),
                                           errorWidget: (context, url, error) =>
                                               Icon(Icons.error),
                                         ),
@@ -140,28 +166,28 @@ class _BlogPageState extends State<BlogPage> {
                               Expanded(
                                 child: Padding(
                                   padding: const EdgeInsets.symmetric(
-                                      horizontal: 16),
+                                    horizontal: 16,
+                                  ),
                                   child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                          "Publicado aos ${formatarDataPersonalizada(blog.createdAt)}"),
-                                      const SizedBox(
-                                        height: 5,
+                                        "Publicado aos ${AppDateUtilsHelper.formatDate(data: blog.createdAt)}",
                                       ),
+                                      const SizedBox(height: 5),
                                       Text(
                                         blog.title,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .titleSmall,
+                                        style: Theme.of(
+                                          context,
+                                        ).textTheme.titleSmall,
                                         overflow: TextOverflow.ellipsis,
                                         maxLines: 2,
                                       ),
                                     ],
                                   ),
                                 ),
-                              )
+                              ),
                             ],
                           ),
                         ),
@@ -170,7 +196,7 @@ class _BlogPageState extends State<BlogPage> {
                   }).toList(),
                 );
               }
-              return Text("data");
+              return SizedBox.shrink();
             },
           ),
           Container(
@@ -178,70 +204,87 @@ class _BlogPageState extends State<BlogPage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  "Para ti",
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
+                Text("Para ti", style: Theme.of(context).textTheme.titleLarge),
               ],
             ),
           ),
-          ListView.separated(
-            shrinkWrap: true,
-            physics: ClampingScrollPhysics(),
-            padding: EdgeInsets.all(16),
-            itemBuilder: (context, index) {
-              return Card(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Container(
-                  child: Row(
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(8),
-                        child: Container(
-                          width: 100,
-                          height: 100,
-                          color: Colors.red,
+          BlocBuilder<BlogForYouCubit, BlogForYouState>(
+            builder: (context, state) {
+              if (state is BlogForYouLoading) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (state is BlogForYouFailure) {
+                return Center(child: Text(state.failure));
+              } else if (state is BlogForYouLoaded) {
+                return ListView.separated(
+                  shrinkWrap: true,
+                  physics: ClampingScrollPhysics(),
+                  padding: EdgeInsets.all(16),
+                  itemBuilder: (context, index) {
+                    final blog = state.blogs[index];
+                    return Container(
+                      padding: const EdgeInsets.all(10),
+                      // height: 100,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(
+                          color: Colors.grey.shade300,
+                          width: 1,
                         ),
                       ),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor",
-                                style: Theme.of(context).textTheme.titleSmall,
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 2,
-                              ),
-                              SizedBox(
-                                height: 5,
-                              ),
-                              const Text("Publicado aos 13, Abril, 2025"),
-                            ],
+                      child: Row(
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: Container(
+                              width: 70,
+                              height: 70,
+                              color: Colors.grey.shade300,
+                            ),
                           ),
-                        ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.all(0.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    blog.title,
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.titleSmall,
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 2,
+                                  ),
+                                  SizedBox(height: 5),
+                                  Text(
+                                    "Publicado aos ${AppDateUtilsHelper.formatDate(data: blog.createdAt)}",
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: () {},
+                            icon: SvgPicture.asset(
+                              Assets.icons.heartBold,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ],
                       ),
-                      IconButton(
-                        onPressed: () {},
-                        icon: SvgPicture.asset(
-                          AppIcons.heart,
-                          color: Colors.red,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              );
+                    );
+                  },
+                  separatorBuilder: (context, index) {
+                    return const SizedBox(height: 10);
+                  },
+                  itemCount: state.blogs.length,
+                );
+              }
+              return SizedBox.shrink();
             },
-            separatorBuilder: (context, index) {
-              return const SizedBox(height: 10);
-            },
-            itemCount: 8,
-          )
+          ),
         ],
       ),
     );

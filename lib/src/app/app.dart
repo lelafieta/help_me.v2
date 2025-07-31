@@ -7,9 +7,10 @@ import '../config/routes/app_pages.dart';
 import '../config/themes/app_theme.dart';
 import '../app/di.dart' as di;
 import '../features/auth/presentation/cubit/auth_data/auth_data_cubit.dart';
-import '../features/blogs/presentation/cubit/blog_cubit.dart';
 import '../features/auth/presentation/cubit/auth_cubit.dart';
 import '../features/auth/presentation/cubit/initial_cubit/initial_cubit.dart';
+import '../features/blogs/presentation/cubit/blog_featured/blog_featured_cubit.dart';
+import '../features/blogs/presentation/cubit/blog_for_you/blog_for_you_cubit.dart';
 import '../features/campaigns/presentation/cubit/campaign_action_cubit/campaign_action_cubit.dart';
 import '../features/campaigns/presentation/cubit/campaign_detail_cubit/campaign_detail_cubit.dart';
 import '../features/campaigns/presentation/cubit/campaign_store_favorite_cubit/campaign_store_favorite_cubit.dart';
@@ -42,7 +43,8 @@ class UtuejiApp extends StatelessWidget {
         BlocProvider(create: (_) => di.sl<EventCubit>()),
         BlocProvider(create: (_) => di.sl<OngCubit>()),
         BlocProvider(create: (_) => di.sl<FeedCubit>()),
-        BlocProvider(create: (_) => di.sl<BlogCubit>()),
+        BlocProvider(create: (_) => di.sl<BlogFeaturedCubit>()),
+        BlocProvider(create: (_) => di.sl<BlogForYouCubit>()),
         BlocProvider(create: (_) => di.sl<MyCampaignCubit>()),
         BlocProvider(create: (_) => di.sl<CampaignDetailCubit>()),
         BlocProvider(create: (_) => di.sl<HomeCampaignCubit>()),

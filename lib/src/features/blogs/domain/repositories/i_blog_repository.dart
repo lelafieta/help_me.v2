@@ -1,6 +1,9 @@
+import 'package:dartz/dartz.dart';
+
+import '../../../../core/errors/failures.dart';
 import '../entities/blog_entity.dart';
 
 abstract class IBlogRepository {
-  Stream<List<BlogEntity>> fetchBlogs();
-  Stream<List<BlogEntity>> fetchLatestBlogs();
+  Future<Either<Failure, List<BlogEntity>>> getFeaturedBlogs();
+  Future<Either<Failure, List<BlogEntity>>> getForYouBlogs();
 }

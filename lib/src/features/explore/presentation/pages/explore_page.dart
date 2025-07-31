@@ -35,10 +35,7 @@ class _ExplorePageState extends State<ExplorePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: false,
-        title: const Text('Navegador'),
-      ),
+      appBar: AppBar(centerTitle: false, title: const Text('Navegador')),
       body: Column(
         children: [
           Container(
@@ -67,6 +64,7 @@ class _ExplorePageState extends State<ExplorePage> {
               ),
             ),
           ),
+
           const SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -102,9 +100,7 @@ class _ExplorePageState extends State<ExplorePage> {
             ],
           ),
           const SizedBox(height: 5),
-          Expanded(
-            child: widgets[selectedIndex],
-          ),
+          Expanded(child: widgets[selectedIndex]),
         ],
       ),
     );
@@ -129,16 +125,14 @@ class OngContainer extends StatelessWidget {
                   "ONG's Populares",
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
-                TextButton(onPressed: () {}, child: Text("Ver mais"))
+                TextButton(onPressed: () {}, child: Text("Ver mais")),
               ],
             ),
           ),
           BlocBuilder<OngCubit, OngState>(
             builder: (context, state) {
               if (state is OngLoading) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
+                return const Center(child: CircularProgressIndicator());
               } else if (state is OngLoaded) {
                 if (state.ongs.isEmpty) {
                   return Center(child: Text("Sem ongs registadas"));
@@ -154,17 +148,16 @@ class OngContainer extends StatelessWidget {
                     reverse: false,
                     autoPlay: false,
                     autoPlayInterval: const Duration(seconds: 3),
-                    autoPlayAnimationDuration:
-                        const Duration(milliseconds: 800),
+                    autoPlayAnimationDuration: const Duration(
+                      milliseconds: 800,
+                    ),
                     autoPlayCurve: Curves.fastOutSlowIn,
                     enlargeCenterPage: false,
                     enlargeFactor: 0.3,
                     scrollDirection: Axis.horizontal,
                   ),
                   items: state.ongs.map((ong) {
-                    return OngWidget(
-                      ong: ong,
-                    );
+                    return OngWidget(ong: ong);
                   }).toList(),
                 );
               }
@@ -176,19 +169,14 @@ class OngContainer extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  "Para ti",
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
+                Text("Para ti", style: Theme.of(context).textTheme.titleLarge),
               ],
             ),
           ),
           BlocBuilder<OngCubit, OngState>(
             builder: (context, state) {
               if (state is OngLoading) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
+                return const Center(child: CircularProgressIndicator());
               } else if (state is OngLoaded) {
                 if (state.ongs.isEmpty) {
                   return Center(child: Text("Sem ongs registadas"));
@@ -228,8 +216,9 @@ class OngContainer extends StatelessWidget {
                                 children: [
                                   Text(
                                     "Lorem ipsum dolor sit amet",
-                                    style:
-                                        Theme.of(context).textTheme.titleSmall,
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.titleSmall,
                                     overflow: TextOverflow.ellipsis,
                                     maxLines: 1,
                                   ),

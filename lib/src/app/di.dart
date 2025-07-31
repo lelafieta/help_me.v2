@@ -40,9 +40,10 @@ import '../features/blogs/data/datasources/blog_datasource.dart';
 import '../features/blogs/data/datasources/i_blog_datasource.dart';
 import '../features/blogs/data/repositories/blog_repository.dart';
 import '../features/blogs/domain/repositories/i_blog_repository.dart';
-import '../features/blogs/domain/usecases/fetch_blogs_usecase.dart';
-import '../features/blogs/domain/usecases/fetch_latest_blogs_usecase.dart';
-import '../features/blogs/presentation/cubit/blog_cubit.dart';
+import '../features/blogs/domain/usecases/get_foryou_blogs_usecase.dart';
+import '../features/blogs/domain/usecases/get_fatured_blogs_usecase.dart';
+import '../features/blogs/presentation/cubit/blog_featured/blog_featured_cubit.dart';
+import '../features/blogs/presentation/cubit/blog_for_you/blog_for_you_cubit.dart';
 import '../features/campaigns/data/datasources/donation_datasource.dart';
 import '../features/campaigns/data/datasources/i_campaign_datasource.dart';
 import '../features/campaigns/data/datasources/campaign_datasource.dart';
@@ -178,9 +179,8 @@ void _setUpCubits() {
   sl.registerFactory(() => EventCubit(getNearbyEventsUsecase: sl()));
   sl.registerFactory(() => OngCubit(getPopularesOngsUseCase: sl()));
   sl.registerFactory(() => FeedCubit(getFeedsUseCase: sl()));
-  sl.registerFactory(
-    () => BlogCubit(fetchBlogUseCase: sl(), fetchLatestBlogUseCase: sl()),
-  );
+  sl.registerFactory(() => BlogFeaturedCubit(getFeaturedBlogsUseCase: sl()));
+  sl.registerFactory(() => BlogForYouCubit(getForYouBlogsUseCase: sl()));
 
   sl.registerFactory(() => CampaignDetailCubit(getCampaignByIdUseCase: sl()));
 
@@ -294,12 +294,8 @@ void _setUpUsecases() {
     () => GetFeedsUseCase(repository: sl()),
   );
 
-  sl.registerLazySingleton<FetchBlogUseCase>(
-    () => FetchBlogUseCase(repository: sl()),
-  );
-  sl.registerLazySingleton<FetchLatestBlogUseCase>(
-    () => FetchLatestBlogUseCase(repository: sl()),
-  );
+  sl.registerLazySingleton(() => GetFeaturedBlogsUseCase(repository: sl()));
+  sl.registerLazySingleton(() => GetForYouBlogsUseCase(repository: sl()));
 
   sl.registerLazySingleton<GetCampaignByIdUseCase>(
     () => GetCampaignByIdUseCase(repository: sl()),
@@ -362,7 +358,7 @@ void _setUpRepositories() {
     () => FeedRepository(feedDataSource: sl(), netWorkInfo: sl()),
   );
   sl.registerLazySingleton<IBlogRepository>(
-    () => BlogRepository(datasource: sl()),
+    () => BlogRepository(blogDataSource: sl(), netWorkInfo: sl()),
   );
   sl.registerLazySingleton<IFavoriteRepository>(
     () => FavoriteRepository(favoriteDataSource: sl(), netWorkInfo: sl()),
@@ -395,9 +391,7 @@ void _setUpDatasources() {
   sl.registerLazySingleton<IOngDataSource>(() => OngDataSource(dio: sl()));
   sl.registerLazySingleton<IFeedDataSource>(() => FeedDataSource(dio: sl()));
 
-  sl.registerLazySingleton<IBlogDataSource>(
-    () => BlogDataSource(supabase: sl()),
-  );
+  sl.registerLazySingleton<IBlogDataSource>(() => BlogDataSource(dio: sl()));
 
   sl.registerLazySingleton<IFavoriteDataSource>(
     () => FavoriteDataSource(dio: sl()),

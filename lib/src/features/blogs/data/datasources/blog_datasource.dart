@@ -1,41 +1,25 @@
-import 'package:supabase_flutter/supabase_flutter.dart';
-
-import '../../../../core/supabase/supabase_consts.dart';
+import 'package:dio/dio.dart';
 import '../models/blog_model.dart';
 import 'i_blog_datasource.dart';
 
 class BlogDataSource extends IBlogDataSource {
-  final SupabaseClient supabase;
+  final Dio dio;
 
-  BlogDataSource({required this.supabase});
+  BlogDataSource({required this.dio});
 
   @override
-  Stream<List<BlogModel>> fetchBlogs() {
-    final blogs = supabase
-        .from(SupabaseConsts.blogs)
-        .select("*, user:profiles(*), ong:ongs(*)")
-        .order('created_at')
-        .limit(10)
-        .asStream()
-        .map((data) {
-      return data.map((blog) => BlogModel.fromMap(blog)).toList();
-    });
-
-    return blogs;
+  Future<List<BlogModel>> getFeaturedBlogs() async {
+    final response = await dio.get('/blogs/featured');
+    return (response.data as List)
+        .map((json) => BlogModel.fromJson(json))
+        .toList();
   }
 
   @override
-  Stream<List<BlogModel>> fetchLatestBlogs() {
-    final blogs = supabase
-        .from(SupabaseConsts.blogs)
-        .select("*, user:profiles(*), ong:ongs(*)")
-        .order('created_at')
-        .limit(10)
-        .asStream()
-        .map((data) {
-      return data.map((blog) => BlogModel.fromMap(blog)).toList();
-    });
-
-    return blogs;
+  Future<List<BlogModel>> getForYouBlogs() async {
+    final response = await dio.get('/blogs/for-you');
+    return (response.data as List)
+        .map((json) => BlogModel.fromJson(json))
+        .toList();
   }
 }
