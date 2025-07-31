@@ -218,21 +218,6 @@ class _CampaignDetailPageState extends State<CampaignDetailPage> {
       },
     );
   }
-
-  Widget _menuWidget(CampaignEntity campaign) {
-    switch (selected) {
-      case 0:
-        return AboutWidget(campaign: campaign);
-      case 1:
-        return DocumentWidget(campaign: campaign);
-      case 2:
-        return UpdateWidget(campaign: campaign);
-      case 3:
-        return HelpWidget(campaign: campaign);
-      default:
-        return Text("4");
-    }
-  }
 }
 
 class GalleryWidget extends StatelessWidget {

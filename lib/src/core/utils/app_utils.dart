@@ -4,17 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:intl/intl.dart';
 import 'package:roundcheckbox/roundcheckbox.dart';
 import 'package:utueji/core/gen/assets.gen.dart';
-import 'package:utueji/src/app/app_entity.dart';
 
 import '../../config/themes/app_colors.dart';
 import '../../features/campaigns/domain/entities/campaign_contributor_entity.dart';
 import '../../features/campaigns/presentation/cubit/campaign_store_favorite_cubit/campaign_store_favorite_cubit.dart';
-import '../../features/favorites/domain/entities/favorite_entity.dart';
 import '../../features/favorites/presentation/cubit/favorite_cubit.dart';
 import '../resources/icons/app_icons.dart';
 import 'app_date_utils_helper.dart';

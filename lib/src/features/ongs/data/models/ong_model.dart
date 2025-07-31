@@ -1,3 +1,4 @@
+import 'package:utueji/src/features/ongs/data/models/impact_model.dart';
 import 'package:utueji/src/features/ongs/data/models/ong_document_model.dart';
 
 import '../../domain/entities/ong_entity.dart';
@@ -25,6 +26,7 @@ class OngModel extends OngEntity {
     super.vision,
     super.ongDocument,
     super.ongMember,
+    super.impacts,
   });
 
   factory OngModel.fromJson(Map<String, dynamic> json) {
@@ -55,6 +57,12 @@ class OngModel extends OngEntity {
       ongMember: (json['ongMember'] != null)
           ? List<OngMemberModel>.from(
               json['ongMember'].map((x) => OngMemberModel.fromJson(x)),
+            )
+          : null,
+
+      impacts: (json['impacts'] != null)
+          ? List<ImpactModel>.from(
+              json['impacts'].map((x) => ImpactModel.fromJson(x)),
             )
           : null,
     );

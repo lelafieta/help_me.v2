@@ -8,6 +8,7 @@ import 'package:sliver_snap/widgets/sliver_snap.dart';
 import 'package:utueji/core/gen/assets.gen.dart';
 import 'package:utueji/src/core/resources/images/app_images.dart';
 import 'package:utueji/src/core/utils/image_helper.dart';
+import '../../../../config/routes/app_routes.dart';
 import '../../../../config/themes/app_colors.dart';
 import '../../../../core/resources/icons/app_icons.dart';
 import '../../../../core/utils/app_date_utils_helper.dart';
@@ -42,330 +43,101 @@ class _EventDetailPageState extends State<EventDetailPage> {
 
     progressBarWidth = MediaQuery.sizeOf(context).width * percentage;
 
-    return DefaultTabController(
-      length: 4,
-      child: SliverSnap(
-        onCollapseStateChanged: (isCollapsed, scrollingOffset, maxExtent) {},
-        collapsedBackgroundColor: Colors.black,
-        expandedBackgroundColor: Colors.transparent,
-        backdropWidget: SizedBox.shrink(),
-        leading: Container(
-          margin: const EdgeInsets.all(8.0),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            shape: BoxShape.rectangle,
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: IconButton(
-            onPressed: () {
-              Get.back();
-            },
-            icon: SvgPicture.asset(
-              Assets.icons.aarrowLeftLg,
-              color: Colors.black,
-            ),
-          ),
-        ),
-        bottom: PreferredSize(
-          preferredSize: Size.fromHeight(50),
-          child: Container(
-            width: double.infinity,
-            decoration: BoxDecoration(
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(20.0),
-                topRight: Radius.circular(20.0),
+    return Scaffold(
+      bottomNavigationBar: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: ElevatedButton(
+            style: ButtonStyle(
+              shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(
+                    AppValues.s10,
+                  ), // Define o raio da borda aqui
+                ),
               ),
-              color: Theme.of(context).scaffoldBackgroundColor,
             ),
-            child: TabBar(
-              isScrollable: false,
-              labelColor: AppColors.primaryColor,
-              labelStyle: Theme.of(
-                context,
-              ).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold),
-              unselectedLabelStyle: Theme.of(context).textTheme.bodyMedium,
-              unselectedLabelColor: Colors.grey,
-              indicatorColor: AppColors.primaryColor,
-
-              onTap: (index) {
-                setState(() {
-                  // pageSelectedIndex = index;
-                });
-              },
-              tabs: [
-                Tab(text: "Sumário"),
-                Tab(text: "Comentários"),
-                Tab(text: "Ajuda"),
-              ],
-            ),
+            onPressed: () {
+              // Get.toNamed(AppRoutes.paymentRoute, arguments: widget.campaign);
+            },
+            child: const Text("Participar"),
           ),
-        ),
-
-        expandedContentHeight: 200,
-        expandedContent: CachedNetworkImage(
-          imageUrl: ImageHelper.buildImageUrl(widget.event.backgroundImageUrl!),
-          fit: BoxFit.cover,
-          progressIndicatorBuilder: (context, url, downloadProgress) =>
-              CircularProgressIndicator(value: downloadProgress.progress),
-          errorWidget: (context, url, error) => const Icon(Icons.error),
-        ),
-        collapsedContent: SizedBox.shrink(),
-        body: Material(
-          color: Theme.of(context).scaffoldBackgroundColor,
-          elevation: 7,
-          child: SummaryWidget(event: widget.event),
         ),
       ),
-    );
-
-    return NestedScrollView(
-      headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-        if (innerBoxIsScrolled) {
-          color.value = Colors.black;
-        }
-        return [
-          ValueListenableBuilder(
-            valueListenable: color,
-            builder: (context, value, _) {
-              return SliverAppBar(
-                expandedHeight: 300.0,
-                floating: false,
-                pinned: true,
-                leading: IconButton(
-                  onPressed: () {},
-                  icon: Icon(Icons.arrow_back, color: value),
-                ),
-                actions: [
-                  IconButton(
-                    onPressed: () {},
-                    icon: Icon(Icons.share, color: value),
-                  ),
-                ],
-                flexibleSpace: FlexibleSpaceBar(
-                  // title: Text(event.title!),
-                  background: CachedNetworkImage(
-                    imageUrl: widget.event.backgroundImageUrl!,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                bottom: PreferredSize(
-                  preferredSize: const Size.fromHeight(150.0),
-                  child: Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(vertical: 10),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).scaffoldBackgroundColor,
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(20.0),
-                        topRight: Radius.circular(20.0),
-                      ),
-                    ),
-                    child: Column(
-                      children: [
-                        ListTile(
-                          title: Text(
-                            widget.event.title!,
-                            style: Theme.of(context).textTheme.titleLarge!
-                                .copyWith(fontWeight: FontWeight.bold),
-                          ),
-                          trailing: ClipRRect(
-                            borderRadius: BorderRadius.circular(50),
-                            child: Container(
-                              padding: const EdgeInsets.all(8),
-                              color: Colors.white,
-                              child: SvgPicture.asset(
-                                AppIcons.heartBold,
-                                color: Colors.red,
-                                width: 20,
-                              ),
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10),
-                            child: ListTile(
-                              contentPadding: EdgeInsets.all(0),
-                              leading: ClipRRect(
-                                borderRadius: BorderRadius.circular(50),
-                                child: Container(
-                                  width: 50,
-                                  height: 50,
-                                  child: CachedNetworkImage(
-                                    imageUrl: widget.event.ong!.coverImageUrl!,
-                                    fit: BoxFit.cover,
-                                    progressIndicatorBuilder:
-                                        (context, url, downloadProgress) =>
-                                            CircularProgressIndicator(
-                                              value: downloadProgress.progress,
-                                            ),
-                                    errorWidget: (context, url, error) =>
-                                        Icon(Icons.error),
-                                  ),
-                                ),
-                              ),
-                              title: Text(
-                                widget.event.ong!.name!,
-                                style: Theme.of(context).textTheme.titleMedium!
-                                    .copyWith(fontWeight: FontWeight.bold),
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              subtitle: Text(widget.event.ong!.bio!),
-                              trailing: Container(
-                                padding: const EdgeInsets.all(10),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(50),
-                                  color: Colors.black,
-                                ),
-                                child: const Text(
-                                  "Visualizar",
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              );
-            },
+      body: DefaultTabController(
+        length: 3,
+        child: SliverSnap(
+          onCollapseStateChanged: (isCollapsed, scrollingOffset, maxExtent) {},
+          collapsedBackgroundColor: Colors.black,
+          expandedBackgroundColor: Colors.transparent,
+          backdropWidget: SizedBox.shrink(),
+          leading: Container(
+            margin: const EdgeInsets.all(8.0),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              shape: BoxShape.rectangle,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: IconButton(
+              onPressed: () {
+                Get.back();
+              },
+              icon: SvgPicture.asset(
+                Assets.icons.aarrowLeftLg,
+                color: Colors.black,
+              ),
+            ),
           ),
-        ];
-      },
-      body: Container(
-        decoration: BoxDecoration(
-          color: Theme.of(context).scaffoldBackgroundColor,
-        ),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Divider(),
-              Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Row(
-                  children: [
-                    const Icon(Icons.access_time_sharp),
-                    const SizedBox(width: 10),
-                    Text(
-                      "${AppDateUtilsHelper.formatDate(data: widget.event.startDate!, showTime: true)}\n${AppDateUtilsHelper.formatDate(data: widget.event.startDate!, showTime: true)}",
-                    ),
-                  ],
+          bottom: PreferredSize(
+            preferredSize: Size.fromHeight(50),
+            child: Container(
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(20.0),
+                  topRight: Radius.circular(20.0),
                 ),
+                color: Theme.of(context).scaffoldBackgroundColor,
               ),
-              Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Row(
-                  children: [
-                    const Icon(Icons.location_on),
-                    const SizedBox(width: 10),
-                    Text(widget.event.location!),
-                  ],
-                ),
+              child: TabBar(
+                isScrollable: false,
+                labelColor: AppColors.primaryColor,
+                labelStyle: Theme.of(
+                  context,
+                ).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold),
+                unselectedLabelStyle: Theme.of(context).textTheme.bodyMedium,
+                unselectedLabelColor: Colors.grey,
+                indicatorColor: AppColors.primaryColor,
+
+                onTap: (index) {
+                  setState(() {
+                    // pageSelectedIndex = index;
+                  });
+                },
+                tabs: [
+                  Tab(text: "Sumário"),
+                  Tab(text: "Comentários"),
+                  Tab(text: "Ajuda"),
+                ],
               ),
-              const Divider(),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 20,
-                  horizontal: 10,
-                ),
-                child: Text(
-                  "Detalhes do Evento",
-                  style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Text(
-                  widget.event.description!,
-                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(),
-                  textAlign: TextAlign.justify,
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.all(10),
-                child: Container(
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: SizedBox(
-                          height: 16,
-                          child: Stack(
-                            children: [
-                              AppUtils.contributeUserItem(
-                                0,
-                                0,
-                                0,
-                                null,
-                                Colors.black,
-                              ),
-                              AppUtils.contributeUserItem(
-                                8,
-                                0,
-                                0,
-                                null,
-                                Colors.red,
-                              ),
-                              AppUtils.contributeUserItem(
-                                16,
-                                0,
-                                0,
-                                null,
-                                Colors.green,
-                              ),
-                              AppUtils.contributeUserItem(
-                                24,
-                                0,
-                                0,
-                                null,
-                                AppColors.primaryColor,
-                                text: "+16",
-                              ),
-                              AppUtils.contributeUserDescription(
-                                60,
-                                0,
-                                0,
-                                null,
-                                Colors.transparent,
-                                text: "Contributos",
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: () {},
-                        child: const Text("Ver mais"),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: ElevatedButton(
-                    style: ButtonStyle(
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                            AppValues.s10,
-                          ), // Define o raio da borda aqui
-                        ),
-                      ),
-                    ),
-                    onPressed: () {},
-                    child: Text("Participar"),
-                  ),
-                ),
-              ),
-            ],
+            ),
+          ),
+
+          expandedContentHeight: 200,
+          expandedContent: CachedNetworkImage(
+            imageUrl: ImageHelper.buildImageUrl(
+              widget.event.backgroundImageUrl!,
+            ),
+            fit: BoxFit.cover,
+            progressIndicatorBuilder: (context, url, downloadProgress) =>
+                CircularProgressIndicator(value: downloadProgress.progress),
+            errorWidget: (context, url, error) => const Icon(Icons.error),
+          ),
+          collapsedContent: SizedBox.shrink(),
+          body: Material(
+            color: Theme.of(context).scaffoldBackgroundColor,
+            elevation: 7,
+            child: SummaryWidget(event: widget.event),
           ),
         ),
       ),

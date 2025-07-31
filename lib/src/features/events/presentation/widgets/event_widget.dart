@@ -20,15 +20,15 @@ class EventWidget extends StatefulWidget {
 
 class _EventWidgetState extends State<EventWidget> {
   List<Map<String, dynamic>> list = [];
-  String textForMore = "membros";
+  String textForMore = "Participante";
 
   @override
   void initState() {
-    // list = widget.event..map((toElement) {
-    //   Map<String, dynamic> item = {};
-    //   item["user"] = toElement.user;
-    //   return item;
-    // }).toList();
+    list = widget.event.eventParticipants.map((toElement) {
+      Map<String, dynamic> item = {};
+      item["user"] = toElement.user;
+      return item;
+    }).toList();
     super.initState();
   }
 
@@ -154,7 +154,7 @@ class _EventWidgetState extends State<EventWidget> {
                       // SvgPicture.asset(AppIcons.heartBold, color: Colors.red),
                     ],
                   ),
-                  const SizedBox(height: 10),
+
                   Row(
                     children: [
                       const Icon(Icons.location_on_rounded, size: 16),
@@ -171,57 +171,24 @@ class _EventWidgetState extends State<EventWidget> {
                     ],
                   ),
                   const SizedBox(height: 5),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: SizedBox(
-                          height: 16,
-                          child: Stack(
-                            children: [
-                              AppUtils.contributeUserItem(
-                                0,
-                                0,
-                                0,
-                                null,
-                                Colors.black,
-                              ),
-                              AppUtils.contributeUserItem(
-                                8,
-                                0,
-                                0,
-                                null,
-                                Colors.red,
-                              ),
-                              AppUtils.contributeUserItem(
-                                16,
-                                0,
-                                0,
-                                null,
-                                Colors.green,
-                              ),
-                              AppUtils.contributeUserItem(
-                                24,
-                                0,
-                                0,
-                                null,
-                                AppColors.primaryColor,
-                                text: "+16",
-                              ),
-                              AppUtils.contributeUserDescription(
-                                60,
-                                0,
-                                0,
-                                null,
-                                Colors.transparent,
-                                text: "Participantes",
-                              ),
-                            ],
+                  SizedBox(
+                    height: 20,
+                    width: double.infinity,
+
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: AppUtils.memberParticipatesWidget(
+                            list: list,
+                            textForMore: textForMore,
                           ),
                         ),
-                      ),
 
-                      Text("${widget.event.distanceKm!.toStringAsFixed(1)} km"),
-                    ],
+                        Text(
+                          "${widget.event.distanceKm!.toStringAsFixed(1)} km",
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),

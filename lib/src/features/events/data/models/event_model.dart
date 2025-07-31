@@ -1,6 +1,7 @@
 import '../../../auth/data/models/user_model.dart';
 import '../../../ongs/data/models/ong_model.dart';
 import '../../domain/entities/event_entity.dart';
+import 'event_participant_model.dart';
 
 class EventModel extends EventEntity {
   EventModel({
@@ -19,6 +20,7 @@ class EventModel extends EventEntity {
     super.user,
     super.distanceKm,
     super.isFavorite,
+    required super.eventParticipants,
   });
 
   // Factory para criar uma instância de EventModel a partir de um Map
@@ -38,6 +40,9 @@ class EventModel extends EventEntity {
       backgroundImageUrl: map['backgroundImageUrl'],
       startDate: DateTime.parse(map['startDate']),
       endDate: DateTime.parse(map['endDate']),
+      eventParticipants: List<EventParticipantModel>.from(
+        map['eventParticipants'].map((x) => EventParticipantModel.fromJson(x)),
+      ),
       distanceKm: (map['distanceKm'] as num),
       ong: (map['ong'] != null) ? OngModel.fromJson(map['ong']) : null,
       user: (map['user'] != null) ? UserModel.fromJson(map['user']) : null,

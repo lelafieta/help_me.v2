@@ -1,3 +1,5 @@
+import 'package:utueji/src/features/events/domain/entities/event_participant_entity.dart';
+
 import '../../../auth/domain/entities/user_entity.dart';
 import '../../../ongs/domain/entities/ong_entity.dart';
 
@@ -17,6 +19,7 @@ class EventEntity {
   final OngEntity? ong;
   final UserEntity? user;
   final bool? isFavorite;
+  final List<EventParticipantEntity> eventParticipants;
 
   EventEntity({
     this.id,
@@ -34,5 +37,6 @@ class EventEntity {
     this.user,
     this.distanceKm,
     this.isFavorite,
+    required this.eventParticipants,
   });
 }
