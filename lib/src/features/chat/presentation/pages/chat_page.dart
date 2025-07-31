@@ -3,6 +3,8 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
+import 'package:utueji/src/config/routes/app_routes.dart';
 import 'package:utueji/src/core/utils/image_helper.dart';
 import 'package:utueji/src/features/communities/presentation/cubit/community_cubit.dart';
 import 'package:utueji/src/features/ongs/presentation/widgets/ong_widget.dart';
@@ -122,92 +124,102 @@ class _ChatPageState extends State<ChatPage> {
                             itemBuilder: (context, index) {
                               final community = communities[index];
 
-                              return ClipRRect(
-                                borderRadius: BorderRadius.circular(5),
-                                child: Stack(
-                                  children: [
-                                    Container(
-                                      width: 80,
-                                      decoration: BoxDecoration(
-                                        color: Colors.red,
-                                        borderRadius: BorderRadius.circular(5),
+                              return InkWell(
+                                onTap: () {
+                                  Get.toNamed(
+                                    AppRoutes.communityRoute,
+                                    arguments: community,
+                                  );
+                                },
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(5),
+                                  child: Stack(
+                                    children: [
+                                      Container(
+                                        width: 80,
+                                        decoration: BoxDecoration(
+                                          color: Colors.red,
+                                          borderRadius: BorderRadius.circular(
+                                            5,
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                    Positioned(
-                                      left: 0,
-                                      right: 0,
-                                      top: 0,
-                                      bottom: 0,
-                                      child: (community.imageUrl != null)
-                                          ? CachedNetworkImage(
-                                              imageUrl:
-                                                  ImageHelper.buildImageUrl(
-                                                    community.imageUrl!,
-                                                  ),
-                                              fit: BoxFit.cover,
-                                            )
-                                          : Image.asset(
-                                              AppImages.image1,
-                                              fit: BoxFit.cover,
+                                      Positioned(
+                                        left: 0,
+                                        right: 0,
+                                        top: 0,
+                                        bottom: 0,
+                                        child: (community.imageUrl != null)
+                                            ? CachedNetworkImage(
+                                                imageUrl:
+                                                    ImageHelper.buildImageUrl(
+                                                      community.imageUrl!,
+                                                    ),
+                                                fit: BoxFit.cover,
+                                              )
+                                            : Image.asset(
+                                                AppImages.image1,
+                                                fit: BoxFit.cover,
+                                              ),
+                                      ),
+                                      Positioned(
+                                        left: 0,
+                                        right: 0,
+                                        top: 0,
+                                        bottom: 0,
+                                        child: Container(color: Colors.black26),
+                                      ),
+                                      Positioned(
+                                        left: 0,
+                                        right: 0,
+                                        bottom: 0,
+                                        child: Container(
+                                          height: 45,
+                                          decoration: const BoxDecoration(
+                                            gradient: LinearGradient(
+                                              begin: Alignment.topCenter,
+                                              end: Alignment.bottomCenter,
+                                              colors: [
+                                                Colors.transparent,
+                                                Colors.black,
+                                              ],
                                             ),
-                                    ),
-                                    Positioned(
-                                      left: 0,
-                                      right: 0,
-                                      top: 0,
-                                      bottom: 0,
-                                      child: Container(color: Colors.black26),
-                                    ),
-                                    Positioned(
-                                      left: 0,
-                                      right: 0,
-                                      bottom: 0,
-                                      child: Container(
-                                        height: 45,
-                                        decoration: const BoxDecoration(
-                                          gradient: LinearGradient(
-                                            begin: Alignment.topCenter,
-                                            end: Alignment.bottomCenter,
-                                            colors: [
-                                              Colors.transparent,
-                                              Colors.black,
-                                            ],
                                           ),
-                                        ),
-                                        child: Padding(
-                                          padding: EdgeInsets.all(5.0),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                community.name,
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  fontSize: 10,
-                                                  fontWeight: FontWeight.w600,
+                                          child: Padding(
+                                            padding: EdgeInsets.all(5.0),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  community.name,
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    fontSize: 10,
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                                  maxLines: 1,
                                                 ),
-                                                maxLines: 1,
-                                              ),
-                                              Text(
-                                                "${community.membersCount} membros",
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  fontSize: 10,
-                                                  fontWeight: FontWeight.w600,
+                                                Text(
+                                                  "${community.membersCount} membros",
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    fontSize: 10,
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                                  maxLines: 1,
                                                 ),
-                                                maxLines: 1,
-                                              ),
-                                            ],
+                                              ],
+                                            ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               );
                             },

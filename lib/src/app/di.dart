@@ -120,6 +120,12 @@ import '../features/ongs/domain/usecases/create_ong_usecase.dart';
 import '../features/ongs/domain/usecases/get_populares_ongs_usecase.dart';
 import '../features/ongs/presentation/cubit/ong_action_cubit/ong_action_cubit.dart';
 import '../features/ongs/presentation/cubit/ong_cubit.dart';
+import '../features/posts/data/datasources/i_post_datasource.dart';
+import '../features/posts/data/datasources/post_datasource.dart';
+import '../features/posts/data/repositories/post_repository.dart';
+import '../features/posts/domain/repositories/i_post_repository.dart';
+import '../features/posts/domain/usecases/get_posts_by_community_id_usecase.dart';
+import '../features/posts/presentation/cubit/post_cubit.dart';
 import '../features/profile/presentation/cubit/count_donation_cubit/count_donation_cubit.dart';
 import '../features/profile/presentation/cubit/profile_cubit.dart';
 import '../features/solidary/cubit/solidary_cubit.dart';
@@ -243,6 +249,7 @@ void _setUpCubits() {
   sl.registerFactory(() => UserLocalDataCubit(authLocalDataSource: sl()));
 
   sl.registerFactory(() => CommunityCubit(getMyCommunitiesUseCase: sl()));
+  sl.registerFactory(() => PostCubit(getPostsByCommunityIdUseCase: sl()));
 }
 
 void _setUpUsecases() {
@@ -339,6 +346,9 @@ void _setUpUsecases() {
   );
 
   sl.registerLazySingleton(() => GetMyCommunitiesUseCase(repository: sl()));
+  sl.registerLazySingleton(
+    () => GetPostsByCommunityIdUseCase(repository: sl()),
+  );
 }
 
 void _setUpRepositories() {
@@ -385,6 +395,9 @@ void _setUpRepositories() {
   sl.registerLazySingleton<ICommunityRepository>(
     () => CommunityRepository(netWorkInfo: sl(), communityDataSource: sl()),
   );
+  sl.registerLazySingleton<IPostRepository>(
+    () => PostRepository(netWorkInfo: sl(), postDataSource: sl()),
+  );
 }
 
 void _setUpDatasources() {
@@ -423,4 +436,5 @@ void _setUpDatasources() {
   sl.registerLazySingleton<ICommunityDataSource>(
     () => CommunityDataSource(dio: sl()),
   );
+  sl.registerLazySingleton<IPostDataSource>(() => PostDataSource(dio: sl()));
 }

@@ -25,4 +25,5 @@ class AppRoutes {
   static const String profileRoute = "/profile";
   static const String createOngRoute = "/createOng";
   static const String successRegisterOng = "/successRegisterOng";
+  static const String communityRoute = "/community";
 }

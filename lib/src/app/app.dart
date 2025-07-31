@@ -27,6 +27,7 @@ import '../features/feeds/presentation/cubit/feed_cubit.dart';
 import '../features/home/presentation/cubit/home_campaign_cubit/home_campaign_cubit.dart';
 import '../features/home/presentation/cubit/home_profile_data_cubit/home_profile_data_cubit.dart';
 import '../features/ongs/presentation/cubit/ong_cubit.dart';
+import '../features/posts/presentation/cubit/post_cubit.dart';
 import '../features/profile/presentation/cubit/count_donation_cubit/count_donation_cubit.dart';
 import '../features/profile/presentation/cubit/profile_cubit.dart';
 import '../features/solidary/cubit/solidary_cubit.dart';
@@ -67,6 +68,7 @@ class UtuejiApp extends StatelessWidget {
         BlocProvider(create: (_) => di.sl<CategoryCubit>()..getAllCategories()),
         BlocProvider(create: (_) => di.sl<UserLocalDataCubit>()..loadUser()),
         BlocProvider(create: (_) => di.sl<CommunityCubit>()),
+        BlocProvider(create: (_) => di.sl<PostCubit>()),
       ],
       child: GetMaterialApp(
         theme: AppTheme.lightTheme,
