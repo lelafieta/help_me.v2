@@ -22,6 +22,9 @@ class $AssetsIconsGen {
   /// File path: assets/icons/Aarrow-left-lg.svg
   String get aarrowLeftLg => 'assets/icons/Aarrow-left-lg.svg';
 
+  /// File path: assets/icons/add-1-solid.svg
+  String get add1Solid => 'assets/icons/add-1-solid.svg';
+
   /// File path: assets/icons/add-friends-filled.svg
   String get addFriendsFilled => 'assets/icons/add-friends-filled.svg';
 
@@ -171,6 +174,12 @@ class $AssetsIconsGen {
   /// File path: assets/icons/mobile-3.svg
   String get mobile3 => 'assets/icons/mobile-3.svg';
 
+  /// File path: assets/icons/more-vert.svg
+  String get moreVert => 'assets/icons/more-vert.svg';
+
+  /// File path: assets/icons/more.svg
+  String get more => 'assets/icons/more.svg';
+
   /// File path: assets/icons/note-04.svg
   String get note04 => 'assets/icons/note-04.svg';
 
@@ -224,6 +233,9 @@ class $AssetsIconsGen {
   /// File path: assets/icons/triangle-warning.svg
   String get triangleWarning => 'assets/icons/triangle-warning.svg';
 
+  /// File path: assets/icons/user-add-2-fill.svg
+  String get userAdd2Fill => 'assets/icons/user-add-2-fill.svg';
+
   /// File path: assets/icons/whatsapp.svg
   String get whatsapp => 'assets/icons/whatsapp.svg';
 
@@ -233,6 +245,7 @@ class $AssetsIconsGen {
   /// List of all assets
   List<String> get values => [
         aarrowLeftLg,
+        add1Solid,
         addFriendsFilled,
         alert,
         animalShelter,
@@ -282,6 +295,8 @@ class $AssetsIconsGen {
         menu,
         microphone,
         mobile3,
+        moreVert,
+        more,
         note04,
         notificationBellOutline,
         oldMan,
@@ -299,6 +314,7 @@ class $AssetsIconsGen {
         squarePlus,
         tennis,
         triangleWarning,
+        userAdd2Fill,
         whatsapp,
         x
       ];

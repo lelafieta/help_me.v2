@@ -87,6 +87,29 @@ class AppUtils {
   //     ),
   //   );
   // }
+  static Widget buildHashtagText(String text, BuildContext context) {
+    final RegExp regex = RegExp(r'(#\w+)|([^\#]+)');
+    final matches = regex.allMatches(text);
+
+    return RichText(
+      text: TextSpan(
+        style: DefaultTextStyle.of(context).style,
+        children: matches.map((match) {
+          final String matchText = match.group(0)!;
+          final bool isHashtag = matchText.startsWith('#');
+
+          return TextSpan(
+            text: matchText,
+            style: TextStyle(
+              color: isHashtag ? Colors.blue : AppColors.textColor,
+              fontWeight: isHashtag ? FontWeight.bold : FontWeight.normal,
+            ),
+          );
+        }).toList(),
+      ),
+    );
+  }
+
   static Widget contributeUserItem(
     double left,
     double top,
