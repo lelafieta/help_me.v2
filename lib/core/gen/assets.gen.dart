@@ -215,6 +215,10 @@ class $AssetsIconsGen {
   /// File path: assets/icons/search.svg
   String get search => 'assets/icons/search.svg';
 
+  /// File path: assets/icons/settings-account-box-sharp.svg
+  String get settingsAccountBoxSharp =>
+      'assets/icons/settings-account-box-sharp.svg';
+
   /// File path: assets/icons/share.svg
   String get share => 'assets/icons/share.svg';
 
@@ -308,6 +312,7 @@ class $AssetsIconsGen {
         readerOutline,
         rewardedAdsOutlinerounded,
         search,
+        settingsAccountBoxSharp,
         share,
         shieldTrust,
         signOut,
@@ -336,6 +341,10 @@ class $AssetsImagesGen {
 
   /// File path: assets/images/child.png
   AssetGenImage get child => const AssetGenImage('assets/images/child.png');
+
+  /// File path: assets/images/colorful-letters-forming-word-community.jpg
+  AssetGenImage get colorfulLettersFormingWordCommunity => const AssetGenImage(
+      'assets/images/colorful-letters-forming-word-community.jpg');
 
   /// File path: assets/images/cover_background.png
   AssetGenImage get coverBackground =>
@@ -381,6 +390,7 @@ class $AssetsImagesGen {
         avatarBackground,
         charity,
         child,
+        colorfulLettersFormingWordCommunity,
         coverBackground,
         eu,
         healthcare,

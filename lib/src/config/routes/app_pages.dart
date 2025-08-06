@@ -23,6 +23,7 @@ import '../../features/campaigns/presentation/pages/campaign_urgent_page.dart';
 import '../../features/categories/domain/entities/category_entity.dart';
 import '../../features/chat/presentation/pages/chat_page.dart';
 import '../../features/communities/domain/entities/community_entity.dart';
+import '../../features/communities/presentation/pages/community_details_page.dart';
 import '../../features/events/domain/entities/event_entity.dart';
 import '../../features/events/presentation/pages/event_detail_page.dart';
 import '../../features/events/presentation/pages/event_page.dart';
@@ -468,6 +469,23 @@ class RouteManager {
             );
           },
         );
+
+      case AppRoutes.communityDetailsRoute:
+        final community = routeSettings.arguments as CommunityEntity;
+        return PageRouteBuilder(
+          pageBuilder: (context, animation, secondaryAnimation) {
+            return CommunityDetailsPage(community: community);
+          },
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return SharedAxisTransition(
+              animation: animation,
+              secondaryAnimation: secondaryAnimation,
+              transitionType: SharedAxisTransitionType.vertical,
+              child: child,
+            );
+          },
+        );
+
       default:
         return MaterialPageRoute(
           builder: (context) => const Text("Rota não existente"),

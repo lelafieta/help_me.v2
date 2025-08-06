@@ -52,6 +52,7 @@ class _HomePageState extends State<HomePage> {
     context.read<HomeCampaignCubit>().getLatestUrgentCampaigns();
     context.read<EventCubit>().getNearbyEvents();
     context.read<OngCubit>().getLatestOngs();
+    context.read<CategoryCubit>().getAllCategories();
   }
 
   final List<Map<String, dynamic>> colorPairs = [

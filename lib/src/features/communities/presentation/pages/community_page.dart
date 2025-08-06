@@ -3,12 +3,11 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:photo_view/photo_view.dart';
-import 'package:photo_view/photo_view_gallery.dart';
-import 'package:utueji/src/core/utils/app_utils.dart';
+import 'package:get/get.dart';
 import 'package:utueji/src/features/posts/presentation/cubit/post_cubit.dart';
 
 import '../../../../../core/gen/assets.gen.dart';
+import '../../../../config/routes/app_routes.dart';
 import '../../../../core/resources/icons/app_icons.dart';
 import '../../../../core/utils/app_date_utils_helper.dart';
 import '../../../../core/utils/image_helper.dart';
@@ -34,7 +33,7 @@ class _CommunityPageState extends State<CommunityPage> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: false,
-        title: const Text('Caixa de Entrada'),
+        title: const Text('Comunidade'),
         actions: [
           IconButton(
             onPressed: () {},
@@ -45,8 +44,13 @@ class _CommunityPageState extends State<CommunityPage> {
             icon: SvgPicture.asset(Assets.icons.userAdd2Fill),
           ),
           IconButton(
-            onPressed: () {},
-            icon: SvgPicture.asset(Assets.icons.more),
+            onPressed: () {
+              Get.toNamed(
+                AppRoutes.communityDetailsRoute,
+                arguments: widget.community,
+              );
+            },
+            icon: SvgPicture.asset(Assets.icons.settingsAccountBoxSharp),
           ),
         ],
       ),
