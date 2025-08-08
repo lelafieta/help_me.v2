@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dotted_dashed_line/dotted_dashed_line.dart';
 
@@ -7,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
+
 import 'package:skeletonizer/skeletonizer.dart';
-import 'package:social_sharing_plus/social_sharing_plus.dart';
+
 import 'package:utueji/src/features/campaigns/presentation/cubit/campaign_urgent_cubit/campaign_urgent_cubit.dart';
 import 'package:utueji/src/features/campaigns/presentation/widgets/campaign_widget.dart';
 import '../../../../config/routes/app_routes.dart';
@@ -37,8 +35,9 @@ class CampaignUrgentPage extends StatefulWidget {
 }
 
 class _CampaignUrgentPageState extends State<CampaignUrgentPage> {
-  ValueNotifier<CampaignParams> params =
-      ValueNotifier<CampaignParams>(CampaignParams());
+  ValueNotifier<CampaignParams> params = ValueNotifier<CampaignParams>(
+    CampaignParams(),
+  );
   List<CampaignStatus> statuses = CampaignStatusExtension.allStatuses;
   final scrollController = ScrollController();
 
@@ -104,8 +103,9 @@ class _CampaignUrgentPageState extends State<CampaignUrgentPage> {
       if (scrollController.position.atEdge) {
         if (scrollController.position.pixels != 0) {
           context.read<CampaignUrgentCubit>().getUrgentCampaigns(
-              isRefresh: false,
-              params: CampaignParams(categoryId: params.value.categoryId));
+            isRefresh: false,
+            params: CampaignParams(categoryId: params.value.categoryId),
+          );
         }
       }
     });
@@ -121,9 +121,11 @@ class _CampaignUrgentPageState extends State<CampaignUrgentPage> {
   @override
   void initState() {
     context.read<CampaignUrgentCubit>().getUrgentCampaigns(
-        isRefresh: true,
-        params:
-            CampaignParams(categoryId: "a7408d26-8e08-49b2-b404-4855a00020b8"));
+      isRefresh: true,
+      params: CampaignParams(
+        categoryId: "a7408d26-8e08-49b2-b404-4855a00020b8",
+      ),
+    );
     setupScrollController();
     super.initState();
   }
@@ -140,10 +142,7 @@ class _CampaignUrgentPageState extends State<CampaignUrgentPage> {
         onPressed: () {
           Get.toNamed(AppRoutes.createCampaignRoute);
         },
-        child: const Icon(
-          Icons.add,
-          color: Colors.white,
-        ),
+        child: const Icon(Icons.add, color: Colors.white),
       ),
       body: ValueListenableBuilder<CampaignParams>(
         valueListenable: params,
@@ -151,16 +150,20 @@ class _CampaignUrgentPageState extends State<CampaignUrgentPage> {
           return Column(
             children: [
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 5,
+                ),
                 child: TextField(
                   onChanged: (value) {
                     params.value.title = value;
-                    context.read<MyCampaignCubit>().getAllMyCamapigns(
-                        isRefresh: true,
-                        params: CampaignParams(
-                            status: params.value.status,
-                            title: params.value.title));
+                    // context.read<MyCampaignCubit>().getAllMyCamapigns(
+                    //   isRefresh: true,
+                    //   params: CampaignParams(
+                    //     status: params.value.status,
+                    //     title: params.value.title,
+                    //   ),
+                    // );
                   },
                   decoration: InputDecoration(
                     hintText: "Pesquise campanhas, caridades...",
@@ -202,9 +205,11 @@ class _CampaignUrgentPageState extends State<CampaignUrgentPage> {
                           context
                               .read<CampaignUrgentCubit>()
                               .getUrgentCampaigns(
-                                  isRefresh: true,
-                                  params: CampaignParams(
-                                      categoryId: categories[index].id));
+                                isRefresh: true,
+                                params: CampaignParams(
+                                  categoryId: categories[index].id,
+                                ),
+                              );
                         });
                       },
                       child: Container(
@@ -275,9 +280,7 @@ class _CampaignUrgentPageState extends State<CampaignUrgentPage> {
                         }
                       },
                       separatorBuilder: (context, index) {
-                        return const SizedBox(
-                          height: 10,
-                        );
+                        return const SizedBox(height: 10);
                       },
                       itemCount: campaigns.length + (isLoading == true ? 1 : 0),
                     );
@@ -313,10 +316,12 @@ class _CampaignUrgentPageState extends State<CampaignUrgentPage> {
                   ),
                 ),
               ),
-              title: Text("Campaign",
-                  style: Theme.of(context).textTheme.titleSmall,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis),
+              title: Text(
+                "Campaign",
+                style: Theme.of(context).textTheme.titleSmall,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
               subtitle: Text("Date"),
               trailing: IconButton(
                 onPressed: () {},
@@ -337,9 +342,9 @@ class _CampaignUrgentPageState extends State<CampaignUrgentPage> {
                   Expanded(
                     child: RichText(
                       text: TextSpan(
-                        style: DefaultTextStyle.of(context)
-                            .style
-                            .copyWith(fontSize: 12),
+                        style: DefaultTextStyle.of(
+                          context,
+                        ).style.copyWith(fontSize: 12),
                         children: [
                           // const TextSpan(text: "Objectivo: "),
                           TextSpan(
@@ -359,20 +364,14 @@ class _CampaignUrgentPageState extends State<CampaignUrgentPage> {
                   ),
                   Row(
                     children: [
-                      Icon(
-                        Icons.history,
-                        color: AppColors.textColor,
-                        size: 18,
-                      ),
+                      Icon(Icons.history, color: AppColors.textColor, size: 18),
                       SizedBox(width: 5),
                       Text(
                         "Está acontecer",
-                        style: const TextStyle(
-                          fontSize: 12,
-                        ),
-                      )
+                        style: const TextStyle(fontSize: 12),
+                      ),
                     ],
-                  )
+                  ),
                 ],
               ),
             ),
@@ -384,9 +383,7 @@ class _CampaignUrgentPageState extends State<CampaignUrgentPage> {
 }
 
 class FeedContainer extends StatelessWidget {
-  const FeedContainer({
-    super.key,
-  });
+  const FeedContainer({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -412,7 +409,8 @@ class FeedContainer extends StatelessWidget {
                 trailing: Icon(Icons.more_vert),
               ),
               const Text(
-                  "Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet"),
+                "Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet",
+              ),
               const SizedBox(height: 10),
               ClipRRect(
                 borderRadius: BorderRadius.circular(15),
@@ -445,7 +443,7 @@ class FeedContainer extends StatelessWidget {
                               Icons.arrow_forward_ios_rounded,
                               size: 20,
                               color: Colors.white,
-                            )
+                            ),
                           ],
                         ),
                       ),
@@ -472,7 +470,7 @@ class FeedContainer extends StatelessWidget {
                           const Text(
                             "55",
                             style: TextStyle(color: Colors.black),
-                          )
+                          ),
                         ],
                       ),
                       const SizedBox(width: 20),
@@ -489,7 +487,7 @@ class FeedContainer extends StatelessWidget {
                           const Text(
                             "58",
                             style: TextStyle(color: Colors.black),
-                          )
+                          ),
                         ],
                       ),
                       const SizedBox(width: 20),
@@ -506,9 +504,9 @@ class FeedContainer extends StatelessWidget {
                           const Text(
                             "1.2M",
                             style: TextStyle(color: Colors.black),
-                          )
+                          ),
                         ],
-                      )
+                      ),
                     ],
                   ),
                   SvgPicture.asset(
@@ -517,15 +515,13 @@ class FeedContainer extends StatelessWidget {
                     width: 16,
                   ),
                 ],
-              )
+              ),
             ],
           ),
         );
       },
       separatorBuilder: (context, index) {
-        return const Divider(
-          height: 20,
-        );
+        return const Divider(height: 20);
       },
       itemCount: 10,
     );
@@ -577,9 +573,7 @@ class BlogContainer extends StatelessWidget {
                       children: [
                         Stack(
                           children: [
-                            Container(
-                              height: 150,
-                            ),
+                            Container(height: 150),
                             Positioned(
                               left: 0,
                               right: 0,
@@ -623,9 +617,7 @@ class BlogContainer extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 const Text("Publicado aos 13, Abril, 2025"),
-                                SizedBox(
-                                  height: 5,
-                                ),
+                                SizedBox(height: 5),
                                 Text(
                                   "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor",
                                   style: Theme.of(context).textTheme.titleSmall,
@@ -635,7 +627,7 @@ class BlogContainer extends StatelessWidget {
                               ],
                             ),
                           ),
-                        )
+                        ),
                       ],
                     ),
                   ),
@@ -648,10 +640,7 @@ class BlogContainer extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  "Para ti",
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
+                Text("Para ti", style: Theme.of(context).textTheme.titleLarge),
               ],
             ),
           ),
@@ -687,9 +676,7 @@ class BlogContainer extends StatelessWidget {
                                 overflow: TextOverflow.ellipsis,
                                 maxLines: 2,
                               ),
-                              SizedBox(
-                                height: 5,
-                              ),
+                              SizedBox(height: 5),
                               const Text("Publicado aos 13, Abril, 2025"),
                             ],
                           ),
@@ -711,7 +698,7 @@ class BlogContainer extends StatelessWidget {
               return const SizedBox(height: 10);
             },
             itemCount: 8,
-          )
+          ),
         ],
       ),
     );
@@ -727,9 +714,7 @@ class EventContainer extends StatelessWidget {
       builder: (context, state) {
         print(state);
         if (state is EventLoading) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
+          return const Center(child: CircularProgressIndicator());
         } else if (state is EventLoaded) {
           if (state.events.isEmpty) {
             return const Center(child: Text("Sem eventos registados"));
@@ -739,8 +724,11 @@ class EventContainer extends StatelessWidget {
               child: Column(
                 children: [
                   Container(
-                    padding:
-                        const EdgeInsets.only(left: 16, right: 16, top: 16),
+                    padding: const EdgeInsets.only(
+                      left: 16,
+                      right: 16,
+                      top: 16,
+                    ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -748,7 +736,7 @@ class EventContainer extends StatelessWidget {
                           "Eventos próximos de si",
                           style: Theme.of(context).textTheme.titleLarge,
                         ),
-                        TextButton(onPressed: () {}, child: Text("Ver mais"))
+                        TextButton(onPressed: () {}, child: Text("Ver mais")),
                       ],
                     ),
                   ),
@@ -763,22 +751,24 @@ class EventContainer extends StatelessWidget {
                       reverse: false,
                       autoPlay: false,
                       autoPlayInterval: const Duration(seconds: 3),
-                      autoPlayAnimationDuration:
-                          const Duration(milliseconds: 800),
+                      autoPlayAnimationDuration: const Duration(
+                        milliseconds: 800,
+                      ),
                       autoPlayCurve: Curves.fastOutSlowIn,
                       enlargeCenterPage: false,
                       enlargeFactor: 0.3,
                       scrollDirection: Axis.horizontal,
                     ),
                     items: events.map((event) {
-                      return EventWidget(
-                        event: event,
-                      );
+                      return EventWidget(event: event);
                     }).toList(),
                   ),
                   Container(
-                    padding:
-                        const EdgeInsets.only(left: 16, right: 16, top: 16),
+                    padding: const EdgeInsets.only(
+                      left: 16,
+                      right: 16,
+                      top: 16,
+                    ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -791,21 +781,18 @@ class EventContainer extends StatelessWidget {
                     ),
                   ),
                   ListView.separated(
-                      shrinkWrap: true,
-                      physics: const ClampingScrollPhysics(),
-                      padding: const EdgeInsets.all(14),
-                      itemBuilder: (context, index) {
-                        final event = events[index];
-                        return EventWidget(
-                          event: event,
-                        );
-                      },
-                      separatorBuilder: (context, index) {
-                        return const SizedBox(
-                          height: 10,
-                        );
-                      },
-                      itemCount: state.events.length)
+                    shrinkWrap: true,
+                    physics: const ClampingScrollPhysics(),
+                    padding: const EdgeInsets.all(14),
+                    itemBuilder: (context, index) {
+                      final event = events[index];
+                      return EventWidget(event: event);
+                    },
+                    separatorBuilder: (context, index) {
+                      return const SizedBox(height: 10);
+                    },
+                    itemCount: state.events.length,
+                  ),
                 ],
               ),
             );
@@ -823,12 +810,7 @@ class Category {
   String? description;
   DateTime? createdAt;
 
-  Category({
-    this.id,
-    this.name,
-    this.description,
-    this.createdAt,
-  });
+  Category({this.id, this.name, this.description, this.createdAt});
 
   Category copyWith({
     String? id,

@@ -1,6 +1,4 @@
-import 'package:equatable/equatable.dart';
-
-import '../../../domain/entities/campaign_entity.dart';
+part of 'my_campaign_cubit.dart';
 
 sealed class MyCampaignState extends Equatable {
   const MyCampaignState();
@@ -11,28 +9,24 @@ sealed class MyCampaignState extends Equatable {
 
 final class MyCampaignInitial extends MyCampaignState {}
 
-final class MyCampaignLoading extends MyCampaignState {
-  final List<CampaignEntity> oldCampaigns;
-  final bool isFirstFetch;
+final class MyCampaignLoading extends MyCampaignState {}
 
-  MyCampaignLoading(this.oldCampaigns, {this.isFirstFetch = false});
-}
+final class MyCampaignEmpty extends MyCampaignState {}
 
 final class MyCampaignLoaded extends MyCampaignState {
   final List<CampaignEntity> campaigns;
-  final bool isLastPage;
 
-  const MyCampaignLoaded({required this.campaigns, required this.isLastPage});
+  const MyCampaignLoaded({required this.campaigns});
 
   @override
   List<Object> get props => [campaigns];
 }
 
-final class MyCampaignError extends MyCampaignState {
-  final String message;
+final class MyCampaignFailure extends MyCampaignState {
+  final String failure;
 
-  const MyCampaignError({required this.message});
+  const MyCampaignFailure({required this.failure});
 
   @override
-  List<Object> get props => [message];
+  List<Object> get props => [failure];
 }

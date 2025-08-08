@@ -6,13 +6,17 @@ import '../entities/campaign_params.dart';
 
 abstract class ICampaignRepository {
   Future<Either<Failure, List<CampaignEntity>>> getAllCampaigns(
-      CampaignParams params);
-  Future<Either<Failure, List<CampaignEntity>>> getAllMyCampaigns(
-      CampaignParams params);
+    CampaignParams params,
+  );
+  Future<Either<Failure, List<CampaignEntity>>> getAllMyCampaigns({
+    String? status,
+  });
   Future<Either<Failure, List<CampaignEntity>>> getAllUrgentCampaigns(
-      CampaignParams params);
+    CampaignParams params,
+  );
   Future<Either<Failure, List<CampaignEntity>>> getLatestUrgentCampaigns(
-      CampaignParams params);
+    CampaignParams params,
+  );
   Future<Either<Failure, CampaignEntity>> getCampaignById(String id);
   Future<Either<Failure, Unit>> createCampaign(CampaignEntity campaign);
   Future<Either<Failure, Unit>> updateCampaign(CampaignEntity campaign);

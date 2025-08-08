@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 
 import 'package:utueji/src/core/errors/failures.dart';
+import 'package:utueji/src/features/campaigns/data/models/campaign_model.dart';
 
 import '../../../../core/network/i_network_info.dart';
 import '../../domain/entities/campaign_entity.dart';
@@ -22,7 +23,7 @@ class CampaignRepository implements ICampaignRepository {
   Future<Either<Failure, Unit>> createCampaign(CampaignEntity campaign) async {
     if (await networkInfo.isConnected == true) {
       try {
-        await campaignDataSource.createCampaign(campaign);
+        await campaignDataSource.createCampaign(CampaignModel());
         return right(unit);
       } catch (e) {
         return left(ServerFailure(errorMessage: e.toString()));
@@ -112,13 +113,17 @@ class CampaignRepository implements ICampaignRepository {
   }
 
   @override
-  Future<Either<Failure, List<CampaignEntity>>> getAllMyCampaigns(
-    CampaignParams params,
-  ) async {
-    if (await networkInfo.isConnected == true) {
+  Future<Either<Failure, List<CampaignEntity>>> getAllMyCampaigns({
+    String? status,
+  }) async {
+    if (await networkInfo.isConnected) {
       try {
-        final response = await campaignDataSource.getAllMyCampaigns(params);
+        final response = await campaignDataSource.getAllMyCampaigns(
+          status: status,
+        );
         return right(response);
+      } on DioException catch (e) {
+        return left(ServerFailure.fromDioException(e));
       } catch (e) {
         return left(ServerFailure(errorMessage: e.toString()));
       }

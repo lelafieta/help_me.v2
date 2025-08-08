@@ -18,6 +18,7 @@ import 'package:social_sharing_plus/social_sharing_plus.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:utueji/src/config/routes/app_routes.dart';
 import 'package:utueji/src/core/utils/app_utils.dart';
+import 'package:utueji/src/core/utils/image_helper.dart';
 import 'package:utueji/src/features/campaigns/domain/entities/campaign_entity.dart';
 
 import '../../../../config/themes/app_colors.dart';
@@ -85,16 +86,12 @@ class _MyCampaignDetailPageState extends State<MyCampaignDetailPage> {
       filteredData.value = allData.value
           .where((data) => data.date.isAfter(now.subtract(Duration(days: 7))))
           .toList();
-
-      print(filteredData.value.length);
     } else if (selectedFilter == "Últimos 30 dias") {
       filteredData.value = allData.value
           .where((data) => data.date.isAfter(now.subtract(Duration(days: 30))))
           .toList();
-      print(filteredData.value.length);
     } else {
       filteredData.value = List.from(allData.value);
-      print(filteredData.value.length);
     }
   }
 
@@ -227,7 +224,7 @@ class _MyCampaignDetailPageState extends State<MyCampaignDetailPage> {
                   ListTile(
                     leading: ClipRRect(
                       borderRadius: BorderRadius.circular(8),
-                      child: Container(
+                      child: SizedBox(
                         width: 50,
                         height: 50,
                         child: (widget.campaign.imageCoverUrl == null)
@@ -236,7 +233,9 @@ class _MyCampaignDetailPageState extends State<MyCampaignDetailPage> {
                                 fit: BoxFit.cover,
                               )
                             : CachedNetworkImage(
-                                imageUrl: campaign.imageCoverUrl!,
+                                imageUrl: ImageHelper.buildImageUrl(
+                                  campaign.imageCoverUrl!,
+                                ),
                                 fit: BoxFit.cover,
                                 placeholder: (context, url) =>
                                     const CircularProgressIndicator(),
@@ -251,157 +250,157 @@ class _MyCampaignDetailPageState extends State<MyCampaignDetailPage> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Card(
-                      shape: RoundedRectangleBorder(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
                         borderRadius: BorderRadius.circular(10),
+                        border: Border.all(
+                          color: Colors.grey.shade300,
+                          width: 1,
+                        ),
                       ),
-                      child: Container(
-                        padding: EdgeInsets.all(10),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text("Arrecadado"),
-                                      RichText(
-                                        text: TextSpan(
-                                          style: DefaultTextStyle.of(
-                                            context,
-                                          ).style,
-                                          children: [
-                                            TextSpan(
-                                              text: AppUtils.formatCurrency(
-                                                campaign.fundsRaised!,
-                                              ),
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .titleSmall!
-                                                  .copyWith(
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                            ),
-                                            const TextSpan(text: " / "),
-                                            TextSpan(
-                                              text: AppUtils.formatCurrency(
-                                                campaign.fundraisingGoal!,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      SizedBox(height: 10),
-                                      Text("Dias"),
-                                      RichText(
-                                        text: TextSpan(
-                                          style: DefaultTextStyle.of(
-                                            context,
-                                          ).style,
-                                          children: [
-                                            TextSpan(
-                                              text:
-                                                  "${AppDateUtilsHelper.daysElapsedSince(campaign.startDate!)} dias",
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .titleSmall!
-                                                  .copyWith(
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                            ),
-                                            const TextSpan(text: " / "),
-                                            TextSpan(
-                                              text:
-                                                  "${AppDateUtilsHelper.daysSinceDate(campaign.startDate!, campaign.endDate!)} dias",
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      SizedBox(height: 10),
-                                      Text("Doadores"),
-                                      RichText(
-                                        text: TextSpan(
-                                          style: DefaultTextStyle.of(
-                                            context,
-                                          ).style,
-                                          children: [
-                                            TextSpan(
-                                              text:
-                                                  "${campaign.contributors!.length}",
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .titleSmall!
-                                                  .copyWith(
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Container(
-                                  child: DashedCircularProgressBar.square(
-                                    dimensions: 150,
-                                    progress:
-                                        AppFuncionsUtilsHelper.calculateFundraisingPercentage(
-                                          campaign.fundsRaised,
-                                          campaign.fundraisingGoal,
-                                        ),
-                                    maxProgress: 100,
-                                    startAngle: 0,
-                                    foregroundColor: Colors.green.withOpacity(
-                                      .5,
-                                    ),
-                                    backgroundColor: Colors.green.withOpacity(
-                                      .2,
-                                    ),
-                                    foregroundStrokeWidth: 15,
-                                    backgroundStrokeWidth: 15,
-                                    foregroundGapSize: 0,
-                                    foregroundDashSize: 55,
-                                    backgroundGapSize: 0,
-                                    backgroundDashSize: 55,
-                                    animation: false,
-                                    child: Center(
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text("Arrecadado"),
+                                    RichText(
+                                      text: TextSpan(
+                                        style: DefaultTextStyle.of(
+                                          context,
+                                        ).style,
                                         children: [
-                                          Text(
-                                            "Faltam ${AppDateUtilsHelper.daysRemainingUntil(campaign.endDate!)} dias",
-                                            style: TextStyle(fontSize: 10),
+                                          TextSpan(
+                                            text: AppUtils.formatCurrency(
+                                              campaign.fundsRaised!,
+                                            ),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .titleSmall!
+                                                .copyWith(
+                                                  fontWeight: FontWeight.bold,
+                                                ),
                                           ),
-                                          Text(
-                                            "${AppFuncionsUtilsHelper.calculateFundraisingPercentage(campaign.fundsRaised, campaign.fundraisingGoal)}% de fundos\narrecadados",
-                                            style: TextStyle(
-                                              fontSize: 12,
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.w600,
+                                          const TextSpan(text: " / "),
+                                          TextSpan(
+                                            text: AppUtils.formatCurrency(
+                                              campaign.fundraisingGoal!,
                                             ),
                                           ),
                                         ],
                                       ),
                                     ),
+                                    SizedBox(height: 10),
+                                    Text("Dias"),
+                                    RichText(
+                                      text: TextSpan(
+                                        style: DefaultTextStyle.of(
+                                          context,
+                                        ).style,
+                                        children: [
+                                          TextSpan(
+                                            text:
+                                                "${AppDateUtilsHelper.daysElapsedSince(campaign.startDate!)} dias",
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .titleSmall!
+                                                .copyWith(
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                          ),
+                                          const TextSpan(text: " / "),
+                                          TextSpan(
+                                            text:
+                                                "${AppDateUtilsHelper.daysSinceDate(campaign.startDate!, campaign.endDate!)} dias",
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(height: 10),
+                                    Text("Doadores"),
+                                    RichText(
+                                      text: TextSpan(
+                                        style: DefaultTextStyle.of(
+                                          context,
+                                        ).style,
+                                        children: [
+                                          TextSpan(
+                                            text:
+                                                "${campaign.contributors!.length}",
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .titleSmall!
+                                                .copyWith(
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Container(
+                                child: DashedCircularProgressBar.square(
+                                  dimensions: 150,
+                                  progress:
+                                      AppFuncionsUtilsHelper.calculateFundraisingPercentage(
+                                        campaign.fundsRaised,
+                                        campaign.fundraisingGoal,
+                                      ),
+                                  maxProgress: 100,
+                                  startAngle: 0,
+                                  foregroundColor: AppColors.primaryColor
+                                      .withOpacity(.5),
+                                  backgroundColor: AppColors.primaryColor
+                                      .withOpacity(.2),
+                                  foregroundStrokeWidth: 15,
+                                  backgroundStrokeWidth: 15,
+                                  foregroundGapSize: 0,
+                                  foregroundDashSize: 55,
+                                  backgroundGapSize: 0,
+                                  backgroundDashSize: 55,
+                                  animation: false,
+                                  child: Center(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          "Faltam ${AppDateUtilsHelper.daysRemainingUntil(campaign.endDate!)} dia(s)",
+                                          style: TextStyle(fontSize: 10),
+                                        ),
+                                        Text(
+                                          "${AppFuncionsUtilsHelper.calculateFundraisingPercentage(campaign.fundsRaised, campaign.fundraisingGoal)}% de fundos\narrecadados",
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ],
-                            ),
-                          ],
-                        ),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
                     ),
                   ),
                   Center(
                     child: Padding(
-                      padding: const EdgeInsets.all(15.0),
+                      padding: const EdgeInsets.all(16.0),
                       child: Text(
                         "Compartilhe outras pessoas para aumentar o alcance da sua campanha",
                         textAlign: TextAlign.center,
@@ -514,17 +513,16 @@ class _MyCampaignDetailPageState extends State<MyCampaignDetailPage> {
                   ),
                   const SizedBox(height: 10),
                   Padding(
-                    padding: const EdgeInsets.all(15.0),
+                    padding: const EdgeInsets.all(16.0),
                     child: ElevatedButton(
                       style: ButtonStyle(
-                        shape:
-                            MaterialStateProperty.all<RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(
-                                  AppValues.s10,
-                                ), // Define o raio da borda aqui
-                              ),
-                            ),
+                        shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(
+                              AppValues.s10,
+                            ), // Define o raio da borda aqui
+                          ),
+                        ),
                       ),
                       onPressed: () {},
                       child: Text(
@@ -535,7 +533,7 @@ class _MyCampaignDetailPageState extends State<MyCampaignDetailPage> {
                   const SizedBox(height: 10),
                   const Divider(),
                   Padding(
-                    padding: const EdgeInsets.all(10.0),
+                    padding: const EdgeInsets.all(16.0),
                     child: InkWell(
                       onTap: () {
                         Get.toNamed(
@@ -543,9 +541,14 @@ class _MyCampaignDetailPageState extends State<MyCampaignDetailPage> {
                           arguments: widget.campaign,
                         );
                       },
-                      child: Card(
-                        shape: RoundedRectangleBorder(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
                           borderRadius: BorderRadius.circular(10),
+                          border: Border.all(
+                            color: Colors.grey.shade300,
+                            width: 1,
+                          ),
                         ),
                         child: Row(
                           children: [
@@ -591,128 +594,127 @@ class _MyCampaignDetailPageState extends State<MyCampaignDetailPage> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(15.0),
-                    child: Card(
-                      shape: RoundedRectangleBorder(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
                         borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Column(
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  "Visão geral da doação",
-                                  style: Theme.of(
-                                    context,
-                                  ).textTheme.titleMedium,
-                                ),
-                                DropdownButton<String>(
-                                  value: selectedFilter,
-                                  items: filterOptions.map((String value) {
-                                    return DropdownMenuItem<String>(
-                                      value: value,
-                                      child: Text(value),
-                                    );
-                                  }).toList(),
-                                  onChanged: (newValue) {
-                                    setState(() {
-                                      selectedFilter = newValue!;
-                                      _filterData();
-                                    });
-                                  },
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 16),
-                            ValueListenableBuilder(
-                              valueListenable: filteredData,
-                              builder: (context, value, _) {
-                                return SizedBox(
-                                  height: 200,
-                                  child: SfCartesianChart(
-                                    primaryXAxis: CategoryAxis(),
-                                    primaryYAxis: NumericAxis(
-                                      numberFormat: NumberFormat.compact(
-                                        locale: 'pt_PT',
-                                      ),
-                                    ),
-                                    trackballBehavior: TrackballBehavior(
-                                      enable: true,
-                                      activationMode: ActivationMode.singleTap,
-                                      tooltipSettings: InteractiveTooltip(
-                                        enable: true,
-                                      ),
-                                      builder: (context, TrackballDetails details) {
-                                        final num value = details.point!.y!;
-                                        final String date = details.point!.x
-                                            .toString();
-
-                                        final String formattedValue =
-                                            NumberFormat.currency(
-                                              locale: 'pt_AO',
-                                              symbol: 'AOA',
-                                            ).format(value);
-
-                                        return Container(
-                                          padding: const EdgeInsets.all(6),
-                                          decoration: BoxDecoration(
-                                            color: Colors.black,
-                                            borderRadius: BorderRadius.circular(
-                                              6,
-                                            ),
-                                          ),
-                                          child: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Text(
-                                                date, // Mostra a data correta
-                                                style: const TextStyle(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                              Text(
-                                                formattedValue, // Mostra o valor formatado
-                                                style: const TextStyle(
-                                                  color: Colors.white,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                    series: [
-                                      LineSeries<_ChartData, String>(
-                                        dataSource: value
-                                            .where(
-                                              (data) => data.amount != null,
-                                            )
-                                            .toList(),
-                                        xValueMapper: (_ChartData data, _) =>
-                                            "${data.date.day}/${data.date.month}",
-                                        yValueMapper: (_ChartData data, _) =>
-                                            data.amount,
-                                        markerSettings: const MarkerSettings(
-                                          isVisible: true,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              },
-                            ),
-                            const SizedBox(height: 16),
-                          ],
+                        border: Border.all(
+                          color: Colors.grey.shade300,
+                          width: 1,
                         ),
+                      ),
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Visão geral da doação",
+                                style: Theme.of(context).textTheme.titleMedium,
+                              ),
+                              DropdownButton<String>(
+                                value: selectedFilter,
+                                items: filterOptions.map((String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value),
+                                  );
+                                }).toList(),
+                                onChanged: (newValue) {
+                                  setState(() {
+                                    selectedFilter = newValue!;
+                                    _filterData();
+                                  });
+                                },
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 16),
+                          ValueListenableBuilder(
+                            valueListenable: filteredData,
+                            builder: (context, value, _) {
+                              return SizedBox(
+                                height: 200,
+                                child: SfCartesianChart(
+                                  primaryXAxis: CategoryAxis(),
+                                  primaryYAxis: NumericAxis(
+                                    numberFormat: NumberFormat.compact(
+                                      locale: 'pt_PT',
+                                    ),
+                                  ),
+                                  trackballBehavior: TrackballBehavior(
+                                    enable: true,
+                                    activationMode: ActivationMode.singleTap,
+                                    tooltipSettings: InteractiveTooltip(
+                                      enable: true,
+                                    ),
+                                    builder: (context, TrackballDetails details) {
+                                      final num value = details.point!.y!;
+                                      final String date = details.point!.x
+                                          .toString();
+
+                                      final String formattedValue =
+                                          NumberFormat.currency(
+                                            locale: 'pt_AO',
+                                            symbol: 'AOA',
+                                          ).format(value);
+
+                                      return Container(
+                                        padding: const EdgeInsets.all(6),
+                                        decoration: BoxDecoration(
+                                          color: Colors.black,
+                                          borderRadius: BorderRadius.circular(
+                                            6,
+                                          ),
+                                        ),
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Text(
+                                              date, // Mostra a data correta
+                                              style: const TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            Text(
+                                              formattedValue, // Mostra o valor formatado
+                                              style: const TextStyle(
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                  series: [
+                                    LineSeries<_ChartData, String>(
+                                      dataSource: value
+                                          .where((data) => data.amount != null)
+                                          .toList(),
+                                      xValueMapper: (_ChartData data, _) =>
+                                          "${data.date.day}/${data.date.month}",
+                                      yValueMapper: (_ChartData data, _) =>
+                                          data.amount,
+                                      markerSettings: const MarkerSettings(
+                                        isVisible: true,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                          const SizedBox(height: 16),
+                        ],
                       ),
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -741,6 +743,7 @@ class _MyCampaignDetailPageState extends State<MyCampaignDetailPage> {
                     itemBuilder: (context, index) {
                       final donor = campaign.contributors!.elementAt(index);
                       return ListTile(
+                        contentPadding: EdgeInsets.symmetric(horizontal: 16),
                         leading: ClipRRect(
                           borderRadius: BorderRadius.circular(50),
                           child: Container(

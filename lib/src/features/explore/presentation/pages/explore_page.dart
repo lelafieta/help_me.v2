@@ -1,3 +1,4 @@
+import 'package:buttons_tabbar/buttons_tabbar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
@@ -36,72 +37,69 @@ class _ExplorePageState extends State<ExplorePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(centerTitle: false, title: const Text('Navegador')),
-      body: Column(
-        children: [
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
-            child: TextField(
-              decoration: InputDecoration(
-                hintText: "Pesquise campanhas, caridades...",
-                fillColor: Colors.white,
-                filled: true,
-                prefixIcon: Container(
-                  padding: const EdgeInsets.all(12),
-                  child: SvgPicture.asset(
-                    AppIcons.search,
-                    width: 14,
-                    color: Colors.grey,
+      body: DefaultTabController(
+        length: 4,
+        child: Column(
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
+              child: TextField(
+                decoration: InputDecoration(
+                  hintText: "Pesquise campanhas, caridades...",
+                  fillColor: Colors.white,
+                  filled: true,
+                  prefixIcon: Container(
+                    padding: const EdgeInsets.all(12),
+                    child: SvgPicture.asset(
+                      AppIcons.search,
+                      width: 14,
+                      color: Colors.grey,
+                    ),
                   ),
-                ),
-                suffixIcon: Container(
-                  padding: const EdgeInsets.all(12),
-                  child: SvgPicture.asset(
-                    AppIcons.microphone,
-                    width: 14,
-                    color: Colors.grey,
+                  suffixIcon: Container(
+                    padding: const EdgeInsets.all(12),
+                    child: SvgPicture.asset(
+                      AppIcons.microphone,
+                      width: 14,
+                      color: Colors.grey,
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
 
-          const SizedBox(height: 10),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              for (int index = 0; index < menus.length; index++)
-                InkWell(
-                  onTap: () {
-                    setState(() {
-                      selectedIndex = index;
-                    });
-                  },
-                  child: Container(
-                    height: 40,
-                    decoration: BoxDecoration(
-                      color: (index == selectedIndex)
-                          ? AppColors.blackColor
-                          : Colors.white,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Center(
-                      child: Text(
-                        menus[index],
-                        style: TextStyle(
-                          color: (index == selectedIndex)
-                              ? AppColors.whiteColor
-                              : Colors.black,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-            ],
-          ),
-          const SizedBox(height: 5),
-          Expanded(child: widgets[selectedIndex]),
-        ],
+            const SizedBox(height: 10),
+            ButtonsTabBar(
+              backgroundColor: Colors.black,
+              borderWidth: 0,
+              height: 45,
+              width: 120,
+              contentCenter: true,
+              buttonMargin: EdgeInsets.symmetric(horizontal: 16),
+              borderColor: Colors.black,
+              contentPadding: EdgeInsets.symmetric(horizontal: 10),
+              labelStyle: TextStyle(color: Colors.white, fontFamily: 'Poppins'),
+              unselectedLabelStyle: TextStyle(
+                color: Colors.black,
+                fontFamily: 'Poppins',
+              ),
+              onTap: (p0) {
+                setState(() {
+                  selectedIndex = p0;
+                });
+              },
+              tabs: [
+                Tab(text: 'Feeds'),
+                Tab(text: 'Blogs'),
+                Tab(text: 'Eventos'),
+                Tab(text: 'Perfil ONG'),
+              ],
+            ),
+
+            const SizedBox(height: 5),
+            Expanded(child: widgets[selectedIndex]),
+          ],
+        ),
       ),
     );
   }

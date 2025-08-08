@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
-import 'package:utueji/src/features/communities/data/models/community_member_model.dart';
 import 'package:utueji/src/features/communities/presentation/cubit/member_community/community_member_cubit.dart';
 import 'package:utueji/src/features/events/presentation/cubit/community_event/community_event_cubit.dart';
 import 'package:utueji/src/features/ongs/presentation/cubit/ong_action_cubit/ong_action_cubit.dart';

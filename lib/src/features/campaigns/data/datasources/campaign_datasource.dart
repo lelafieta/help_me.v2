@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:path/path.dart' as path;
 import 'package:utueji/src/features/campaigns/domain/enums/campaign_status.dart';
 import 'package:uuid/uuid.dart';
 import '../../../../core/supabase/supabase_consts.dart';
@@ -18,7 +17,7 @@ class CampaignRemoteDataSource extends ICampaignRemoteDataSource {
   CampaignRemoteDataSource({required this.supabase, required this.dio});
 
   @override
-  Future<void> createCampaign(CampaignEntity campaign) async {
+  Future<void> createCampaign(CampaignModel campaign) async {
     try {
       final supabase = Supabase.instance.client; // Conexão com Supabase
       final campaignId = Uuid().v4();
@@ -27,7 +26,7 @@ class CampaignRemoteDataSource extends ICampaignRemoteDataSource {
       // Upload da imagem de capa da campanha
       if (campaign.imageCoverUrl != null) {
         final imageFile = File(campaign.imageCoverUrl!);
-        final fileName = "${DateTime.now()}${campaignId}.jpg";
+        final fileName = "${DateTime.now()}$campaignId.jpg";
 
         final storageResponse = await supabase.storage
             .from(SupabaseConsts.campaigns)
@@ -63,87 +62,87 @@ class CampaignRemoteDataSource extends ICampaignRemoteDataSource {
         "ongId": campaign.ongId,
       };
 
-      // Processamento e Upload de Mídias (Imagens e Vídeos)
-      List<Map<String, dynamic>> mediaList = [];
-      if (campaign.midias != null && campaign.midias!.isNotEmpty) {
-        for (var media in campaign.midias!) {
-          final uuid = Uuid().v4();
-          final mediaFile = File(media.midiaUrl!);
-          final fileExtension = path
-              .extension(mediaFile.path)
-              .replaceFirst('.', '');
+      // // Processamento e Upload de Mídias (Imagens e Vídeos)
+      // List<Map<String, dynamic>> mediaList = [];
+      // if (campaign.midias != null && campaign.midias!.isNotEmpty) {
+      //   for (var media in campaign.midias!) {
+      //     final uuid = Uuid().v4();
+      //     final mediaFile = File(media.midiaUrl!);
+      //     final fileExtension = path
+      //         .extension(mediaFile.path)
+      //         .replaceFirst('.', '');
 
-          // Identificando o tipo da mídia (imagem ou vídeo)
-          String midiaType =
-              (['jpg', 'jpeg', 'png'].contains(fileExtension.toLowerCase()))
-              ? "image"
-              : "video";
+      //     // Identificando o tipo da mídia (imagem ou vídeo)
+      //     String midiaType =
+      //         (['jpg', 'jpeg', 'png'].contains(fileExtension.toLowerCase()))
+      //         ? "image"
+      //         : "video";
 
-          final fileName = "${DateTime.now()}${uuid}.$fileExtension";
-          final storageResponse = await supabase.storage
-              .from(SupabaseStorageConsts.midias)
-              .upload(fileName, mediaFile);
+      //     final fileName = "${DateTime.now()}${uuid}.$fileExtension";
+      //     final storageResponse = await supabase.storage
+      //         .from(SupabaseStorageConsts.midias)
+      //         .upload(fileName, mediaFile);
 
-          if (storageResponse.isNotEmpty) {
-            final midiaPath = supabase.storage
-                .from(SupabaseStorageConsts.midias)
-                .getPublicUrl(fileName);
+      //     if (storageResponse.isNotEmpty) {
+      //       final midiaPath = supabase.storage
+      //           .from(SupabaseStorageConsts.midias)
+      //           .getPublicUrl(fileName);
 
-            mediaList.add({
-              "id": uuid,
-              "midiaType": midiaType,
-              "midiaUrl": midiaPath,
-            });
-          }
-        }
-      }
+      //       mediaList.add({
+      //         "id": uuid,
+      //         "midiaType": midiaType,
+      //         "midiaUrl": midiaPath,
+      //       });
+      //     }
+      //   }
+      // }
 
-      // Processamento e Upload de Documentos
-      List<Map<String, dynamic>> documentList = [];
-      if (campaign.documents != null && campaign.documents!.isNotEmpty) {
-        for (var doc in campaign.documents!) {
-          final uuid = Uuid().v4();
-          final documentFile = File(doc.documentPath!);
-          final fileExtension = path
-              .extension(documentFile.path)
-              .replaceFirst('.', '');
+      // // Processamento e Upload de Documentos
+      // List<Map<String, dynamic>> documentList = [];
+      // if (campaign.documents != null && campaign.documents!.isNotEmpty) {
+      //   for (var doc in campaign.documents!) {
+      //     final uuid = Uuid().v4();
+      //     final documentFile = File(doc.documentPath!);
+      //     final fileExtension = path
+      //         .extension(documentFile.path)
+      //         .replaceFirst('.', '');
 
-          final fileName = "${DateTime.now()}${uuid}.$fileExtension";
-          final storageResponse = await supabase.storage
-              .from(SupabaseStorageConsts.documents)
-              .upload(fileName, documentFile);
+      //     final fileName = "${DateTime.now()}${uuid}.$fileExtension";
+      //     final storageResponse = await supabase.storage
+      //         .from(SupabaseStorageConsts.documents)
+      //         .upload(fileName, documentFile);
 
-          if (storageResponse.isNotEmpty) {
-            final documentPath = supabase.storage
-                .from(SupabaseStorageConsts.documents)
-                .getPublicUrl(fileName);
+      //     if (storageResponse.isNotEmpty) {
+      //       final documentPath = supabase.storage
+      //           .from(SupabaseStorageConsts.documents)
+      //           .getPublicUrl(fileName);
 
-            documentList.add({"id": uuid, "documentPath": documentPath});
-          }
-        }
-      }
+      //       documentList.add({"id": uuid, "documentPath": documentPath});
+      //     }
+      //   }
+      // }
 
-      // Chamando a Stored Procedure do Supabase
-      final response = await supabase.rpc(
-        'create_campaign_transaction',
-        params: {
-          'campaign_data': campaignData,
-          'media_list': mediaList,
-          'document_list': documentList,
-        },
-      );
+      // // Chamando a Stored Procedure do Supabase
+      // final response = await supabase.rpc(
+      //   'create_campaign_transaction',
+      //   params: {
+      //     'campaign_data': campaignData,
+      //     'media_list': mediaList,
+      //     'document_list': documentList,
+      //   },
+      // );
 
-      if (response != null) {
-        print("Erro ao criar campanha: ${response.error!.message}");
-      } else {
-        print("✅ Campanha criada com sucesso!");
-      }
+      // if (response != null) {
+      //   print("Erro ao criar campanha: ${response.error!.message}");
+      // } else {
+      //   print("✅ Campanha criada com sucesso!");
+      // }
     } catch (e, strack) {
       print("❌ Erro: $e $strack");
       throw e;
     }
   }
-  // Future<void> createCampaign(CampaignEntity campaign) async {
+  // Future<void> createCampaign(CampaignModel campaign) async {
   //   try {
   //     String? imageCoverUrl;
   //     if (campaign.imageCoverUrl != null) {
@@ -272,7 +271,7 @@ class CampaignRemoteDataSource extends ICampaignRemoteDataSource {
   }
 
   @override
-  Future<List<CampaignEntity>> getAllCampaigns(CampaignParams params) async {
+  Future<List<CampaignModel>> getAllCampaigns(CampaignParams params) async {
     // final userId = supabase.auth.currentUser!.id;
     final agora = DateTime.now().toUtc();
     final semanaFutura = agora.add(Duration(days: 7));
@@ -402,7 +401,7 @@ class CampaignRemoteDataSource extends ICampaignRemoteDataSource {
   }
 
   @override
-  Future<List<CampaignEntity>> getAllUrgentCampaigns(
+  Future<List<CampaignModel>> getAllUrgentCampaigns(
     CampaignParams params,
   ) async {
     final userId = supabase.auth.currentUser!.id;
@@ -473,14 +472,14 @@ class CampaignRemoteDataSource extends ICampaignRemoteDataSource {
   }
 
   @override
-  Future<CampaignEntity> getCampaignById(String id) async {
+  Future<CampaignModel> getCampaignById(String id) async {
     final response = await dio.get('/campaigns/$id');
     final json = response.data as dynamic;
     return CampaignModel.fromJson(json);
   }
 
   @override
-  Future<List<CampaignEntity>> getLatestUrgentCampaigns() async {
+  Future<List<CampaignModel>> getLatestUrgentCampaigns() async {
     final response = await dio.get('/campaigns/smart-urgent');
     return (response.data as List)
         .map((json) => CampaignModel.fromJson(json))
@@ -488,66 +487,21 @@ class CampaignRemoteDataSource extends ICampaignRemoteDataSource {
   }
 
   @override
-  Future<void> updateCampaign(CampaignEntity campaign) {
+  Future<void> updateCampaign(CampaignModel campaign) {
     throw UnimplementedError();
   }
 
   @override
-  Future<List<CampaignEntity>> getAllMyCampaigns(CampaignParams params) async {
-    final userId = supabase.auth.currentUser!.id;
-
-    var query = supabase
-        .from(SupabaseConsts.campaigns)
-        .select('''
-        *, 
-        user:profiles(*), 
-        ong:ongs(*), 
-        category:categories(*), 
-        contributors:campaign_contributors(*, user:profiles(*)), 
-        documents:campaign_documents(*), 
-        updates:campaign_updates(*), 
-        comments:campaign_comments(*, user:profiles(*)),
-        midias:campaign_midias(*)
-      ''')
-        .eq('user_id', userId);
-
-    if (params.categoryId != null) {
-      query = query.eq('category_id', params.categoryId.toString());
+  Future<List<CampaignModel>> getAllMyCampaigns({String? status}) async {
+    final Response<dynamic> response;
+    if (status == null) {
+      response = await dio.get('/campaigns/my');
+    } else {
+      response = await dio.get('/campaigns/my?status=$status');
     }
 
-    if (params.nameFilter != null) {
-      query = query.ilike('name', '%${params.nameFilter}%');
-    }
-
-    if (params.title != null) {
-      query = query.ilike('title', '%${params.title}%');
-    }
-
-    if (params.description != null) {
-      query = query.ilike('description', '%${params.description}%');
-    }
-
-    if (params.status != null) {
-      if (params.status != CampaignStatus.all.name) {
-        query = query.eq('status', params.status.toString());
-      }
-    }
-
-    if (params.location != null) {
-      query = query.ilike('location', '%${params.location}%');
-    }
-
-    if (params.startDate != null && params.endDate != null) {
-      query = query
-          .gte('created_at', params.startDate!.toIso8601String())
-          .lte('created_at', params.endDate!.toIso8601String());
-    }
-
-    final response = await query.range(
-      (params.page! - 1) * params.limit!,
-      params.page! * params.limit! - 1,
-    );
-
-    return response.map((event) => CampaignModel.fromJson(event)).toList();
+    return (response.data as List)
+        .map((json) => CampaignModel.fromJson(json))
+        .toList();
   }
 }

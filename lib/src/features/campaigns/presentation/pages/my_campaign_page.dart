@@ -1,5 +1,4 @@
-import 'dart:io';
-
+import 'package:buttons_tabbar/buttons_tabbar.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dotted_dashed_line/dotted_dashed_line.dart';
 
@@ -24,7 +23,6 @@ import '../../domain/entities/campaign_entity.dart';
 import '../../domain/entities/campaign_params.dart';
 import '../../domain/enums/campaign_status.dart';
 import '../cubit/my_campaign_cubit/my_campaign_cubit.dart';
-import '../cubit/my_campaign_cubit/my_campaign_state.dart';
 import '../widgets/my_campaign_skeleton_widget.dart';
 import '../widgets/my_campaign_widget.dart';
 
@@ -36,102 +34,16 @@ class MyCampaignPage extends StatefulWidget {
 }
 
 class _MyCampaignPageState extends State<MyCampaignPage> {
-  ValueNotifier<CampaignParams> params =
-      ValueNotifier<CampaignParams>(CampaignParams());
+  ValueNotifier<CampaignParams> params = ValueNotifier<CampaignParams>(
+    CampaignParams(),
+  );
   List<CampaignStatus> statuses = CampaignStatusExtension.allStatuses;
   final scrollController = ScrollController();
-  final TextEditingController _controller = TextEditingController();
-  static const List<SocialPlatform> _platforms = SocialPlatform.values;
-
-  final ImagePicker _picker = ImagePicker();
-  String? _mediaPath;
-  List<String> _mediaPaths = [];
-
-  Future<void> _pickImage() async {
-    final XFile? pickedFile =
-        await _picker.pickImage(source: ImageSource.gallery);
-
-    setState(() {
-      if (pickedFile != null) _mediaPath = pickedFile.path;
-    });
-  }
-
-  Future<void> _pickVideo() async {
-    final XFile? pickedFile =
-        await _picker.pickVideo(source: ImageSource.gallery);
-
-    setState(() {
-      if (pickedFile != null) _mediaPath = pickedFile.path;
-    });
-  }
-
-  Future<void> _pickMultiMedia() async {
-    final List<XFile> pickedFiles = await _picker.pickMultiImage();
-
-    setState(() {
-      _mediaPaths = pickedFiles.map((file) => file.path).toList();
-    });
-  }
-
-  Future<void> _pickMultiVideo() async {
-    final XFile? pickedFile =
-        await _picker.pickVideo(source: ImageSource.gallery);
-
-    setState(() {
-      if (pickedFile != null) {
-        _mediaPaths.add(pickedFile.path);
-      }
-    });
-  }
-
-  Future<void> _share(
-    SocialPlatform platform, {
-    bool isMultipleShare = false,
-    String? description,
-    List<String>? mediaPaths,
-  }) async {
-    final String content = _controller.text;
-    isMultipleShare
-        ? await SocialSharingPlus.shareToSocialMediaWithMultipleMedia(
-            platform,
-            media: mediaPaths ?? _mediaPaths,
-            content: description,
-            isOpenBrowser: true,
-            onAppNotInstalled: () {
-              ScaffoldMessenger.of(context)
-                ..hideCurrentSnackBar()
-                ..showSnackBar(SnackBar(
-                  content:
-                      Text('${platform.name.capitalize} is not installed.'),
-                ));
-            },
-          )
-        : await SocialSharingPlus.shareToSocialMedia(
-            platform,
-            content,
-            media: _mediaPath,
-            isOpenBrowser: true,
-            onAppNotInstalled: () {
-              ScaffoldMessenger.of(context)
-                ..hideCurrentSnackBar()
-                ..showSnackBar(SnackBar(
-                  content:
-                      Text('${platform.name.capitalize} is not installed.'),
-                ));
-            },
-          );
-  }
 
   void setupScrollController() {
     scrollController.addListener(() {
       if (scrollController.position.atEdge) {
-        if (scrollController.position.pixels != 0) {
-          context.read<MyCampaignCubit>().getAllMyCamapigns(
-              isRefresh: false,
-              params: CampaignParams(
-                status: params.value.status,
-              ));
-        }
+        if (scrollController.position.pixels != 0) {}
       }
     });
   }
@@ -143,256 +55,202 @@ class _MyCampaignPageState extends State<MyCampaignPage> {
     const EventContainer(),
   ];
 
+  List<String> filters = [
+    'all',
+    'active',
+    'pending',
+    'completed',
+    'cancelled',
+    'scheduled',
+    'paused',
+    'draft',
+    'expired',
+  ];
+
   @override
   void initState() {
-    context.read<MyCampaignCubit>().getAllMyCamapigns(
-        isRefresh: true,
-        params: CampaignParams(status: CampaignStatus.all.name));
+    context.read<MyCampaignCubit>().getAllMyCamapigns();
     setupScrollController();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    // return Scaffold(
-    //   appBar: AppBar(
-    //     title: const Text('social_sharing_plus'),
-    //   ),
-    //   body: SingleChildScrollView(
-    //     child: Center(
-    //       child: Column(
-    //         mainAxisAlignment: MainAxisAlignment.center,
-    //         children: <Widget>[
-    //           Padding(
-    //             padding: const EdgeInsets.all(24),
-    //             child: TextField(
-    //               controller: _controller,
-    //               decoration: const InputDecoration(
-    //                 border: OutlineInputBorder(),
-    //                 hintText: 'Enter a text',
-    //               ),
-    //             ),
-    //           ),
-    //           Row(
-    //             mainAxisAlignment: MainAxisAlignment.center,
-    //             children: [
-    //               ElevatedButton(
-    //                 onPressed: _pickImage,
-    //                 child: const Text('Pick Image'),
-    //               ),
-    //               const SizedBox(width: 20),
-    //               if (Platform.isAndroid)
-    //                 ElevatedButton(
-    //                   onPressed: _pickVideo,
-    //                   child: const Text('Pick Video'),
-    //                 ),
-    //             ],
-    //           ),
-    //           Padding(
-    //             padding: const EdgeInsets.symmetric(vertical: 20),
-    //             child: Row(
-    //               mainAxisAlignment: MainAxisAlignment.center,
-    //               children: [
-    //                 ElevatedButton(
-    //                   onPressed: _pickMultiMedia,
-    //                   child: const Text('Pick Multi Image'),
-    //                 ),
-    //                 const SizedBox(width: 20),
-    //                 if (Platform.isAndroid)
-    //                   ElevatedButton(
-    //                     onPressed: _pickMultiVideo,
-    //                     child: const Text('Pick Multi Video'),
-    //                   ),
-    //               ],
-    //             ),
-    //           ),
-    //           ..._platforms.map(
-    //             (SocialPlatform platform) => ElevatedButton(
-    //               onPressed: () => _share(
-    //                 platform,
-    //                 isMultipleShare: true,
-    //               ),
-    //               child: Text('Share to ${platform.name.capitalize}'),
-    //             ),
-    //           ),
-    //         ],
-    //       ),
-    //     ),
-    //   ),
-    // );
-
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: false,
-        title: const Text('Minhas Campanhas'),
-      ),
+      appBar: AppBar(centerTitle: false, title: const Text('Minhas Campanhas')),
       floatingActionButton: FloatingActionButton(
         backgroundColor: AppColors.primaryColor,
         onPressed: () {
           Get.toNamed(AppRoutes.createCampaignRoute);
         },
-        child: const Icon(
-          Icons.add,
-          color: Colors.white,
-        ),
+        child: const Icon(Icons.add, color: Colors.white),
       ),
       body: ValueListenableBuilder<CampaignParams>(
         valueListenable: params,
         builder: (context, valueStatus, _) {
-          return Column(
-            children: [
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
-                child: TextField(
-                  onChanged: (value) {
-                    params.value.title = value;
-                    context.read<MyCampaignCubit>().getAllMyCamapigns(
-                        isRefresh: true,
-                        params: CampaignParams(
-                            status: params.value.status,
-                            title: params.value.title));
-                  },
-                  decoration: InputDecoration(
-                    hintText: "Pesquise campanhas, caridades...",
-                    fillColor: Colors.white,
-                    filled: true,
-                    prefixIcon: Container(
-                      padding: const EdgeInsets.all(12),
-                      child: SvgPicture.asset(
-                        AppIcons.search,
-                        width: 14,
-                        color: Colors.grey,
+          return DefaultTabController(
+            length: 9,
+            child: Column(
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 5,
+                  ),
+                  child: TextField(
+                    onChanged: (value) {
+                      params.value.title = value;
+                      // context.read<MyCampaignCubit>().getAllMyCamapigns(
+                      //   isRefresh: true,
+                      //   params: CampaignParams(
+                      //     status: params.value.status,
+                      //     title: params.value.title,
+                      //   ),
+                      // );
+                    },
+                    decoration: InputDecoration(
+                      hintText: "Pesquise campanhas, caridades...",
+                      fillColor: Colors.white,
+                      filled: true,
+                      prefixIcon: Container(
+                        padding: const EdgeInsets.all(12),
+                        child: SvgPicture.asset(
+                          AppIcons.search,
+                          width: 14,
+                          color: Colors.grey,
+                        ),
                       ),
-                    ),
-                    suffixIcon: IconButton(
-                      onPressed: () {},
-                      icon: SvgPicture.asset(
-                        AppIcons.microphone,
-                        color: Colors.grey,
+                      suffixIcon: IconButton(
+                        onPressed: () {},
+                        icon: SvgPicture.asset(
+                          AppIcons.microphone,
+                          color: Colors.grey,
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 10),
-              SizedBox(
-                height: 40,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  shrinkWrap: true,
-                  physics: const ClampingScrollPhysics(),
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  itemBuilder: (context, index) {
-                    return InkWell(
-                      onTap: () {
-                        setState(() {
-                          selectedIndex = index;
-                          params.value.status = statuses[index].name;
-                          context.read<MyCampaignCubit>().getAllMyCamapigns(
-                              isRefresh: true,
-                              params:
-                                  CampaignParams(status: statuses[index].name));
-                        });
-                      },
-                      child: Container(
-                        height: 40,
-                        decoration: BoxDecoration(
-                          color: (index == selectedIndex)
-                              ? AppColors.blackColor
-                              : Colors.white,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: Center(
-                          child: Text(
-                            statuses[index].label,
-                            style: TextStyle(
-                              color: (index == selectedIndex)
-                                  ? AppColors.whiteColor
-                                  : Colors.black,
-                            ),
-                          ),
-                        ),
-                      ),
-                    );
+
+                const SizedBox(height: 10),
+                // SizedBox(
+                //   height: 40,
+                //   child: ListView.separated(
+                //     scrollDirection: Axis.horizontal,
+                //     shrinkWrap: true,
+                //     physics: const ClampingScrollPhysics(),
+                //     padding: const EdgeInsets.symmetric(horizontal: 16),
+                //     itemBuilder: (context, index) {
+                //       return InkWell(
+                //         onTap: () {
+                //           setState(() {
+                //             selectedIndex = index;
+                //             params.value.status = statuses[index].name;
+                //             // context.read<MyCampaignCubit>().getAllMyCamapigns(
+                //             //   isRefresh: true,
+                //             //   params: CampaignParams(
+                //             //     status: statuses[index].name,
+                //             //   ),
+                //             // );
+                //           });
+                //         },
+                //         child: Container(
+                //           height: 40,
+                //           decoration: BoxDecoration(
+                //             color: (index == selectedIndex)
+                //                 ? AppColors.blackColor
+                //                 : Colors.white,
+                //             borderRadius: BorderRadius.circular(8),
+                //           ),
+                //           padding: const EdgeInsets.symmetric(horizontal: 16),
+                //           child: Center(
+                //             child: Text(
+                //               statuses[index].label,
+                //               style: TextStyle(
+                //                 color: (index == selectedIndex)
+                //                     ? AppColors.whiteColor
+                //                     : Colors.black,
+                //               ),
+                //             ),
+                //           ),
+                //         ),
+                //       );
+                //     },
+                //     separatorBuilder: (context, index) {
+                //       return const SizedBox(width: 10);
+                //     },
+                //     itemCount: statuses.length,
+                //   ),
+                // ),
+                ButtonsTabBar(
+                  backgroundColor: Colors.black,
+                  borderWidth: 0,
+                  height: 45,
+                  width: 120,
+                  contentCenter: true,
+                  buttonMargin: EdgeInsets.symmetric(horizontal: 16),
+                  borderColor: Colors.black,
+                  contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                  labelStyle: TextStyle(
+                    color: Colors.white,
+                    fontFamily: 'Poppins',
+                  ),
+                  unselectedLabelStyle: TextStyle(
+                    color: Colors.black,
+                    fontFamily: 'Poppins',
+                  ),
+                  onTap: (p0) {
+                    if (p0 == 0) {
+                      context.read<MyCampaignCubit>().getAllMyCamapigns();
+                    } else {
+                      context.read<MyCampaignCubit>().getAllMyCamapigns(
+                        status: filters[p0],
+                      );
+                    }
                   },
-                  separatorBuilder: (context, index) {
-                    return const SizedBox(width: 10);
-                  },
-                  itemCount: statuses.length,
+                  tabs: [
+                    Tab(text: 'Todos'),
+                    Tab(text: 'Activa'),
+                    Tab(text: 'Pendente'),
+                    Tab(text: 'Concluída'),
+                    Tab(text: 'Cancelada'),
+                    Tab(text: 'Agendada'),
+                    Tab(text: 'Pausada'),
+                    Tab(text: 'Rascunho'),
+                    Tab(text: 'Expirada'),
+                  ],
                 ),
-              ),
-              const SizedBox(height: 5),
-              Expanded(
-                child: BlocBuilder<MyCampaignCubit, MyCampaignState>(
-                  builder: (context, state) {
-                    // if (state is MyCampaignLoading) {
-                    //   return const Center(
-                    //     child: CircularProgressIndicator(),
-                    //   );
-                    // }
-                    // else if (state is MyCampaignLoaded) {
-                    //   return ListView.separated(
-                    //     padding: const EdgeInsets.all(16),
-                    //     itemBuilder: (context, index) {
-                    //       final campaign = state.campaigns[index];
-                    //       return MyCampaignWidget(campaign: campaign);
-                    //     },
-                    //     separatorBuilder: (context, index) {
-                    //       return const SizedBox(
-                    //         height: 10,
-                    //       );
-                    //     },
-                    //     itemCount: state.campaigns.length,
-                    //   );
-                    // }
-                    if (state is MyCampaignLoading && state.isFirstFetch) {
-                      return Skeletonizer(
-                        enabled: true,
-                        child: ListView.separated(
+
+                const SizedBox(height: 5),
+                Expanded(
+                  child: BlocBuilder<MyCampaignCubit, MyCampaignState>(
+                    builder: (context, state) {
+                      if (state is MyCampaignLoading) {
+                        return const Center(child: CircularProgressIndicator());
+                      } else if (state is MyCampaignFailure) {
+                        return Center(child: Text(state.failure));
+                      } else if (state is MyCampaignEmpty) {
+                        return const Center(
+                          child: Text("Sem campanhas registadas"),
+                        );
+                      } else if (state is MyCampaignLoaded) {
+                        return ListView.separated(
                           padding: const EdgeInsets.all(16),
-                          shrinkWrap: true,
                           itemBuilder: (context, index) {
-                            return _campaignSkeletonWidget(context);
+                            final campaign = state.campaigns[index];
+                            return MyCampaignWidget(campaign: campaign);
                           },
                           separatorBuilder: (context, index) {
                             return const SizedBox(height: 10);
                           },
-                          itemCount: 5,
-                        ),
-                      );
-                    }
-                    List<CampaignEntity> campaigns = [];
-                    bool isLoading = false;
-                    if (state is MyCampaignLoading) {
-                      campaigns = state.oldCampaigns;
-                      isLoading = true;
-                    } else if (state is MyCampaignLoaded) {
-                      campaigns = state.campaigns;
-                    }
-                    return ListView.separated(
-                      controller: scrollController,
-                      padding: const EdgeInsets.all(16),
-                      itemBuilder: (context, index) {
-                        if (index < campaigns.length) {
-                          final campaign = campaigns[index];
-                          return MyCampaignWidget(campaign: campaign);
-                        } else {
-                          return MyCampaignSkeletonWidget();
-                        }
-                      },
-                      separatorBuilder: (context, index) {
-                        return const SizedBox(
-                          height: 10,
+                          itemCount: state.campaigns.length,
                         );
-                      },
-                      itemCount: campaigns.length + (isLoading == true ? 1 : 0),
-                    );
-                  },
+                      }
+                      return const SizedBox.shrink();
+                    },
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           );
         },
       ),
@@ -421,10 +279,12 @@ class _MyCampaignPageState extends State<MyCampaignPage> {
                   ),
                 ),
               ),
-              title: Text("Campaign",
-                  style: Theme.of(context).textTheme.titleSmall,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis),
+              title: Text(
+                "Campaign",
+                style: Theme.of(context).textTheme.titleSmall,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
               subtitle: Text("Date"),
               trailing: IconButton(
                 onPressed: () {},
@@ -445,9 +305,9 @@ class _MyCampaignPageState extends State<MyCampaignPage> {
                   Expanded(
                     child: RichText(
                       text: TextSpan(
-                        style: DefaultTextStyle.of(context)
-                            .style
-                            .copyWith(fontSize: 12),
+                        style: DefaultTextStyle.of(
+                          context,
+                        ).style.copyWith(fontSize: 12),
                         children: [
                           // const TextSpan(text: "Objectivo: "),
                           TextSpan(
@@ -467,20 +327,14 @@ class _MyCampaignPageState extends State<MyCampaignPage> {
                   ),
                   Row(
                     children: [
-                      Icon(
-                        Icons.history,
-                        color: AppColors.textColor,
-                        size: 18,
-                      ),
+                      Icon(Icons.history, color: AppColors.textColor, size: 18),
                       SizedBox(width: 5),
                       Text(
                         "Está acontecer",
-                        style: const TextStyle(
-                          fontSize: 12,
-                        ),
-                      )
+                        style: const TextStyle(fontSize: 12),
+                      ),
                     ],
-                  )
+                  ),
                 ],
               ),
             ),
@@ -492,9 +346,7 @@ class _MyCampaignPageState extends State<MyCampaignPage> {
 }
 
 class FeedContainer extends StatelessWidget {
-  const FeedContainer({
-    super.key,
-  });
+  const FeedContainer({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -520,7 +372,8 @@ class FeedContainer extends StatelessWidget {
                 trailing: Icon(Icons.more_vert),
               ),
               const Text(
-                  "Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet"),
+                "Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet",
+              ),
               const SizedBox(height: 10),
               ClipRRect(
                 borderRadius: BorderRadius.circular(15),
@@ -553,7 +406,7 @@ class FeedContainer extends StatelessWidget {
                               Icons.arrow_forward_ios_rounded,
                               size: 20,
                               color: Colors.white,
-                            )
+                            ),
                           ],
                         ),
                       ),
@@ -580,7 +433,7 @@ class FeedContainer extends StatelessWidget {
                           const Text(
                             "55",
                             style: TextStyle(color: Colors.black),
-                          )
+                          ),
                         ],
                       ),
                       const SizedBox(width: 20),
@@ -597,7 +450,7 @@ class FeedContainer extends StatelessWidget {
                           const Text(
                             "58",
                             style: TextStyle(color: Colors.black),
-                          )
+                          ),
                         ],
                       ),
                       const SizedBox(width: 20),
@@ -614,9 +467,9 @@ class FeedContainer extends StatelessWidget {
                           const Text(
                             "1.2M",
                             style: TextStyle(color: Colors.black),
-                          )
+                          ),
                         ],
-                      )
+                      ),
                     ],
                   ),
                   SvgPicture.asset(
@@ -625,15 +478,13 @@ class FeedContainer extends StatelessWidget {
                     width: 16,
                   ),
                 ],
-              )
+              ),
             ],
           ),
         );
       },
       separatorBuilder: (context, index) {
-        return const Divider(
-          height: 20,
-        );
+        return const Divider(height: 20);
       },
       itemCount: 10,
     );
@@ -685,9 +536,7 @@ class BlogContainer extends StatelessWidget {
                       children: [
                         Stack(
                           children: [
-                            Container(
-                              height: 150,
-                            ),
+                            Container(height: 150),
                             Positioned(
                               left: 0,
                               right: 0,
@@ -731,9 +580,7 @@ class BlogContainer extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 const Text("Publicado aos 13, Abril, 2025"),
-                                SizedBox(
-                                  height: 5,
-                                ),
+                                SizedBox(height: 5),
                                 Text(
                                   "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor",
                                   style: Theme.of(context).textTheme.titleSmall,
@@ -743,7 +590,7 @@ class BlogContainer extends StatelessWidget {
                               ],
                             ),
                           ),
-                        )
+                        ),
                       ],
                     ),
                   ),
@@ -756,10 +603,7 @@ class BlogContainer extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  "Para ti",
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
+                Text("Para ti", style: Theme.of(context).textTheme.titleLarge),
               ],
             ),
           ),
@@ -795,9 +639,7 @@ class BlogContainer extends StatelessWidget {
                                 overflow: TextOverflow.ellipsis,
                                 maxLines: 2,
                               ),
-                              SizedBox(
-                                height: 5,
-                              ),
+                              SizedBox(height: 5),
                               const Text("Publicado aos 13, Abril, 2025"),
                             ],
                           ),
@@ -819,7 +661,7 @@ class BlogContainer extends StatelessWidget {
               return const SizedBox(height: 10);
             },
             itemCount: 8,
-          )
+          ),
         ],
       ),
     );
@@ -835,9 +677,7 @@ class EventContainer extends StatelessWidget {
       builder: (context, state) {
         print(state);
         if (state is EventLoading) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
+          return const Center(child: CircularProgressIndicator());
         } else if (state is EventLoaded) {
           if (state.events.isEmpty) {
             return const Center(child: Text("Sem eventos registados"));
@@ -847,8 +687,11 @@ class EventContainer extends StatelessWidget {
               child: Column(
                 children: [
                   Container(
-                    padding:
-                        const EdgeInsets.only(left: 16, right: 16, top: 16),
+                    padding: const EdgeInsets.only(
+                      left: 16,
+                      right: 16,
+                      top: 16,
+                    ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -856,7 +699,7 @@ class EventContainer extends StatelessWidget {
                           "Eventos próximos de si",
                           style: Theme.of(context).textTheme.titleLarge,
                         ),
-                        TextButton(onPressed: () {}, child: Text("Ver mais"))
+                        TextButton(onPressed: () {}, child: Text("Ver mais")),
                       ],
                     ),
                   ),
@@ -871,22 +714,24 @@ class EventContainer extends StatelessWidget {
                       reverse: false,
                       autoPlay: false,
                       autoPlayInterval: const Duration(seconds: 3),
-                      autoPlayAnimationDuration:
-                          const Duration(milliseconds: 800),
+                      autoPlayAnimationDuration: const Duration(
+                        milliseconds: 800,
+                      ),
                       autoPlayCurve: Curves.fastOutSlowIn,
                       enlargeCenterPage: false,
                       enlargeFactor: 0.3,
                       scrollDirection: Axis.horizontal,
                     ),
                     items: events.map((event) {
-                      return EventWidget(
-                        event: event,
-                      );
+                      return EventWidget(event: event);
                     }).toList(),
                   ),
                   Container(
-                    padding:
-                        const EdgeInsets.only(left: 16, right: 16, top: 16),
+                    padding: const EdgeInsets.only(
+                      left: 16,
+                      right: 16,
+                      top: 16,
+                    ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -899,21 +744,18 @@ class EventContainer extends StatelessWidget {
                     ),
                   ),
                   ListView.separated(
-                      shrinkWrap: true,
-                      physics: const ClampingScrollPhysics(),
-                      padding: const EdgeInsets.all(14),
-                      itemBuilder: (context, index) {
-                        final event = events[index];
-                        return EventWidget(
-                          event: event,
-                        );
-                      },
-                      separatorBuilder: (context, index) {
-                        return const SizedBox(
-                          height: 10,
-                        );
-                      },
-                      itemCount: state.events.length)
+                    shrinkWrap: true,
+                    physics: const ClampingScrollPhysics(),
+                    padding: const EdgeInsets.all(14),
+                    itemBuilder: (context, index) {
+                      final event = events[index];
+                      return EventWidget(event: event);
+                    },
+                    separatorBuilder: (context, index) {
+                      return const SizedBox(height: 10);
+                    },
+                    itemCount: state.events.length,
+                  ),
                 ],
               ),
             );

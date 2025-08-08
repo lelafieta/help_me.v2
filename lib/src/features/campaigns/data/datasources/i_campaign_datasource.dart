@@ -1,13 +1,13 @@
-import '../../domain/entities/campaign_entity.dart';
 import '../../domain/entities/campaign_params.dart';
+import '../models/campaign_model.dart';
 
 abstract class ICampaignRemoteDataSource {
-  Future<List<CampaignEntity>> getAllCampaigns(CampaignParams params);
-  Future<List<CampaignEntity>> getAllMyCampaigns(CampaignParams params);
-  Future<List<CampaignEntity>> getAllUrgentCampaigns(CampaignParams params);
-  Future<List<CampaignEntity>> getLatestUrgentCampaigns();
-  Future<CampaignEntity> getCampaignById(String id);
-  Future<void> createCampaign(CampaignEntity campaign);
-  Future<void> updateCampaign(CampaignEntity campaign);
+  Future<List<CampaignModel>> getAllCampaigns(CampaignParams params);
+  Future<List<CampaignModel>> getAllMyCampaigns({String? status});
+  Future<List<CampaignModel>> getAllUrgentCampaigns(CampaignParams params);
+  Future<List<CampaignModel>> getLatestUrgentCampaigns();
+  Future<CampaignModel> getCampaignById(String id);
+  Future<void> createCampaign(CampaignModel campaign);
+  Future<void> updateCampaign(CampaignModel campaign);
   Future<void> deleteCampaign(String id);
 }
