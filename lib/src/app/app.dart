@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
+import 'package:utueji/src/features/communities/data/models/community_member_model.dart';
+import 'package:utueji/src/features/communities/presentation/cubit/member_community/community_member_cubit.dart';
+import 'package:utueji/src/features/events/presentation/cubit/community_event/community_event_cubit.dart';
 import 'package:utueji/src/features/ongs/presentation/cubit/ong_action_cubit/ong_action_cubit.dart';
+import 'package:utueji/src/features/posts/presentation/cubit/community_post/community_post_cubit.dart';
 import '../config/routes/app_pages.dart';
 import '../config/themes/app_theme.dart';
 import '../app/di.dart' as di;
@@ -27,6 +31,7 @@ import '../features/feeds/presentation/cubit/feed_cubit.dart';
 import '../features/home/presentation/cubit/home_campaign_cubit/home_campaign_cubit.dart';
 import '../features/home/presentation/cubit/home_profile_data_cubit/home_profile_data_cubit.dart';
 import '../features/ongs/presentation/cubit/ong_cubit.dart';
+import '../features/posts/presentation/cubit/community_post_resource/community_post_resource_cubit.dart';
 import '../features/posts/presentation/cubit/post_cubit.dart';
 import '../features/profile/presentation/cubit/count_donation_cubit/count_donation_cubit.dart';
 import '../features/profile/presentation/cubit/profile_cubit.dart';
@@ -68,7 +73,10 @@ class UtuejiApp extends StatelessWidget {
         BlocProvider(create: (_) => di.sl<CategoryCubit>()..getAllCategories()),
         BlocProvider(create: (_) => di.sl<UserLocalDataCubit>()..loadUser()),
         BlocProvider(create: (_) => di.sl<CommunityCubit>()),
-        BlocProvider(create: (_) => di.sl<PostCubit>()),
+        BlocProvider(create: (_) => di.sl<CommunityPostCubit>()),
+        BlocProvider(create: (_) => di.sl<CommunityEventCubit>()),
+        BlocProvider(create: (_) => di.sl<CommunityMemberCubit>()),
+        BlocProvider(create: (_) => di.sl<CommunityPostResourceCubit>()),
       ],
       child: GetMaterialApp(
         theme: AppTheme.lightTheme,

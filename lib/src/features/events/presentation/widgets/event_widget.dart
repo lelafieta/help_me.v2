@@ -183,10 +183,11 @@ class _EventWidgetState extends State<EventWidget> {
                             textForMore: textForMore,
                           ),
                         ),
-
-                        Text(
-                          "${widget.event.distanceKm!.toStringAsFixed(1)} km",
-                        ),
+                        (widget.event.distanceKm == null)
+                            ? Text("")
+                            : Text(
+                                "${widget.event.distanceKm!.toStringAsFixed(1)} km",
+                              ),
                       ],
                     ),
                   ),

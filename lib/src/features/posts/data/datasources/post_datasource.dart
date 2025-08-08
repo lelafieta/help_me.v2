@@ -14,4 +14,14 @@ class PostDataSource extends IPostDataSource {
         .map((json) => PostModel.fromJson(json))
         .toList();
   }
+
+  @override
+  Future<List<PostModel>> getPostsWithResourcesByCommunityId(
+    String communityId,
+  ) async {
+    final response = await dio.get('/posts/community/resources/$communityId');
+    return (response.data as List)
+        .map((json) => PostModel.fromJson(json))
+        .toList();
+  }
 }

@@ -24,4 +24,12 @@ class EventDataSource extends IEventDataSource {
     }
     return EventModel.fromJson(json);
   }
+
+  @override
+  Future<List<EventModel>> getEventsByCommunityId(String commintyId) async {
+    final response = await dio.get('/events/community/$commintyId');
+    return (response.data as List)
+        .map((json) => EventModel.fromJson(json))
+        .toList();
+  }
 }

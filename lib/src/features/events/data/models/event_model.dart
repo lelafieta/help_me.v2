@@ -43,7 +43,9 @@ class EventModel extends EventEntity {
       eventParticipants: List<EventParticipantModel>.from(
         map['eventParticipants'].map((x) => EventParticipantModel.fromJson(x)),
       ),
-      distanceKm: (map['distanceKm'] as num),
+      distanceKm: (map['distanceKm'] == null)
+          ? null
+          : (map['distanceKm'] as num),
       ong: (map['ong'] != null) ? OngModel.fromJson(map['ong']) : null,
       user: (map['user'] != null) ? UserModel.fromJson(map['user']) : null,
     );

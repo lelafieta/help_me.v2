@@ -10,6 +10,7 @@ import 'package:internet_connection_checker_plus/internet_connection_checker_plu
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:utueji/src/core/api/dio_consumer.dart';
+import 'package:utueji/src/features/communities/presentation/cubit/member_community/community_member_cubit.dart';
 import 'package:utueji/src/features/events/domain/usecases/get_event_by_id_usecase.dart';
 import 'package:utueji/src/features/favorites/domain/usecases/get_favorites_by_type_usecase.dart';
 import 'package:utueji/src/features/ongs/domain/usecases/get_ong_by_id_usecase.dart';
@@ -87,6 +88,7 @@ import '../features/communities/data/datasources/community_datasource.dart';
 import '../features/communities/data/datasources/i_community_datasource.dart';
 import '../features/communities/data/repositories/community_repository.dart';
 import '../features/communities/domain/repositories/i_community_repository.dart';
+import '../features/communities/domain/usecases/get_members_by_community_id_usecase.dart';
 import '../features/communities/domain/usecases/get_my_communities_usecase.dart';
 import '../features/communities/presentation/cubit/community_cubit.dart';
 import '../features/events/data/datasources/event_datasource.dart';
@@ -94,6 +96,8 @@ import '../features/events/data/datasources/i_event_datasource.dart';
 import '../features/events/data/repositories/event_repository.dart';
 import '../features/events/domain/repositories/i_event_repository.dart';
 import '../features/events/domain/usecases/fetch_nearby_events_usecase.dart';
+import '../features/events/domain/usecases/get_events_by_community_id.dart';
+import '../features/events/presentation/cubit/community_event/community_event_cubit.dart';
 import '../features/events/presentation/cubit/event_cubit.dart';
 import '../features/favorites/data/datasources/favorite_datasource.dart';
 import '../features/favorites/data/datasources/i_favorite_datasource.dart';
@@ -125,6 +129,9 @@ import '../features/posts/data/datasources/post_datasource.dart';
 import '../features/posts/data/repositories/post_repository.dart';
 import '../features/posts/domain/repositories/i_post_repository.dart';
 import '../features/posts/domain/usecases/get_posts_by_community_id_usecase.dart';
+import '../features/posts/domain/usecases/get_posts_with_resources_by_community_id_usecase.dart';
+import '../features/posts/presentation/cubit/community_post/community_post_cubit.dart';
+import '../features/posts/presentation/cubit/community_post_resource/community_post_resource_cubit.dart';
 import '../features/posts/presentation/cubit/post_cubit.dart';
 import '../features/profile/presentation/cubit/count_donation_cubit/count_donation_cubit.dart';
 import '../features/profile/presentation/cubit/profile_cubit.dart';
@@ -250,6 +257,21 @@ void _setUpCubits() {
 
   sl.registerFactory(() => CommunityCubit(getMyCommunitiesUseCase: sl()));
   sl.registerFactory(() => PostCubit(getPostsByCommunityIdUseCase: sl()));
+
+  sl.registerFactory(
+    () => CommunityMemberCubit(getMembersByCommunityIdUseCase: sl()),
+  );
+  sl.registerFactory(
+    () => CommunityPostCubit(getPostsByCommunityIdUseCase: sl()),
+  );
+  sl.registerFactory(
+    () => CommunityPostResourceCubit(
+      getPostsWithResourcesByCommunityIdUseCase: sl(),
+    ),
+  );
+  sl.registerFactory(
+    () => CommunityEventCubit(getEventsByCommunityIdUsecase: sl()),
+  );
 }
 
 void _setUpUsecases() {
@@ -348,6 +370,16 @@ void _setUpUsecases() {
   sl.registerLazySingleton(() => GetMyCommunitiesUseCase(repository: sl()));
   sl.registerLazySingleton(
     () => GetPostsByCommunityIdUseCase(repository: sl()),
+  );
+  sl.registerLazySingleton(
+    () => GetMembersByCommunityIdUseCase(repository: sl()),
+  );
+
+  sl.registerLazySingleton(
+    () => GetEventsByCommunityIdUsecase(repository: sl()),
+  );
+  sl.registerLazySingleton(
+    () => GetPostsWithResourcesByCommunityIdUseCase(repository: sl()),
   );
 }
 

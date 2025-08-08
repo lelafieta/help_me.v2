@@ -45,4 +45,24 @@ class EventRepository extends IEventRepository {
       return left(ServerFailure(errorMessage: "Sem conexão de internet"));
     }
   }
+
+  @override
+  Future<Either<Failure, List<EventEntity>>> getEventsByCommunityId(
+    String communityId,
+  ) async {
+    if (await netWorkInfo.isConnected) {
+      try {
+        final response = await eventDataSource.getEventsByCommunityId(
+          communityId,
+        );
+        return right(response);
+      } on DioException catch (e) {
+        return left(ServerFailure.fromDioException(e));
+      } catch (e) {
+        return left(ServerFailure(errorMessage: e.toString()));
+      }
+    } else {
+      return left(ServerFailure(errorMessage: "Sem conexão de internet"));
+    }
+  }
 }

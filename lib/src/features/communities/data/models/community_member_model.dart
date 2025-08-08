@@ -1,3 +1,4 @@
+import '../../../auth/data/models/user_model.dart';
 import '../../domain/entities/community_member_entity.dart';
 
 class CommunityMemberModel extends CommunityMemberEntity {
@@ -7,6 +8,7 @@ class CommunityMemberModel extends CommunityMemberEntity {
     required super.joinedAt,
     required super.userId,
     required super.communityId,
+    required super.user,
   });
 
   factory CommunityMemberModel.fromJson(Map<String, dynamic> json) {
@@ -16,6 +18,7 @@ class CommunityMemberModel extends CommunityMemberEntity {
       joinedAt: DateTime.parse(json['joinedAt']),
       userId: json['userId'],
       communityId: json['communityId'],
+      user: UserModel.fromJson(json['user']),
     );
   }
 }

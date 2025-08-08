@@ -243,6 +243,9 @@ class $AssetsIconsGen {
   /// File path: assets/icons/whatsapp.svg
   String get whatsapp => 'assets/icons/whatsapp.svg';
 
+  /// File path: assets/icons/write-f.svg
+  String get writeF => 'assets/icons/write-f.svg';
+
   /// File path: assets/icons/x.svg
   String get x => 'assets/icons/x.svg';
 
@@ -321,6 +324,7 @@ class $AssetsIconsGen {
         triangleWarning,
         userAdd2Fill,
         whatsapp,
+        writeF,
         x
       ];
 }

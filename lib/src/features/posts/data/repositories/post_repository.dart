@@ -31,4 +31,23 @@ class PostRepository extends IPostRepository {
       return left(ServerFailure(errorMessage: "Sem conexão de internet"));
     }
   }
+
+  @override
+  Future<Either<Failure, List<PostEntity>>> getPostsWithResourcesByCommunityId(
+    String communityId,
+  ) async {
+    if (await netWorkInfo.isConnected) {
+      try {
+        final response = await postDataSource
+            .getPostsWithResourcesByCommunityId(communityId);
+        return right(response);
+      } on DioException catch (e) {
+        return left(ServerFailure.fromDioException(e));
+      } catch (e) {
+        return left(ServerFailure(errorMessage: e.toString()));
+      }
+    } else {
+      return left(ServerFailure(errorMessage: "Sem conexão de internet"));
+    }
+  }
 }
