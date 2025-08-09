@@ -2,14 +2,15 @@ import '../../../auth/data/models/user_model.dart';
 import '../../domain/entities/campaign_comment_entity.dart';
 
 class CampaignCommentModel extends CampaignCommentEntity {
-  CampaignCommentModel(
-      {super.id,
-      super.userId,
-      super.campaignId,
-      super.description,
-      super.createdAt,
-      super.updatedAt,
-      super.user});
+  CampaignCommentModel({
+    super.id,
+    super.userId,
+    super.campaignId,
+    super.description,
+    super.createdAt,
+    super.updatedAt,
+    super.user,
+  });
 
   factory CampaignCommentModel.fromJson(Map<String, dynamic> json) {
     return CampaignCommentModel(

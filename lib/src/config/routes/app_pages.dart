@@ -29,6 +29,8 @@ import '../../features/events/presentation/pages/event_detail_page.dart';
 import '../../features/events/presentation/pages/event_page.dart';
 import '../../features/explore/presentation/pages/explore_page.dart';
 import '../../features/favorites/presentation/pages/favorite_page.dart';
+import '../../features/feeds/domain/entities/feed_entity.dart';
+import '../../features/feeds/presentation/pages/feed_details_page.dart';
 import '../../features/feeds/presentation/pages/feed_page.dart';
 import '../../features/home/presentation/pages/home_page.dart';
 import '../../features/ongs/domain/entities/ong_entity.dart';
@@ -475,6 +477,22 @@ class RouteManager {
         return PageRouteBuilder(
           pageBuilder: (context, animation, secondaryAnimation) {
             return CommunityDetailsPage(community: community);
+          },
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return SharedAxisTransition(
+              animation: animation,
+              secondaryAnimation: secondaryAnimation,
+              transitionType: SharedAxisTransitionType.vertical,
+              child: child,
+            );
+          },
+        );
+
+      case AppRoutes.feedDetailsRoute:
+        final feed = routeSettings.arguments as FeedEntity;
+        return PageRouteBuilder(
+          pageBuilder: (context, animation, secondaryAnimation) {
+            return FeedDetailsPage(feed: feed);
           },
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             return SharedAxisTransition(

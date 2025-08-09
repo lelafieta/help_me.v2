@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:dio/dio.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/network/i_network_info.dart';
 import '../../domain/entities/feed_comment_entity.dart';
@@ -15,11 +16,15 @@ class FeedRepository extends IFeedRepository {
 
   @override
   Future<Either<Failure, List<FeedEntity>>> fetchFeeds() async {
-    if (await netWorkInfo.isConnected == true) {
+    if (await netWorkInfo.isConnected) {
       try {
         final response = await feedDataSource.fetchFeeds();
         return right(response);
-      } catch (e) {
+      } on DioException catch (e, s) {
+        print(s);
+        return left(ServerFailure.fromDioException(e));
+      } catch (e, s) {
+        print(s);
         return left(ServerFailure(errorMessage: e.toString()));
       }
     } else {

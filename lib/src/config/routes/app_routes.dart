@@ -18,13 +18,14 @@ class AppRoutes {
   static const String campaignCreateUpdateRoute = "/campaignCreateUpdate";
   static const String createCampaignRoute = "/createCampaign";
   static const String createCampaignSuccessRoute = "/createCampaignSuccess";
-  static const String editMyCampaignRoute = "/editMyCampaign";
-  static const String myCampaignSettingsRoute = "/myCampaignSettings";
-  static const String categoryCampaignsRoute = "/categoryCampaigns";
+  static const String editMyCampaignRoute = "/edit-my-campaign";
+  static const String myCampaignSettingsRoute = "/my-campaign-settings";
+  static const String categoryCampaignsRoute = "/category-campaigns";
   static const String paymentRoute = "/payment";
   static const String profileRoute = "/profile";
-  static const String createOngRoute = "/createOng";
-  static const String successRegisterOng = "/successRegisterOng";
+  static const String createOngRoute = "/create-ong";
+  static const String successRegisterOng = "/success-register-ong";
   static const String communityRoute = "/community";
-  static const String communityDetailsRoute = "/communityDetails";
+  static const String communityDetailsRoute = "/community-details";
+  static const String feedDetailsRoute = "/feed-details";
 }
