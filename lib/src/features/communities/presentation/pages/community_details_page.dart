@@ -236,24 +236,11 @@ class MemberWidget extends StatelessWidget {
               width: 40,
               height: 40,
               color: Colors.grey.shade300,
-              child: (member.user.avatarUrl == null)
-                  ? SizedBox.shrink()
-                  : CachedNetworkImage(
-                      imageUrl: ImageHelper.buildImageUrl(
-                        member.user.avatarUrl!,
-                      ),
-                      fit: BoxFit.cover,
-                      progressIndicatorBuilder:
-                          (context, url, downloadProgress) => Center(
-                            child: CircularProgressIndicator(
-                              value: downloadProgress.progress,
-                            ),
-                          ),
-                    ),
+              child: ImageHelper.showImage(member.user.avatarUrl),
             ),
           ),
           title: Text(member.user.fullName.toString()),
-          subtitle: Text(member.role.toString()),
+          subtitle: Text(member.role.toString().toLowerCase()),
         );
       },
       separatorBuilder: (context, index) {
@@ -332,13 +319,7 @@ class GalleryWidget extends StatelessWidget {
             ),
             itemBuilder: (context, index) {
               final image = images[index];
-              return CachedNetworkImage(
-                imageUrl: image.url,
-                fit: BoxFit.cover,
-                placeholder: (context, url) =>
-                    const Center(child: CircularProgressIndicator()),
-                errorWidget: (context, url, error) => const Icon(Icons.error),
-              );
+              return ImageHelper.showImage(image.url);
             },
           );
         } else if (state is CommunityPostResourceFailure) {

@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -39,6 +38,8 @@ class _EventWidgetState extends State<EventWidget> {
         Get.toNamed(AppRoutes.eventDetail, arguments: widget.event);
       },
       child: Container(
+        width: double.infinity,
+        height: 300,
         padding: const EdgeInsets.all(10),
         margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         decoration: BoxDecoration(
@@ -56,18 +57,8 @@ class _EventWidgetState extends State<EventWidget> {
                   SizedBox(
                     width: double.infinity,
                     height: 190,
-                    child: CachedNetworkImage(
-                      imageUrl: ImageHelper.buildImageUrl(
-                        widget.event.backgroundImageUrl!,
-                      ),
-                      fit: BoxFit.cover,
-                      placeholder: (context, url) => const Center(
-                        child: SizedBox(
-                          width: 40,
-                          height: 40,
-                          child: CircularProgressIndicator(),
-                        ),
-                      ),
+                    child: ImageHelper.showImage(
+                      widget.event.backgroundImageUrl,
                     ),
                   ),
                   Positioned(

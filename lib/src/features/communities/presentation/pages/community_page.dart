@@ -130,26 +130,8 @@ class _CommunityPageState extends State<CommunityPage> {
                                       width: 40,
                                       height: 40,
                                       color: Colors.black12,
-                                      child: CachedNetworkImage(
-                                        imageUrl: ImageHelper.buildImageUrl(
-                                          "post",
-                                        ),
-                                        fit: BoxFit.cover,
-                                        progressIndicatorBuilder:
-                                            (
-                                              context,
-                                              url,
-                                              downloadProgress,
-                                            ) => SizedBox(
-                                              width: 50,
-                                              height: 50,
-                                              child: CircularProgressIndicator(
-                                                value:
-                                                    downloadProgress.progress,
-                                              ),
-                                            ),
-                                        errorWidget: (context, url, error) =>
-                                            Icon(Icons.error),
+                                      child: ImageHelper.showImage(
+                                        post.user.avatarUrl,
                                       ),
                                     ),
                                   ),
@@ -190,29 +172,10 @@ class _CommunityPageState extends State<CommunityPage> {
                                           borderRadius: BorderRadius.circular(
                                             8,
                                           ),
-                                          child: ExtendedImage.network(
-                                            ImageHelper.buildImageUrl(
-                                              post.resources[0].url,
-                                            ),
-                                            fit: BoxFit.cover,
-                                            cache: true,
-                                            height: 200,
+                                          child: ImageHelper.showImage(
+                                            post.resources[0].url,
                                             width: double.infinity,
-                                            loadStateChanged: (state) {
-                                              if (state
-                                                      .extendedImageLoadState ==
-                                                  LoadState.loading) {
-                                                return const Center(
-                                                  child:
-                                                      CircularProgressIndicator(),
-                                                );
-                                              } else if (state
-                                                      .extendedImageLoadState ==
-                                                  LoadState.failed) {
-                                                return const Icon(Icons.error);
-                                              }
-                                              return null;
-                                            },
+                                            height: 200,
                                           ),
                                         ),
                                       )

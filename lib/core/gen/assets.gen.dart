@@ -370,6 +370,13 @@ class $AssetsImagesGen {
   /// File path: assets/images/ngo.png
   AssetGenImage get ngo => const AssetGenImage('assets/images/ngo.png');
 
+  /// File path: assets/images/nope-not-here.avif
+  String get nopeNotHere => 'assets/images/nope-not-here.avif';
+
+  /// File path: assets/images/placeholder.jpeg
+  AssetGenImage get placeholder =>
+      const AssetGenImage('assets/images/placeholder.jpeg');
+
   /// File path: assets/images/splash1.jpg
   AssetGenImage get splash1 => const AssetGenImage('assets/images/splash1.jpg');
 
@@ -382,6 +389,10 @@ class $AssetsImagesGen {
   /// File path: assets/images/success.png
   AssetGenImage get success => const AssetGenImage('assets/images/success.png');
 
+  /// File path: assets/images/user-avatar.png
+  AssetGenImage get userAvatar =>
+      const AssetGenImage('assets/images/user-avatar.png');
+
   /// File path: assets/images/user.png
   AssetGenImage get user => const AssetGenImage('assets/images/user.png');
 
@@ -389,7 +400,7 @@ class $AssetsImagesGen {
   AssetGenImage get wave => const AssetGenImage('assets/images/wave.png');
 
   /// List of all assets
-  List<AssetGenImage> get values => [
+  List<dynamic> get values => [
         anonymousMask,
         avatarBackground,
         charity,
@@ -401,10 +412,13 @@ class $AssetsImagesGen {
         icon,
         image1,
         ngo,
+        nopeNotHere,
+        placeholder,
         splash1,
         splash2,
         splash3,
         success,
+        userAvatar,
         user,
         wave
       ];

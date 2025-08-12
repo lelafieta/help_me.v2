@@ -149,18 +149,10 @@ class _ChatPageState extends State<ChatPage> {
                                         right: 0,
                                         top: 0,
                                         bottom: 0,
-                                        child: (community.imageUrl != null)
-                                            ? CachedNetworkImage(
-                                                imageUrl:
-                                                    ImageHelper.buildImageUrl(
-                                                      community.imageUrl!,
-                                                    ),
-                                                fit: BoxFit.cover,
-                                              )
-                                            : Image.asset(
-                                                AppImages.image1,
-                                                fit: BoxFit.cover,
-                                              ),
+                                        child: ImageHelper.showImage(
+                                          community.imageUrl,
+                                          isUser: false,
+                                        ),
                                       ),
                                       Positioned(
                                         left: 0,

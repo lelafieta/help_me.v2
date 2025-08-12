@@ -47,21 +47,8 @@ class FeedDetailsPage extends StatelessWidget {
                             width: 40,
                             height: 40,
                             color: Colors.black12,
-                            child: CachedNetworkImage(
-                              imageUrl: ImageHelper.buildImageUrl(
-                                feed.ong!.profileImageUrl!,
-                              ),
-                              fit: BoxFit.cover,
-                              progressIndicatorBuilder:
-                                  (context, url, downloadProgress) => SizedBox(
-                                    width: 50,
-                                    height: 50,
-                                    child: CircularProgressIndicator(
-                                      value: downloadProgress.progress,
-                                    ),
-                                  ),
-                              errorWidget: (context, url, error) =>
-                                  Icon(Icons.error),
+                            child: ImageHelper.showImage(
+                              feed.ong!.profileImageUrl,
                             ),
                           ),
                         ),
@@ -85,23 +72,7 @@ class FeedDetailsPage extends StatelessWidget {
                               child: SizedBox(
                                 width: double.infinity,
                                 height: 200,
-                                child: CachedNetworkImage(
-                                  imageUrl: ImageHelper.buildImageUrl(
-                                    feed.image!,
-                                  ),
-                                  fit: BoxFit.cover,
-                                  progressIndicatorBuilder:
-                                      (context, url, downloadProgress) =>
-                                          SizedBox(
-                                            width: 40,
-                                            height: 40,
-                                            child: CircularProgressIndicator(
-                                              value: downloadProgress.progress,
-                                            ),
-                                          ),
-                                  errorWidget: (context, url, error) =>
-                                      Icon(Icons.error),
-                                ),
+                                child: ImageHelper.showImage(feed.image),
                               ),
                             ),
                           ],
@@ -195,22 +166,7 @@ class FeedDetailsPage extends StatelessWidget {
                   minTileHeight: 10,
                   leading: (comment.user.avatarUrl != null)
                       ? ClipOval(
-                          child: CachedNetworkImage(
-                            imageUrl: comment.user.avatarUrl.toString(),
-                            fit: BoxFit.cover,
-                            width: 45,
-                            height: 45,
-                            progressIndicatorBuilder:
-                                (context, url, progress) => SizedBox(
-                                  width: 50,
-                                  height: 50,
-                                  child: CircularProgressIndicator(
-                                    value: progress.progress,
-                                  ),
-                                ),
-                            errorWidget: (context, url, error) =>
-                                Icon(Icons.error),
-                          ),
+                          child: ImageHelper.showImage(comment.user.avatarUrl),
                         )
                       : ClipRRect(
                           borderRadius: BorderRadius.circular(50),

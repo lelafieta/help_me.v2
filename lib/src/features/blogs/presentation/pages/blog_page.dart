@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -109,25 +108,8 @@ class _BlogPageState extends State<BlogPage> {
                                         //   AppImages.image1,
                                         //   fit: BoxFit.cover,
                                         // ),
-                                        child: CachedNetworkImage(
-                                          imageUrl: ImageHelper.buildImageUrl(
-                                            blog.image!,
-                                          ),
-                                          fit: BoxFit.cover,
-                                          progressIndicatorBuilder:
-                                              (
-                                                context,
-                                                url,
-                                                downloadProgress,
-                                              ) => Center(
-                                                child:
-                                                    CircularProgressIndicator(
-                                                      value: downloadProgress
-                                                          .progress,
-                                                    ),
-                                              ),
-                                          errorWidget: (context, url, error) =>
-                                              Icon(Icons.error),
+                                        child: ImageHelper.showImage(
+                                          blog.image,
                                         ),
                                       ),
                                     ),
@@ -141,20 +123,8 @@ class _BlogPageState extends State<BlogPage> {
                                         width: 40,
                                         height: 40,
                                         color: Colors.blue,
-                                        child: CachedNetworkImage(
-                                          imageUrl: blog.user!.avatarUrl!,
-                                          fit: BoxFit.cover,
-                                          progressIndicatorBuilder:
-                                              (
-                                                context,
-                                                url,
-                                                downloadProgress,
-                                              ) => CircularProgressIndicator(
-                                                value:
-                                                    downloadProgress.progress,
-                                              ),
-                                          errorWidget: (context, url, error) =>
-                                              Icon(Icons.error),
+                                        child: ImageHelper.showImage(
+                                          blog.user!.avatarUrl,
                                         ),
                                       ),
                                     ),
@@ -238,12 +208,7 @@ class _BlogPageState extends State<BlogPage> {
                               width: 70,
                               height: 70,
                               color: Colors.grey.shade300,
-                              child: CachedNetworkImage(
-                                fit: BoxFit.cover,
-                                imageUrl: ImageHelper.buildImageUrl(
-                                  blog.image!,
-                                ),
-                              ),
+                              child: ImageHelper.showImage(blog.image),
                             ),
                           ),
                           const SizedBox(width: 10),

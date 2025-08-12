@@ -1,5 +1,5 @@
 import 'package:animate_do/animate_do.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+
 import 'package:flutter/material.dart';
 
 import 'package:flutter_animation_progress_bar/flutter_animation_progress_bar.dart';
@@ -178,16 +178,8 @@ class _CampaignDetailPageState extends State<CampaignDetailPage> {
                   ),
                 ),
                 expandedContentHeight: 200,
-                expandedContent: CachedNetworkImage(
-                  imageUrl: ImageHelper.buildImageUrl(
-                    widget.campaign.imageCoverUrl!,
-                  ),
-                  fit: BoxFit.cover,
-                  progressIndicatorBuilder: (context, url, downloadProgress) =>
-                      CircularProgressIndicator(
-                        value: downloadProgress.progress,
-                      ),
-                  errorWidget: (context, url, error) => const Icon(Icons.error),
+                expandedContent: ImageHelper.showImage(
+                  widget.campaign.imageCoverUrl,
                 ),
                 collapsedContent: SizedBox.shrink(),
                 body: Material(
@@ -238,17 +230,10 @@ class GalleryWidget extends StatelessWidget {
       itemCount: campaign.midias!.length,
       itemBuilder: (context, index) {
         final item = campaign.midias![index];
-        print(ImageHelper.buildImageUrl(item.midiaUrl!));
         return ClipRRect(
           borderRadius: BorderRadius.circular(12),
           child: item.midiaType == "image"
-              ? CachedNetworkImage(
-                  imageUrl: ImageHelper.buildImageUrl(item.midiaUrl!),
-                  fit: BoxFit.cover,
-                  placeholder: (context, url) =>
-                      const Center(child: CircularProgressIndicator()),
-                  errorWidget: (context, url, error) => const Icon(Icons.error),
-                )
+              ? ImageHelper.showImage(item.midiaUrl)
               : VideoItem(url: item.midiaUrl!),
         );
       },
@@ -794,22 +779,9 @@ class _AboutWidgetState extends State<AboutWidget> {
                     child: SizedBox(
                       width: 50,
                       height: 50,
-                      child: (widget.campaign.user!.avatarUrl == null)
-                          ? Image.asset(
-                              Assets.images.avatarBackground.path,
-                              fit: BoxFit.cover,
-                            )
-                          : CachedNetworkImage(
-                              imageUrl: widget.campaign.user!.avatarUrl!,
-                              fit: BoxFit.cover,
-                              progressIndicatorBuilder:
-                                  (context, url, downloadProgress) =>
-                                      CircularProgressIndicator(
-                                        value: downloadProgress.progress,
-                                      ),
-                              errorWidget: (context, url, error) =>
-                                  const Icon(Icons.error),
-                            ),
+                      child: ImageHelper.showImage(
+                        widget.campaign.user!.avatarUrl,
+                      ),
                     ),
                   ),
                   title: Text(
@@ -855,22 +827,9 @@ class _AboutWidgetState extends State<AboutWidget> {
                     child: SizedBox(
                       width: 50,
                       height: 50,
-                      child: (widget.campaign.ong!.coverImageUrl == null)
-                          ? Image.asset(
-                              AppImages.coverBackground,
-                              fit: BoxFit.cover,
-                            )
-                          : CachedNetworkImage(
-                              imageUrl: widget.campaign.ong!.coverImageUrl!,
-                              fit: BoxFit.cover,
-                              progressIndicatorBuilder:
-                                  (context, url, downloadProgress) =>
-                                      CircularProgressIndicator(
-                                        value: downloadProgress.progress,
-                                      ),
-                              errorWidget: (context, url, error) =>
-                                  const Icon(Icons.error),
-                            ),
+                      child: ImageHelper.showImage(
+                        widget.campaign.ong!.coverImageUrl,
+                      ),
                     ),
                   ),
                   title: Text(
@@ -1182,12 +1141,7 @@ class _FullScreenPreviewState extends State<FullScreenPreview> {
                       child: VideoPlayer(_videoController!),
                     )
                   : const Center(child: CircularProgressIndicator())
-            : CachedNetworkImage(
-                width: double.infinity,
-                height: double.infinity,
-                fit: BoxFit.contain,
-                imageUrl: widget.mediaUrl,
-              ),
+            : ImageHelper.showImage(widget.mediaUrl),
       ),
     );
   }
@@ -1219,17 +1173,7 @@ class HelpWidget extends StatelessWidget {
                       child: Container(
                         width: 40,
                         height: 40,
-                        child: CachedNetworkImage(
-                          imageUrl: comment.user!.avatarUrl!,
-                          fit: BoxFit.cover,
-                          progressIndicatorBuilder:
-                              (context, url, downloadProgress) =>
-                                  CircularProgressIndicator(
-                                    value: downloadProgress.progress,
-                                  ),
-                          errorWidget: (context, url, error) =>
-                              Icon(Icons.error),
-                        ),
+                        child: ImageHelper.showImage(comment.user!.avatarUrl),
                       ),
                     ),
                     title: Text(

@@ -8,6 +8,7 @@ import '../../../../config/themes/app_colors.dart';
 import '../../../../core/resources/icons/app_icons.dart';
 import '../../../../core/resources/images/app_images.dart';
 import '../../../../core/utils/app_utils.dart';
+import '../../../../core/utils/image_helper.dart';
 import '../../domain/entities/ong_entity.dart';
 
 class OngWidget extends StatefulWidget {
@@ -56,18 +57,11 @@ class _OngWidgetState extends State<OngWidget> {
                 titleAlignment: ListTileTitleAlignment.center,
                 leading: ClipRRect(
                   borderRadius: BorderRadius.circular(50),
-                  child: (widget.ong.profileImageUrl == null)
-                      ? Image.asset(AppImages.coverBackground)
-                      : CachedNetworkImage(
-                          imageUrl: widget.ong.profileImageUrl!,
-                          width: 55,
-                          height: 55,
-                          fit: BoxFit.cover,
-                          placeholder: (context, url) =>
-                              const CircularProgressIndicator(),
-                          errorWidget: (context, url, error) =>
-                              const Icon(Icons.error),
-                        ),
+                  child: ImageHelper.showImage(
+                    widget.ong.profileImageUrl,
+                    width: 50,
+                    height: 50,
+                  ),
                 ),
                 title: Row(
                   children: [

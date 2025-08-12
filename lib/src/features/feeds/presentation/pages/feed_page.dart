@@ -1,17 +1,13 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:utueji/src/core/utils/image_helper.dart';
 import 'package:utueji/src/features/feeds/domain/entities/feed_entity.dart';
 
 import '../../../../config/routes/app_routes.dart';
-import '../../../../config/themes/app_colors.dart';
 import '../../../../core/resources/icons/app_icons.dart';
 import '../../../../core/utils/app_date_utils_helper.dart';
-import '../../../../core/utils/app_utils.dart';
 import '../cubit/feed_cubit.dart';
 import '../cubit/feed_state.dart';
 
@@ -82,26 +78,7 @@ class FeedWidget extends StatelessWidget {
                 contentPadding: EdgeInsets.zero,
                 leading: ClipRRect(
                   borderRadius: BorderRadius.circular(50),
-                  child: Container(
-                    width: 40,
-                    height: 40,
-                    color: Colors.black12,
-                    child: CachedNetworkImage(
-                      imageUrl: ImageHelper.buildImageUrl(
-                        feed.ong!.profileImageUrl!,
-                      ),
-                      fit: BoxFit.cover,
-                      progressIndicatorBuilder:
-                          (context, url, downloadProgress) => SizedBox(
-                            width: 50,
-                            height: 50,
-                            child: CircularProgressIndicator(
-                              value: downloadProgress.progress,
-                            ),
-                          ),
-                      errorWidget: (context, url, error) => Icon(Icons.error),
-                    ),
-                  ),
+                  child: ImageHelper.showImage(feed.ong!.profileImageUrl),
                 ),
                 title: Text("${feed.ong!.name}"),
                 subtitle: Text(
@@ -123,49 +100,37 @@ class FeedWidget extends StatelessWidget {
                       child: SizedBox(
                         width: double.infinity,
                         height: 200,
-                        child: CachedNetworkImage(
-                          imageUrl: ImageHelper.buildImageUrl(feed.image!),
-                          fit: BoxFit.cover,
-                          progressIndicatorBuilder:
-                              (context, url, downloadProgress) => SizedBox(
-                                width: 40,
-                                height: 40,
-                                child: CircularProgressIndicator(
-                                  value: downloadProgress.progress,
-                                ),
-                              ),
-                          errorWidget: (context, url, error) =>
-                              Icon(Icons.error),
-                        ),
+                        child: ImageHelper.showImage(feed.image),
                       ),
                     ),
-                    Positioned(
-                      left: 0,
-                      bottom: 0,
-                      right: 0,
-                      child: Container(
-                        height: 45,
-                        color: AppColors.primaryColor,
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        child: const Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "Doar para sorrir",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 12,
-                              ),
-                            ),
-                            Icon(
-                              Icons.arrow_forward_ios_rounded,
-                              size: 20,
-                              color: Colors.white,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
+
+                    // Positioned(
+                    //   left: 0,
+                    //   bottom: 0,
+                    //   right: 0,
+                    //   child: Container(
+                    //     height: 45,
+                    //     color: AppColors.primaryColor,
+                    //     padding: const EdgeInsets.symmetric(horizontal: 10),
+                    //     child: const Row(
+                    //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //       children: [
+                    //         Text(
+                    //           "Doar para sorrir",
+                    //           style: TextStyle(
+                    //             color: Colors.white,
+                    //             fontSize: 12,
+                    //           ),
+                    //         ),
+                    //         Icon(
+                    //           Icons.arrow_forward_ios_rounded,
+                    //           size: 20,
+                    //           color: Colors.white,
+                    //         ),
+                    //       ],
+                    //     ),
+                    //   ),
+                    // ),
                   ],
                 ),
               ),

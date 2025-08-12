@@ -4,6 +4,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:utueji/src/core/utils/image_helper.dart';
 
 import '../../../../config/themes/app_colors.dart';
 import '../../../../core/resources/icons/app_icons.dart';
@@ -186,9 +187,15 @@ class OngContainer extends StatelessWidget {
                   padding: const EdgeInsets.all(16),
                   itemBuilder: (context, index) {
                     final ong = ongs[index];
-                    return Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+                    return Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(
+                          color: Colors.grey.shade300,
+                          width: 1,
+                        ),
                       ),
                       child: Row(
                         children: [
@@ -197,13 +204,7 @@ class OngContainer extends StatelessWidget {
                             child: SizedBox(
                               width: 60,
                               height: 60,
-                              child: CachedNetworkImage(
-                                imageUrl: ong.profileImageUrl!,
-                                placeholder: (context, url) =>
-                                    const CircularProgressIndicator(),
-                                errorWidget: (context, url, error) =>
-                                    const Icon(Icons.error),
-                              ),
+                              child: ImageHelper.showImage(ong.profileImageUrl),
                             ),
                           ),
                           Expanded(

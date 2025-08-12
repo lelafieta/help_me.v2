@@ -60,7 +60,7 @@ class EventPage extends StatelessWidget {
               return SizedBox.shrink();
             },
           ),
-          Text("data"),
+
           Container(
             padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
             child: Row(
@@ -79,14 +79,12 @@ class EventPage extends StatelessWidget {
               } else if (state is EventLoaded) {
                 final events = state.events;
 
-                return Text("${events.length}");
-
                 return ListView.builder(
                   shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-
+                  physics: const ClampingScrollPhysics(),
                   itemBuilder: (context, index) {
                     final event = events[index];
+                    // return Text("data");
                     return EventWidget(event: event);
                   },
                   // separatorBuilder: (context, index) {
@@ -96,13 +94,6 @@ class EventPage extends StatelessWidget {
                 );
               }
               return SizedBox.shrink();
-            },
-          ),
-          ListView.builder(
-            itemCount: 10,
-            shrinkWrap: true,
-            itemBuilder: (context, index) {
-              return Text("data");
             },
           ),
         ],

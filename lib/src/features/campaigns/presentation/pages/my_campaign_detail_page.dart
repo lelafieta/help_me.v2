@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:appinio_social_share/appinio_social_share.dart';
 import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:dashed_circular_progress_bar/dashed_circular_progress_bar.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,11 +9,11 @@ import 'package:http/http.dart' as http;
 
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
+
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:social_sharing_plus/social_sharing_plus.dart';
+
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:utueji/src/config/routes/app_routes.dart';
 import 'package:utueji/src/core/utils/app_utils.dart';
@@ -156,7 +155,6 @@ class _MyCampaignDetailPageState extends State<MyCampaignDetailPage> {
           BlocBuilder<MyCampaignDetailCubit, MyCampaignDetailState>(
             builder: (context, state) {
               if (state is MyCampaignDetailLoaded) {
-                final campaign = state.campaign;
                 return PopupMenuButton<String>(
                   splashRadius: 10,
                   onSelected: (value) {
@@ -222,26 +220,15 @@ class _MyCampaignDetailPageState extends State<MyCampaignDetailPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   ListTile(
+                    titleAlignment: ListTileTitleAlignment.titleHeight,
                     leading: ClipRRect(
                       borderRadius: BorderRadius.circular(8),
                       child: SizedBox(
                         width: 50,
                         height: 50,
-                        child: (widget.campaign.imageCoverUrl == null)
-                            ? Image.asset(
-                                AppImages.coverBackground,
-                                fit: BoxFit.cover,
-                              )
-                            : CachedNetworkImage(
-                                imageUrl: ImageHelper.buildImageUrl(
-                                  campaign.imageCoverUrl!,
-                                ),
-                                fit: BoxFit.cover,
-                                placeholder: (context, url) =>
-                                    const CircularProgressIndicator(),
-                                errorWidget: (context, url, error) =>
-                                    const Icon(Icons.error),
-                              ),
+                        child: ImageHelper.showImage(
+                          widget.campaign.imageCoverUrl,
+                        ),
                       ),
                     ),
                     title: Text(campaign.title!),
@@ -754,15 +741,8 @@ class _MyCampaignDetailPageState extends State<MyCampaignDetailPage> {
                                     AppImages.anonymousMask,
                                     fit: BoxFit.cover,
                                   )
-                                : CachedNetworkImage(
-                                    imageUrl: campaign.user!.avatarUrl!,
-                                    fit: BoxFit.cover,
-                                    placeholder: (context, url) {
-                                      return const CircularProgressIndicator();
-                                    },
-                                    errorWidget: (context, url, error) {
-                                      return const Icon(Icons.error);
-                                    },
+                                : ImageHelper.showImage(
+                                    widget.campaign.user!.avatarUrl,
                                   ),
                           ),
                         ),

@@ -121,24 +121,7 @@ class _MyCampaignWidgetState extends State<MyCampaignWidget> {
                   width: 60,
                   height: 70,
                   color: Colors.black12,
-                  child: (widget.campaign.imageCoverUrl == null)
-                      ? Image.asset(
-                          AppImages.coverBackground,
-                          fit: BoxFit.cover,
-                        )
-                      : CachedNetworkImage(
-                          imageUrl: ImageHelper.buildImageUrl(
-                            widget.campaign.imageCoverUrl!,
-                          ),
-                          fit: BoxFit.cover,
-                          placeholder: (context, url) => const Center(
-                            child: SizedBox(
-                              width: 40,
-                              height: 40,
-                              child: CircularProgressIndicator(),
-                            ),
-                          ),
-                        ),
+                  child: ImageHelper.showImage(widget.campaign.imageCoverUrl),
                 ),
               ),
               title: Text(
