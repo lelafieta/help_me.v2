@@ -3,8 +3,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 import 'package:utueji/src/core/errors/failures.dart';
-import 'package:utueji/src/core/network/i_network_info.dart';
 import 'package:utueji/src/features/auth/data/dto/login_dto.dart';
+import '../../../../core/network/i_network_info.dart';
 import '../../domain/entities/auth_response_entity.dart';
 import '../../domain/entities/user_entity.dart';
 import '../../domain/repositories/i_auth_repository.dart';

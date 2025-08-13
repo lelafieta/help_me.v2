@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:utueji/firebase_options.dart';
 import 'package:utueji/src/app/app.dart';
 import 'package:utueji/src/app/app_entity.dart';
 import './src/app/di.dart' as di;
@@ -11,7 +12,7 @@ import 'src/core/firebase/firebase_services.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   FirebaseServices().requestNotificationPermisions();
   // await LocalNotificationServices.init();
   await dotenv.load(fileName: ".env");

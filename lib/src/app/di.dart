@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get_core/get_core.dart';
 
 import 'package:get_it/get_it.dart';
@@ -10,6 +12,7 @@ import 'package:internet_connection_checker_plus/internet_connection_checker_plu
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:utueji/src/core/api/dio_consumer.dart';
+import 'package:utueji/src/core/services/analytics_service.dart';
 import 'package:utueji/src/features/communities/presentation/cubit/member_community/community_member_cubit.dart';
 import 'package:utueji/src/features/events/domain/usecases/get_event_by_id_usecase.dart';
 import 'package:utueji/src/features/favorites/domain/usecases/get_favorites_by_type_usecase.dart';
@@ -156,16 +159,26 @@ Future init() async {
 }
 
 void _setUpExternal() async {
-  Dio dio = createDio();
-  // FlutterSecureStorage secureStorage = const FlutterSecureStorage();
+  sl.registerLazySingleton(() => FirebaseAnalytics.instance);
 
-  sl.registerFactory<Dio>(() => dio);
+  sl.registerLazySingleton<IFirebaseAnalyticsService>(
+    () => FirebaseAnalyticsService(analytics: sl()),
+  );
+
+  // Ativa a coleta de Analytics
+  await sl<IFirebaseAnalyticsService>().setCollectionEnabled(true);
+
+  Dio dio = createDio(analytics: sl());
+
+  sl.registerLazySingleton<Dio>(() => dio);
 
   sl.registerFactory(() => Supabase.instance.client);
   sl.registerFactory(() => FirebaseFirestore.instance);
-  // sl.registerFactory(() => GoogleSignIn());
   sl.registerFactory(() => FirebaseAuth.instance);
   sl.registerFactory(() => FirebaseStorage.instance);
+  // sl.registerFactory(() => FirebaseAnalytics.instance);
+
+  // sl.registerLazySingleton(() => FlutterSecureStorage());
 
   sl.registerLazySingleton<SecureCacheHelper>(() => SecureCacheHelper());
   sl.registerLazySingleton<INetWorkInfo>(
@@ -392,7 +405,11 @@ void _setUpRepositories() {
     ),
   );
   sl.registerLazySingleton<ICampaignRepository>(
-    () => CampaignRepository(campaignDataSource: sl(), networkInfo: sl()),
+    () => CampaignRepository(
+      campaignDataSource: sl(),
+      networkInfo: sl(),
+      firebaseAnalyticsService: sl(),
+    ),
   );
   sl.registerLazySingleton<IEventRepository>(
     () => EventRepository(netWorkInfo: sl(), eventDataSource: sl()),
