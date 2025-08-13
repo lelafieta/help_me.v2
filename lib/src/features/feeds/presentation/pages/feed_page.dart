@@ -8,6 +8,8 @@ import 'package:utueji/src/features/feeds/domain/entities/feed_entity.dart';
 import '../../../../config/routes/app_routes.dart';
 import '../../../../core/resources/icons/app_icons.dart';
 import '../../../../core/utils/app_date_utils_helper.dart';
+import '../../../communities/presentation/pages/community_page.dart';
+import '../../../posts/presentation/cubit/feed_post/feed_post_cubit.dart';
 import '../cubit/feed_cubit.dart';
 import '../cubit/feed_state.dart';
 
@@ -22,31 +24,104 @@ class _FeedPageState extends State<FeedPage> {
   @override
   void initState() {
     super.initState();
-    context.read<FeedCubit>().getFeeds();
+    // context.read<FeedCubit>().getFeeds();
+    context.read<FeedPostCubit>().getAllPosts();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<FeedCubit, FeedState>(
+    return BlocBuilder<FeedPostCubit, FeedPostState>(
       builder: (context, state) {
-        if (state is FeedLoading) {
-          return const Center(child: CircularProgressIndicator());
-        } else if (state is FeedFailure) {
+        if (state is FeedPostLoading) {
+          return Center(child: CircularProgressIndicator());
+        } else if (state is FeedPostFailure) {
           return Center(child: Text(state.failure));
-        } else if (state is FeedLoaded) {
+        } else if (state is FeedPostLoaded) {
+          final posts = state.posts;
           return ListView.separated(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(16),
             itemBuilder: (context, index) {
-              final feed = state.feeds[index];
-              return FeedWidget(feed: feed);
+              final post = posts[index];
+              return Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: Colors.grey.shade300, width: 1),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                    left: 10,
+                    right: 10,
+                    bottom: 10,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ListTile(
+                        contentPadding: EdgeInsets.zero,
+                        leading: ClipRRect(
+                          borderRadius: BorderRadius.circular(50),
+                          child: Container(
+                            width: 40,
+                            height: 40,
+                            color: Colors.black12,
+                            child: ImageHelper.showImage(post.user!.avatarUrl),
+                          ),
+                        ),
+                        title: Text(
+                          "${post.user!.firstName} ${post.user!.lastName}",
+                        ),
+                        subtitle: Text(
+                          AppDateUtilsHelper.formatDate(
+                            data: post.createdAt,
+                            showTime: true,
+                          ),
+                        ),
+                        trailing: const Icon(Icons.more_vert),
+                      ),
+
+                      // AppUtils.buildHashtagText(
+                      //   post.content.toString(),
+                      //   context,
+                      // ),
+                      Text(post.content.toString()),
+                      // const SizedBox(height: 10),
+                      (post.resources.isNotEmpty)
+                          ? GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => FullscreenExtendedGallery(
+                                      imageUrls: post.resources
+                                          .map((r) => r.url)
+                                          .toList(),
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(8),
+                                child: ImageHelper.showImage(
+                                  post.resources[0].url,
+                                  width: double.infinity,
+                                  height: 200,
+                                ),
+                              ),
+                            )
+                          : const SizedBox.shrink(),
+                    ],
+                  ),
+                ),
+              );
             },
             separatorBuilder: (context, index) {
-              return const Divider(height: 20);
+              return SizedBox(height: 10);
             },
-            itemCount: state.feeds.length,
+            itemCount: posts.length,
           );
         }
-        return const Text("data");
+        return SizedBox.shrink();
       },
     );
   }

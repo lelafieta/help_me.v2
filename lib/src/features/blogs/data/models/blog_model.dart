@@ -52,13 +52,13 @@ class BlogModel extends BlogEntity {
       user: (json['user'] == null) ? null : UserModel.fromJson(json['user']),
       ong: (json['ong'] == null) ? null : OngModel.fromJson(json['ong']),
       comments: List<BlogCommentModel>.from(
-        json['blogComments'].map((x) => BlogCommentModel.fromJson(x)),
+        json['comments'].map((x) => BlogCommentModel.fromJson(x)),
       ),
       likes: List<BlogLikeModel>.from(
-        json['blogLikes'].map((x) => BlogLikeModel.fromJson(x)),
+        json['likes'].map((x) => BlogLikeModel.fromJson(x)),
       ),
       shares: List<BlogShareModel>.from(
-        json['blogShares'].map((x) => BlogShareModel.fromJson(x)),
+        json['shares'].map((x) => BlogShareModel.fromJson(x)),
       ),
     );
   }

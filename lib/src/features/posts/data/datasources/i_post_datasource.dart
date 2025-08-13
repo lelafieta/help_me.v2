@@ -5,4 +5,5 @@ abstract class IPostDataSource {
   Future<List<PostModel>> getPostsWithResourcesByCommunityId(
     String communityId,
   );
+  Future<List<PostModel>> getAllPosts();
 }

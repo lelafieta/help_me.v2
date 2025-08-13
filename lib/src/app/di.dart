@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:firebase_performance/firebase_performance.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get_core/get_core.dart';
@@ -12,7 +14,6 @@ import 'package:internet_connection_checker_plus/internet_connection_checker_plu
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:utueji/src/core/api/dio_consumer.dart';
-import 'package:utueji/src/core/services/analytics_service.dart';
 import 'package:utueji/src/features/communities/presentation/cubit/member_community/community_member_cubit.dart';
 import 'package:utueji/src/features/events/domain/usecases/get_event_by_id_usecase.dart';
 import 'package:utueji/src/features/favorites/domain/usecases/get_favorites_by_type_usecase.dart';
@@ -22,6 +23,8 @@ import 'package:utueji/src/features/solidary/cubit/user_local_data/user_local_da
 import '../core/cache/secure_storage.dart';
 import '../core/network/i_network_info.dart';
 import '../core/network/network_info.dart';
+import '../core/services/i_telemetry_service.dart';
+import '../core/services/telemetry_service.dart';
 import '../features/auth/data/datasources/auth_datasource.dart';
 import '../features/auth/data/datasources/auth_local_data_source.dart';
 import '../features/auth/data/datasources/i_auth_datasource.dart';
@@ -131,11 +134,13 @@ import '../features/posts/data/datasources/i_post_datasource.dart';
 import '../features/posts/data/datasources/post_datasource.dart';
 import '../features/posts/data/repositories/post_repository.dart';
 import '../features/posts/domain/repositories/i_post_repository.dart';
+import '../features/posts/domain/usecases/get_all_posts_usecase.dart';
 import '../features/posts/domain/usecases/get_posts_by_community_id_usecase.dart';
-import '../features/posts/domain/usecases/get_posts_with_resources_by_community_id_usecase.dart';
+import '../features/posts/domain/usecases/get_posts_with_resources_by_community_usecase.dart';
 import '../features/posts/presentation/cubit/community_post/community_post_cubit.dart';
 import '../features/posts/presentation/cubit/community_post_resource/community_post_resource_cubit.dart';
-import '../features/posts/presentation/cubit/post_cubit.dart';
+import '../features/posts/presentation/cubit/feed_post/feed_post_cubit.dart';
+import '../features/posts/presentation/cubit/post/post_cubit.dart';
 import '../features/profile/presentation/cubit/count_donation_cubit/count_donation_cubit.dart';
 import '../features/profile/presentation/cubit/profile_cubit.dart';
 import '../features/solidary/cubit/solidary_cubit.dart';
@@ -160,15 +165,18 @@ Future init() async {
 
 void _setUpExternal() async {
   sl.registerLazySingleton(() => FirebaseAnalytics.instance);
+  sl.registerLazySingleton(() => FirebaseCrashlytics.instance);
+  sl.registerLazySingleton(() => FirebasePerformance.instance);
 
-  sl.registerLazySingleton<IFirebaseAnalyticsService>(
-    () => FirebaseAnalyticsService(analytics: sl()),
+  sl.registerLazySingleton<ITelemetryService>(
+    () =>
+        TelemetryService(analytics: sl(), crashlytics: sl(), performance: sl()),
   );
 
   // Ativa a coleta de Analytics
-  await sl<IFirebaseAnalyticsService>().setCollectionEnabled(true);
+  await sl<ITelemetryService>().setAnalyticsCollectionEnabled(true);
 
-  Dio dio = createDio(analytics: sl());
+  Dio dio = createDio(telemetry: sl());
 
   sl.registerLazySingleton<Dio>(() => dio);
 
@@ -279,12 +287,14 @@ void _setUpCubits() {
   );
   sl.registerFactory(
     () => CommunityPostResourceCubit(
-      getPostsWithResourcesByCommunityIdUseCase: sl(),
+      getPostsWithResourcesByCommunityUseCase: sl(),
     ),
   );
   sl.registerFactory(
     () => CommunityEventCubit(getEventsByCommunityIdUsecase: sl()),
   );
+
+  sl.registerFactory(() => FeedPostCubit(getAllPostsUseCase: sl()));
 }
 
 void _setUpUsecases() {
@@ -392,8 +402,9 @@ void _setUpUsecases() {
     () => GetEventsByCommunityIdUsecase(repository: sl()),
   );
   sl.registerLazySingleton(
-    () => GetPostsWithResourcesByCommunityIdUseCase(repository: sl()),
+    () => GetPostsWithResourcesByCommunityUseCase(repository: sl()),
   );
+  sl.registerLazySingleton(() => GetAllPostsUseCase(repository: sl()));
 }
 
 void _setUpRepositories() {
@@ -408,7 +419,7 @@ void _setUpRepositories() {
     () => CampaignRepository(
       campaignDataSource: sl(),
       networkInfo: sl(),
-      firebaseAnalyticsService: sl(),
+      telemetryService: sl(),
     ),
   );
   sl.registerLazySingleton<IEventRepository>(

@@ -11,7 +11,7 @@ import '../../../../core/resources/icons/app_icons.dart';
 import '../../../../core/utils/app_date_utils_helper.dart';
 import '../../../../core/utils/image_helper.dart';
 import '../../../posts/presentation/cubit/community_post/community_post_cubit.dart';
-import '../../../posts/presentation/cubit/post_cubit.dart';
+import '../../../posts/presentation/cubit/post/post_cubit.dart';
 import '../../domain/entities/community_entity.dart';
 
 class CommunityPage extends StatefulWidget {
@@ -131,12 +131,12 @@ class _CommunityPageState extends State<CommunityPage> {
                                       height: 40,
                                       color: Colors.black12,
                                       child: ImageHelper.showImage(
-                                        post.user.avatarUrl,
+                                        post.user!.avatarUrl,
                                       ),
                                     ),
                                   ),
                                   title: Text(
-                                    "${post.user.firstName} ${post.user.lastName}",
+                                    "${post.user!.firstName} ${post.user!.lastName}",
                                   ),
                                   subtitle: Text(
                                     AppDateUtilsHelper.formatDate(

@@ -33,7 +33,7 @@ class PostRepository extends IPostRepository {
   }
 
   @override
-  Future<Either<Failure, List<PostEntity>>> getPostsWithResourcesByCommunityId(
+  Future<Either<Failure, List<PostEntity>>> getPostsWithResourcesByCommunity(
     String communityId,
   ) async {
     if (await netWorkInfo.isConnected) {
@@ -44,6 +44,24 @@ class PostRepository extends IPostRepository {
       } on DioException catch (e) {
         return left(ServerFailure.fromDioException(e));
       } catch (e) {
+        return left(ServerFailure(errorMessage: e.toString()));
+      }
+    } else {
+      return left(ServerFailure(errorMessage: "Sem conexão de internet"));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<PostEntity>>> getAllPosts() async {
+    if (await netWorkInfo.isConnected) {
+      try {
+        final response = await postDataSource.getAllPosts();
+        return right(response);
+      } on DioException catch (e, s) {
+        print(s);
+        return left(ServerFailure.fromDioException(e));
+      } catch (e, s) {
+        print(s);
         return left(ServerFailure(errorMessage: e.toString()));
       }
     } else {

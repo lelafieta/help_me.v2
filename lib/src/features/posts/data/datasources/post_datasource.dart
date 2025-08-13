@@ -7,6 +7,7 @@ class PostDataSource extends IPostDataSource {
   final Dio dio;
 
   PostDataSource({required this.dio});
+
   @override
   Future<List<PostModel>> getPostsByCommunityId(String communityId) async {
     final response = await dio.get('/posts/community/$communityId');
@@ -20,6 +21,14 @@ class PostDataSource extends IPostDataSource {
     String communityId,
   ) async {
     final response = await dio.get('/posts/community/$communityId/resources');
+    return (response.data as List)
+        .map((json) => PostModel.fromJson(json))
+        .toList();
+  }
+
+  @override
+  Future<List<PostModel>> getAllPosts() async {
+    final response = await dio.get('/posts');
     return (response.data as List)
         .map((json) => PostModel.fromJson(json))
         .toList();

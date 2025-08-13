@@ -6,20 +6,20 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:sliver_snap/widgets/sliver_snap.dart';
 import 'package:utueji/core/gen/assets.gen.dart';
 
-import 'package:utueji/src/features/categories/data/models/category_model.dart';
 import 'package:utueji/src/features/events/presentation/widgets/event_skeleton_widget.dart';
 import 'package:utueji/src/features/home/presentation/cubit/home_campaign_cubit/home_campaign_cubit.dart';
 import 'package:utueji/src/features/ongs/presentation/widgets/ong_skeleton_widget.dart';
 import 'package:utueji/src/features/solidary/cubit/user_local_data/user_local_data_cubit.dart';
 
+import '../../../../app/di.dart';
 import '../../../../config/routes/app_routes.dart';
 import '../../../../config/themes/app_colors.dart';
 import '../../../../core/cache/secure_storage.dart';
 import '../../../../core/resources/icons/app_icons.dart';
 import '../../../../core/resources/images/app_images.dart';
+import '../../../../core/services/i_telemetry_service.dart';
 import '../../../campaigns/presentation/widgets/campaign_skeleton_widget.dart';
 import '../../../campaigns/presentation/widgets/campaign_widget.dart';
 import '../../../categories/presentation/cubit/category_cubit.dart';
@@ -42,11 +42,13 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   SecureCacheHelper secureCacheHelper = SecureCacheHelper();
+  final telemetry = sl<ITelemetryService>();
   String fullName = "";
   String avatarUrl = "";
   @override
   void initState() {
     super.initState();
+    telemetry.setCurrentScreen(screenName: "HomePage");
     // getUserData();
     // context.read<FavoriteCubit>().getAllFavorites();
     context.read<HomeCampaignCubit>().getLatestUrgentCampaigns();

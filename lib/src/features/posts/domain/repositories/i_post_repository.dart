@@ -7,8 +7,10 @@ abstract class IPostRepository {
   Future<Either<Failure, List<PostEntity>>> getPostsByCommunityId(
     String communityId,
   );
-
-  Future<Either<Failure, List<PostEntity>>> getPostsWithResourcesByCommunityId(
+  
+  Future<Either<Failure, List<PostEntity>>> getPostsWithResourcesByCommunity(
     String communityId,
   );
+
+  Future<Either<Failure, List<PostEntity>>> getAllPosts();
 }

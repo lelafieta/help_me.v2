@@ -1,11 +1,11 @@
 import 'package:dio/dio.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:utueji/src/core/api/api_interceptor.dart';
-import 'package:utueji/src/core/services/analytics_service.dart';
+import 'package:utueji/src/core/api/performance_interceptor.dart';
 
-Dio createDio({required IFirebaseAnalyticsService analytics}) {
+import '../services/i_telemetry_service.dart';
+
+Dio createDio({required ITelemetryService telemetry}) {
   final dio = Dio();
 
   dio.options
@@ -13,7 +13,8 @@ Dio createDio({required IFirebaseAnalyticsService analytics}) {
     ..connectTimeout = const Duration(seconds: 30)
     ..receiveTimeout = const Duration(seconds: 30);
 
-  dio.interceptors.add(ApiInterceptor(analytics: analytics));
+  dio.interceptors.add(ApiInterceptor(telemetry: telemetry));
+  dio.interceptors.add(PerformanceInterceptor());
 
   return dio;
 }

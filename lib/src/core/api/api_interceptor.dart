@@ -1,12 +1,12 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-import '../services/analytics_service.dart';
+import '../services/i_telemetry_service.dart';
 
 class ApiInterceptor extends Interceptor {
-  final IFirebaseAnalyticsService analytics;
+  final ITelemetryService telemetry;
   final FlutterSecureStorage storage = const FlutterSecureStorage();
-  ApiInterceptor({required this.analytics});
+  ApiInterceptor({required this.telemetry});
 
   @override
   void onRequest(
@@ -19,10 +19,17 @@ class ApiInterceptor extends Interceptor {
     }
 
     print("📤 Request: ${options.method} ${options.uri}");
-    analytics.logEvent(
+    telemetry.logEvent(
       name: "api_request_started",
       parameters: {"method": options.method, "url": options.path},
     );
+
+    // await telemetryService.traceExecution(
+    //   traceName: "api_${options.method}_${options.path}",
+    //   action: () async {
+    //     handler.next(options);
+    //   },
+    // );
 
     super.onRequest(options, handler);
   }
@@ -30,7 +37,7 @@ class ApiInterceptor extends Interceptor {
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
     print("✅ Success [${response.statusCode}]: ${response.requestOptions.uri}");
-    analytics.logEvent(
+    telemetry.logEvent(
       name: "api_request_success",
       parameters: {
         "status_code": response.statusCode!,
@@ -44,7 +51,7 @@ class ApiInterceptor extends Interceptor {
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
     print("❌ Error [${err.response?.statusCode}]: ${err.requestOptions.uri}");
-    analytics.logEvent(
+    telemetry.logEvent(
       name: "api_request_error",
       parameters: {
         "status_code": err.response!.statusCode.toString(),

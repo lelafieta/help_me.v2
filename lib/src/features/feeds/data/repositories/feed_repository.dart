@@ -21,10 +21,8 @@ class FeedRepository extends IFeedRepository {
         final response = await feedDataSource.fetchFeeds();
         return right(response);
       } on DioException catch (e, s) {
-        print(s);
         return left(ServerFailure.fromDioException(e));
       } catch (e, s) {
-        print(s);
         return left(ServerFailure(errorMessage: e.toString()));
       }
     } else {
