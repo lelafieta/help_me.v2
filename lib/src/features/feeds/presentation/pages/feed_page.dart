@@ -10,6 +10,7 @@ import '../../../../core/resources/icons/app_icons.dart';
 import '../../../../core/utils/app_date_utils_helper.dart';
 import '../../../communities/presentation/pages/community_page.dart';
 import '../../../posts/presentation/cubit/feed_post/feed_post_cubit.dart';
+import '../../../posts/presentation/widgets/post_widget.dart';
 import '../cubit/feed_cubit.dart';
 import '../cubit/feed_state.dart';
 
@@ -42,78 +43,7 @@ class _FeedPageState extends State<FeedPage> {
             padding: EdgeInsets.all(16),
             itemBuilder: (context, index) {
               final post = posts[index];
-              return Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: Colors.grey.shade300, width: 1),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                    left: 10,
-                    right: 10,
-                    bottom: 10,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ListTile(
-                        contentPadding: EdgeInsets.zero,
-                        leading: ClipRRect(
-                          borderRadius: BorderRadius.circular(50),
-                          child: Container(
-                            width: 40,
-                            height: 40,
-                            color: Colors.black12,
-                            child: ImageHelper.showImage(post.user!.avatarUrl),
-                          ),
-                        ),
-                        title: Text(
-                          "${post.user!.firstName} ${post.user!.lastName}",
-                        ),
-                        subtitle: Text(
-                          AppDateUtilsHelper.formatDate(
-                            data: post.createdAt,
-                            showTime: true,
-                          ),
-                        ),
-                        trailing: const Icon(Icons.more_vert),
-                      ),
-
-                      // AppUtils.buildHashtagText(
-                      //   post.content.toString(),
-                      //   context,
-                      // ),
-                      Text(post.content.toString()),
-                      // const SizedBox(height: 10),
-                      (post.resources.isNotEmpty)
-                          ? GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => FullscreenExtendedGallery(
-                                      imageUrls: post.resources
-                                          .map((r) => r.url)
-                                          .toList(),
-                                    ),
-                                  ),
-                                );
-                              },
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(8),
-                                child: ImageHelper.showImage(
-                                  post.resources[0].url,
-                                  width: double.infinity,
-                                  height: 200,
-                                ),
-                              ),
-                            )
-                          : const SizedBox.shrink(),
-                    ],
-                  ),
-                ),
-              );
+              return PostWidget(post: post);
             },
             separatorBuilder: (context, index) {
               return SizedBox(height: 10);
@@ -136,7 +66,7 @@ class FeedWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Get.toNamed(AppRoutes.feedDetailsRoute, arguments: feed);
+        Get.toNamed(AppRoutes.postDetailsRoute, arguments: feed);
       },
       child: Container(
         decoration: BoxDecoration(

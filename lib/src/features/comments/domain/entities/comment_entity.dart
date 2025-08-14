@@ -1,3 +1,5 @@
+import '../../../auth/domain/entities/user_entity.dart';
+
 class CommentEntity {
   final String id;
   final String content;
@@ -8,6 +10,7 @@ class CommentEntity {
   final String? feedId;
   final String? campaignId;
   final String? eventId;
+  final UserEntity user;
 
   const CommentEntity({
     required this.id,
@@ -19,5 +22,6 @@ class CommentEntity {
     this.feedId,
     this.campaignId,
     this.eventId,
+    required this.user,
   });
 }

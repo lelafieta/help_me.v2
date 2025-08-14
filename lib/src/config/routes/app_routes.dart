@@ -27,5 +27,5 @@ class AppRoutes {
   static const String successRegisterOng = "/success-register-ong";
   static const String communityRoute = "/community";
   static const String communityDetailsRoute = "/community-details";
-  static const String feedDetailsRoute = "/feed-details";
+  static const String postDetailsRoute = "/post-details";
 }

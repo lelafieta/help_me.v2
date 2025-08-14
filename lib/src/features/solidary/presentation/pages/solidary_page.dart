@@ -13,6 +13,7 @@ import '../../../../../core/gen/assets.gen.dart';
 import '../../../../config/themes/app_colors.dart';
 import '../../../../core/resources/icons/app_icons.dart';
 import '../../../../core/resources/images/app_images.dart';
+import '../../../../core/utils/image_helper.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
 import '../../../auth/presentation/cubit/auth_state.dart';
 import '../../../campaigns/presentation/pages/my_campaign_page.dart';
@@ -147,19 +148,11 @@ class _SolidaryPageState extends State<SolidaryPage> {
                                       Get.toNamed(AppRoutes.profileRoute);
                                     },
                                     child: (state is UserLocalDataLoaded)
-                                        ? (state.avatarUrl!.isEmpty)
-                                              ? Image.asset(AppImages.avatar)
-                                              : Container(
-                                                  margin: EdgeInsets.only(
-                                                    left: 16,
-                                                  ),
-                                                  child: CircleAvatar(
-                                                    backgroundImage:
-                                                        CachedNetworkImageProvider(
-                                                          state.avatarUrl!,
-                                                        ),
-                                                  ),
-                                                )
+                                        ? ClipOval(
+                                            child: ImageHelper.showImage(
+                                              state.avatarUrl,
+                                            ),
+                                          )
                                         : SizedBox.shrink(),
                                   );
                                 },

@@ -36,6 +36,8 @@ import '../../features/home/presentation/pages/home_page.dart';
 import '../../features/ongs/domain/entities/ong_entity.dart';
 import '../../features/ongs/presentation/pages/ong_profile_page.dart';
 import '../../features/ongs/presentation/pages/success_register_ong_page.dart';
+import '../../features/posts/domain/entities/post_entity.dart';
+import '../../features/posts/presentation/pages/post_details_page.dart';
 import '../../features/profile/presentation/pages/profile_page.dart';
 import '../../features/solidary/presentation/pages/solidary_page.dart';
 import '../../features/splash&onboarding/presentation/pages/on_boarding_page.dart';
@@ -488,11 +490,11 @@ class RouteManager {
           },
         );
 
-      case AppRoutes.feedDetailsRoute:
-        final feed = routeSettings.arguments as FeedEntity;
+      case AppRoutes.postDetailsRoute:
+        final post = routeSettings.arguments as PostEntity;
         return PageRouteBuilder(
           pageBuilder: (context, animation, secondaryAnimation) {
-            return FeedDetailsPage(feed: feed);
+            return PostDetailsPage(post: post);
           },
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             return SharedAxisTransition(

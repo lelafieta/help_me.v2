@@ -1,3 +1,4 @@
+import '../../../auth/data/models/user_model.dart';
 import '../../domain/entities/comment_entity.dart';
 
 class CommentModel extends CommentEntity {
@@ -11,6 +12,7 @@ class CommentModel extends CommentEntity {
     super.feedId,
     super.campaignId,
     super.eventId,
+    required super.user,
   });
 
   factory CommentModel.fromJson(Map<String, dynamic> json) {
@@ -24,6 +26,7 @@ class CommentModel extends CommentEntity {
       feedId: json['feedId'],
       campaignId: json['campaignId'],
       eventId: json['eventId'],
+      user: UserModel.fromJson(json['user']),
     );
   }
 

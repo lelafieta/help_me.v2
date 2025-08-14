@@ -33,6 +33,7 @@ import '../features/ongs/presentation/cubit/ong_cubit.dart';
 import '../features/posts/presentation/cubit/community_post_resource/community_post_resource_cubit.dart';
 import '../features/posts/presentation/cubit/feed_post/feed_post_cubit.dart';
 import '../features/posts/presentation/cubit/post/post_cubit.dart';
+import '../features/posts/presentation/widgets/post_widget.dart';
 import '../features/profile/presentation/cubit/count_donation_cubit/count_donation_cubit.dart';
 import '../features/profile/presentation/cubit/profile_cubit.dart';
 import '../features/solidary/cubit/solidary_cubit.dart';
@@ -84,6 +85,7 @@ class UtuejiApp extends StatelessWidget {
         darkTheme: AppTheme.lightTheme,
         debugShowCheckedModeBanner: false,
         onGenerateRoute: RouteManager.onGenerateRoute,
+        navigatorKey: PostImagesGrid.navigatorKey,
         builder: EasyLoading.init(),
       ),
     );
